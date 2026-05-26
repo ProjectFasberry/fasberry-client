@@ -1,0 +1,155 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true,
+		"defaultBranch": "main"
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": ["**", "!apps/frontend-landing"]
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 120,
+		"indentStyle": "tab",
+		"indentWidth": 2
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"nursery": {
+				"useSortedClasses": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": false,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["packages/ui/**"],
+			"formatter": {
+				"enabled": false
+			},
+			"linter": {
+				"enabled": false
+			}
+		},
+		{
+			"includes": ["packages/shared/**"],
+			"formatter": {
+				"enabled": false
+			},
+			"linter": {
+				"enabled": false
+			}
+		},
+		{
+			"includes": ["apps/frontend-app/**"],
+			"javascript": {
+				"jsxRuntime": "reactClassic"
+			},
+			"formatter": {
+				"enabled": false
+			},
+			"linter": {
+				"domains": {
+					"react": "recommended"
+				},
+				"rules": {
+					"recommended": true,
+					"a11y": {
+						"useButtonType": "off",
+						"noStaticElementInteractions": "off",
+						"useKeyWithClickEvents": "off",
+						"noSvgWithoutTitle": "off",
+						"noLabelWithoutControl": "off"
+					},
+					"complexity": {
+						"useLiteralKeys": "off",
+						"noUselessFragments": "off",
+						"noUselessTernary": "off"
+					},
+					"style": {
+						"useTemplate": "off",
+						"useImportType": "off",
+						"useShorthandFunctionType": "off",
+						"noNonNullAssertion": "off",
+						"useConst": "off"
+					},
+					"suspicious": {
+						"noArrayIndexKey": "off",
+						"noUnknownAtRules": "off",
+						"noImplicitAnyLet": "off",
+						"noRedeclare": "off",
+						"noTsIgnore": "off",
+						"noExplicitAny": "off",
+						"noDocumentCookie": "off"
+					},
+					"security": {
+						"noBlankTarget": "off",
+						"noDangerouslySetInnerHtml": "off"
+					},
+					"correctness": {
+						"noUnusedFunctionParameters": "off",
+						"useUniqueElementIds": "off",
+						"noUnusedVariables": "off",
+						"useExhaustiveDependencies": "off",
+						"useValidTypeof": "off",
+						"noUnusedImports": "off",
+						"noUnknownProperty": "off",
+						"noInvalidPositionAtImportRule": "off",
+						"useHookAtTopLevel": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["apps/api-main/**"],
+			"javascript": {
+				"jsxRuntime": "transparent"
+			},
+			"formatter": {
+				"enabled": false
+			},
+			"linter": {
+				"enabled": true,
+				"rules": {
+					"complexity": {
+						"useLiteralKeys": "off",
+						"noBannedTypes": "off",
+						"useOptionalChain": "off",
+						"noUselessCatch": "off",
+						"noUselessSwitchCase": "off"
+					},
+					"style": {
+						"useTemplate": "off",
+						"noNonNullAssertion": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUnusedFunctionParameters": "off",
+						"noEmptyPattern": "off"
+					},
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		}
+	]
+}
