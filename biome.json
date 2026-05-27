@@ -49,15 +49,6 @@
 			}
 		},
 		{
-			"includes": ["packages/shared/**"],
-			"formatter": {
-				"enabled": false
-			},
-			"linter": {
-				"enabled": false
-			}
-		},
-		{
 			"includes": ["apps/frontend-app/**"],
 			"javascript": {
 				"jsxRuntime": "reactClassic"
@@ -113,40 +104,6 @@
 						"noUnknownProperty": "off",
 						"noInvalidPositionAtImportRule": "off",
 						"useHookAtTopLevel": "off"
-					}
-				}
-			}
-		},
-		{
-			"includes": ["apps/api-main/**"],
-			"javascript": {
-				"jsxRuntime": "transparent"
-			},
-			"formatter": {
-				"enabled": false
-			},
-			"linter": {
-				"enabled": true,
-				"rules": {
-					"complexity": {
-						"useLiteralKeys": "off",
-						"noBannedTypes": "off",
-						"useOptionalChain": "off",
-						"noUselessCatch": "off",
-						"noUselessSwitchCase": "off"
-					},
-					"style": {
-						"useTemplate": "off",
-						"noNonNullAssertion": "off"
-					},
-					"correctness": {
-						"noUnusedVariables": "off",
-						"noUnusedImports": "off",
-						"noUnusedFunctionParameters": "off",
-						"noEmptyPattern": "off"
-					},
-					"suspicious": {
-						"noExplicitAny": "off"
 					}
 				}
 			}

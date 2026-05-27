@@ -1,5 +1,5 @@
 import { useConfig } from 'vike-solid/useConfig';
-import { PageContextServer } from 'vike/types';
+import type { PageContextServer } from 'vike/types';
 import { getUrl, wrapTitle } from '@/shared/lib/helpers';
 
 export async function data(pageCtx: PageContextServer) {

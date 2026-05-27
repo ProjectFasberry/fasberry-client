@@ -1,4 +1,4 @@
-import { mergeProps, splitProps, JSX } from "solid-js";
+import { mergeProps, splitProps, type JSX } from "solid-js";
 import { tv, type VariantProps } from 'tailwind-variants';
 
 const layoutVars = tv({

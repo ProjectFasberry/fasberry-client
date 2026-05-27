@@ -1,5 +1,5 @@
 import { useConfig } from 'vike-solid/useConfig';
-import { PageContextServer } from 'vike/types';
+import type { PageContextServer } from 'vike/types';
 import { getStaticObject, getUrl, wrapTitle } from '@/shared/lib/helpers';
 
 const bgImage = getStaticObject("community", "dragon_dead.webp")

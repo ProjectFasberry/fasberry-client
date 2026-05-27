@@ -2,7 +2,7 @@ import { WikiNavigation } from "@/pages/wiki/(components)/wiki-navigation-bar";
 import { wikiCategories } from "@/pages/wiki/(components)/wiki.model";
 import { MainWrapperPage } from "@/shared/ui/main-wrapper";
 import { useCtx } from "@reatom/npm-solid-js";
-import { JSXElement, onMount } from "solid-js";
+import { type JSXElement, onMount } from "solid-js";
 
 export default function Layout(props: { children: JSXElement }) {
   const ctx = useCtx();

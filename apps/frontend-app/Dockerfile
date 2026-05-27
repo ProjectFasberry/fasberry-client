@@ -13,7 +13,6 @@ WORKDIR /
 COPY bun.lock* package.json bunfig.toml ./
 
 COPY apps/frontend-app ./apps/frontend-app
-COPY packages/shared ./packages/shared
 COPY packages/ui ./packages/ui
 COPY packages/config-typescript ./packages/config-typescript
 COPY packages/config-biome ./packages/config-biome

@@ -4,8 +4,8 @@ import { createEffect, Show } from "solid-js";
 import { useData } from "vike-solid/useData";
 import { usePageContext } from "vike-solid/usePageContext";
 import { renderToHTMLString } from "@tiptap/static-renderer";
-import { editorExtensions as extensions } from "@/shared/components/config/editor";
-import { Data } from "./+data";
+import { editorExtensions as extensions } from "@/shared/components/editor.model";
+import type { Data } from "./+data";
 
 const Fallback = () => <div class="flex items-center justify-center w-full h-full">Ничего не нашлось</div>;
 

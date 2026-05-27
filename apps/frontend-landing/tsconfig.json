@@ -9,8 +9,11 @@
     "module": "ESNext",
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "noImplicitReturns": true,
     "target": "ES2022",
+    "verbatimModuleSyntax": true,
     "lib": [
       "DOM",
       "DOM.Iterable",
@@ -23,8 +26,11 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./*"]
     }
   },
-  "exclude": ["dist", "node_modules"],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
 }

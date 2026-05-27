@@ -1,10 +1,10 @@
 import { useConfig } from 'vike-solid/useConfig';
 import type { PageContextServer } from 'vike/types';
-import { Wiki } from '@/pages/wiki/(components)/wiki.model';
+import type { Wiki } from '@/pages/wiki/(components)/wiki.model';
 import { client } from '@/shared/api/client';
 import { getUrl, wrapTitle } from '@/shared/lib/helpers';
 import { renderToMarkdown } from '@tiptap/static-renderer/pm/markdown'
-import { editorExtensions as extensions } from '@/shared/components/config/editor';
+import { editorExtensions as extensions } from '@/shared/components/editor.model';
 import { wrapClient } from '@/shared/lib/api';
 
 export type Data = Awaited<ReturnType<typeof data>>

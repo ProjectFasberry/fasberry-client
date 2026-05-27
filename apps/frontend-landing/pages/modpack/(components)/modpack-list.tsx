@@ -5,7 +5,7 @@ import { Dialog } from '@ark-ui/solid/dialog';
 import { Button } from '@/shared/ui/button';
 import { useAtom, useCtx } from '@reatom/npm-solid-js';
 import { For, Index, onMount, Show } from 'solid-js';
-import { Modpack, modpacksModel } from '../(models)/modpack.model';
+import { type Modpack, modpacksModel } from '../(models)/modpack.model';
 import { Portal } from 'solid-js/web';
 import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant } from '@/shared/ui/dialog';
 

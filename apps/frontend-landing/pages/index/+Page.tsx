@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/link"
 import { MainWrapperPage } from "@/shared/ui/main-wrapper";
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";
@@ -10,9 +10,9 @@ import { SpawnCarousel } from "./(components)/spawn-carousel";
 import { IdeaMainNavigation, IdeaPreviewCard, IdeasList } from "./(components)/gameplay";
 import { getStaticObject } from "@/shared/lib/helpers";
 import { ClientOnly } from "vike-solid/ClientOnly";
-import { weatherAtom } from "@/shared/components/layouts/settings.model";
+import { layoutSettingsState } from "@/shared/components/settings.model";
 
-const LayoutSettings = lazy(() => import("@/shared/components/layouts/settings").then(m => ({ default: m.LayoutSettings })))
+const LayoutSettings = lazy(() => import("@/shared/components/settings").then(m => ({ default: m.LayoutSettings })))
 
 const introImage = getStaticObject("arts", "server-status-widget.webp")
 const shareImage = getStaticObject("arts", "bzzvanet-.jpg")
@@ -23,7 +23,7 @@ const CONTACTS_LIST = [
 ];
 
 const Weather = () => {
-  const [data] = useAtom(weatherAtom)
+  const [data] = useAtom(layoutSettingsState.selectedWeather)
   return <div class={`weather ${data()} absolute z-[1] w-full h-full top-0 right-0 left-0`} />
 }
 
@@ -37,9 +37,12 @@ export default function Page() {
       </ClientOnly>
       <div id="title" class={sectionVariant()}>
         <div class="absolute top-0 right-0 left-0 overflow-hidden h-full">
-          <div
-            class="w-full h-full absolute top-0 right-0 brightness-[55%] left-0 bg-no-repeat bg-center bg-cover"
-            style={{ "background-image": `url('${introImage}')` }}
+          <img
+            src={introImage}
+            alt=""
+            fetchpriority="high"
+            loading="eager"
+            class="w-full h-full absolute top-0 right-0 left-0 object-cover brightness-[55%]"
           />
           <Weather />
         </div>
@@ -51,17 +54,17 @@ export default function Page() {
               <h1 class={sectionVariantChild().title({ className: "text-pink-300" })}>
                 Fasberry Project
               </h1>
-              <h2 class={sectionVariantChild().subtitle({ className: "text-white mb-4" })}>
+              <h2 class={sectionVariantChild().subtitle({ className: "mb-4" })}>
                 {translate("welcome.subtitle")}
               </h2>
-              <h3 class={sectionVariantChild().description({ className: "text-white text-shadow-lg" })}>
+              <h3 class={sectionVariantChild().description({ className: "text-shadow-lg" })}>
                 {translate("welcome.description")}
               </h3>
             </div>
             <Link href="/start" class={sectionVariantChild().action()}>
-              <Button variant="minecraft" class="w-full py-1 sm:py-1.5" >
-                <Typography color="white" class="text-nowrap text-base sm:text-xl text-shadow-xl">
-                  {translate("welcome.actionText")}
+              <Button variant="minecraft" class="w-full py-1 sm:py-1" >
+                <Typography color="white" class="text-nowrap text-sm sm:text-base text-shadow-xl">
+                  {translate("welcome.actionText")}!
                 </Typography>
               </Button>
             </Link>
@@ -94,9 +97,9 @@ export default function Page() {
               <SpawnCarousel />
             </div>
             <div
-              class="flex flex-col bg-neutral-700/60 backdrop-blur-sm p-2 rounded-xl w-full gap-2 z-[21] lg:w-[60%] xl:w-[70%]"
+              class="flex flex-col bg-neutral-700/60 backdrop-blur-sm p-4 rounded-xl w-full gap-2 z-[21] lg:w-[60%] xl:w-[70%]"
             >
-              <Typography color="white" class="text-base sm:text-xl leading-6 text-center">
+              <Typography class="text-base sm:text-lg leading-6 text-center">
                 Спавн сервера
               </Typography>
               <Typography color="gray" class="!leading-5 text-sm sm:text-base text-center">
@@ -123,7 +126,7 @@ export default function Page() {
               {(item) =>
                 <a href={item.href} target="_blank" rel="noreferrer">
                   <Button variant="minecraft" class="w-full py-0.5">
-                    <Typography class="text-white text-lg">
+                    <Typography class="text-lg">
                       {translate("contacts.itemTitle")} {item.name}
                     </Typography>
                   </Button>

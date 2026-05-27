@@ -1,6 +1,6 @@
 import { atom, withAssign } from "@reatom/framework"
-import { PageContext } from "vike/types"
-import { Locale } from "../locales"
+import type { PageContext } from "vike/types"
+import type { Locale } from "../locales"
 
 export const pageState = atom(null, "pageState").pipe(
   withAssign((_, name) => ({

@@ -3,7 +3,7 @@ import { createMemo, For, Show } from "solid-js";
 import { tv } from "tailwind-variants";
 import { IDEAS, selectedKeyAtom } from "../(models)/gameplay.model";
 import { Typography } from "@/shared/ui/typography";
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/link";
 import { atom } from "@reatom/framework";
 import { getStaticObject } from "@/shared/lib/helpers";
 

@@ -1,4 +1,4 @@
-import { splitProps, JSX } from 'solid-js';
+import { splitProps, type JSX } from 'solid-js';
 import { tv } from 'tailwind-variants';
 
 const skeleton = tv({

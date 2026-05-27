@@ -1,4 +1,4 @@
-import { editorExtensions } from "@/shared/components/config/editor";
+import { editorExtensions } from "@/shared/components/editor.model";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { useAtom, useCtx } from "@reatom/npm-solid-js";
 import { renderToHTMLString } from "@tiptap/static-renderer";

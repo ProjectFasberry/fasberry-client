@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/link";
 import { getStaticObject } from "@/shared/lib/helpers";
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";

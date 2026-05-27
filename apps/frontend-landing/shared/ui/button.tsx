@@ -1,4 +1,4 @@
-import { mergeProps, splitProps, JSX, Show } from "solid-js";
+import { mergeProps, splitProps, type JSX, Show } from "solid-js";
 import { tv, type VariantProps } from "tailwind-variants";
 import { Icon } from "./icon";
 

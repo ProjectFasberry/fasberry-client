@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/link";
 import { MainWrapperPage } from "@/shared/ui/main-wrapper";
 import { Typography } from "@/shared/ui/typography";
 import { Tooltip } from "@ark-ui/solid/tooltip";

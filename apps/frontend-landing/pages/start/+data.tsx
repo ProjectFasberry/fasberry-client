@@ -1,5 +1,5 @@
 import { useConfig } from 'vike-solid/useConfig';
-import { PageContextServer } from 'vike/types';
+import type { PageContextServer } from 'vike/types';
 import { getUrl, wrapTitle, getStaticObject } from '@/shared/lib/helpers';
 
 const bgImage = getStaticObject("background", "rules_background.png")

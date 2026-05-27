@@ -1,6 +1,6 @@
-import { Locale, localeDefault, locales } from '@/shared/locales'
+import { type Locale, localeDefault, locales } from '@/shared/locales'
 import { modifyUrl } from 'vike/modifyUrl'
-import { PageContext } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
 function extractLocale(pathname: string) {
   let locale: Locale = localeDefault
@@ -35,7 +35,7 @@ export function onBeforeRoute(pageContext: PageContext) {
   const urlWithoutLocale =
     (pathnameWithoutLocale.startsWith('/') ? pathnameWithoutLocale : '/' + pathnameWithoutLocale) +
     search
-    
+
   return {
     pageContext: {
       locale,

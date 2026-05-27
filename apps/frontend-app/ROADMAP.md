@@ -1,0 +1,1 @@
+- [ ] drop @tabler/icons-react

@@ -1,11 +1,11 @@
 import { For, mergeProps, onMount, Show } from "solid-js";
-import { PlayerStatusProps, serverStatus } from "../(models)/server-status.model";
+import { type PlayerStatusProps, serverStatus } from "../(models)/server-status.model";
 import { useAtom, useCtx } from "@reatom/npm-solid-js";
 import { pageState } from "@/shared/models/global.model";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Dialog } from '@ark-ui/solid/dialog';
 import { Typography } from "@/shared/ui/typography";
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/link";
 import { env } from "@/shared/env";
 import { Portal } from "solid-js/web";
 import { dialogBackdropVariant, dialogTitleVariant } from "@/shared/ui/dialog";

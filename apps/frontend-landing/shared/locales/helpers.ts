@@ -1,9 +1,9 @@
 // TODO: impl react-intl;
 
-import { PageContext, PageContextServer } from "vike/types";
+import type { PageContext, PageContextServer } from "vike/types";
 import { localeDefault } from ".";
 import { translations } from "./translations";
-import { CtxSpy } from "@reatom/framework";
+import type { CtxSpy } from "@reatom/framework";
 import { localeAtom } from "../models/global.model";
 import { usePageContext } from "vike-solid/usePageContext";
 

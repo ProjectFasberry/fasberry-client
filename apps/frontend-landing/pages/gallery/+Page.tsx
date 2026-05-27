@@ -1,6 +1,6 @@
 import { MainWrapperPage } from "@/shared/ui/main-wrapper";
 import { Typography } from "@/shared/ui/typography";
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/link";
 import { Button } from "@/shared/ui/button";
 import { getStaticObject } from "@/shared/lib/helpers";
 import { Carousel } from "@ark-ui/solid/carousel";

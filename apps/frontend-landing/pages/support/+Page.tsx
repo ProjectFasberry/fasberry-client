@@ -1,11 +1,11 @@
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/link";
 import { Button } from "@/shared/ui/button";
 import { MainWrapperPage } from "@/shared/ui/main-wrapper";
 import { Overlay } from "@/shared/ui/overlay";
 import { Typography } from "@/shared/ui/typography";
 import { WrapperTitle } from "@/shared/ui/wrapper-title";
 import { sectionVariant, sectionVariantChild } from "@/shared/styles/variants";
-import { JSXElement } from "solid-js";
+import type { JSXElement } from "solid-js";
 import { getStaticObject } from "@/shared/lib/helpers";
 import { env } from "@/shared/env";
 

@@ -2,17 +2,17 @@ import '@bprogress/core/css';
 import "@/shared/styles/tailwind.css";
 import "@/shared/styles/minecraft.css"
 
-import { Toaster } from "@/shared/components/config/toaster";
+import { Toaster } from "@/shared/components/toaster";
 import { usePageContext } from "vike-solid/usePageContext";
 import { pageState } from '@/shared/models/global.model';
-import { Footer } from '@/shared/components/layouts/footer';
-import { Header } from '@/shared/components/layouts/header';
-import { createEffect, JSXElement, onMount } from 'solid-js';
+import { Footer } from '@/shared/components/footer';
+import { Header } from '@/shared/components/header';
+import { createEffect, type JSXElement } from 'solid-js';
 import { useCtx } from '@reatom/npm-solid-js';
 import { snapshotAtom } from '@/shared/models/ssr'
-import { action, connectLogger, createCtx, Ctx } from '@reatom/framework'
+import { action, connectLogger, createCtx, type Ctx } from '@reatom/framework'
 import { reatomContext } from '@reatom/npm-solid-js'
-import { PageContext } from 'vike/types';
+import type { PageContext } from 'vike/types';
 
 interface Fn<Args extends any[] = any[], Return = any> {
   (...a: Args): Return
@@ -43,10 +43,6 @@ const syncPageState = action((ctx, pageCtx: PageContext) => {
   pageState.isClient(ctx, !!pageCtx.Page)
 }, "syncPageState")
 
-const injectWidgets = action(async () => {
-  // todo: add analytics/speed-insights (?)
-}, "injectWidgets")
-
 const SyncPageCtx = () => {
   const ctx = useCtx();
   const pageCtx = usePageContext();
@@ -59,14 +55,8 @@ const SyncPageCtx = () => {
 }
 
 const LayoutContent = (props: { children: JSXElement }) => {
-  const ctx = useCtx();
-
-  onMount(() => {
-    injectWidgets(ctx)
-  })
-
   return (
-    <>
+    <main>
       <Toaster />
       <Header />
       <SyncPageCtx />
@@ -74,7 +64,7 @@ const LayoutContent = (props: { children: JSXElement }) => {
         {props.children}
       </div>
       <Footer />
-    </>
+    </main>
   )
 }
 

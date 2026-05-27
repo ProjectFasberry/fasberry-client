@@ -20,3 +20,7 @@ export const env = {
   VITE_MAIN_DOMAIN: import.meta.env.VITE_MAIN_DOMAIN!,
   VITE_SUPPORT_EMAIL: import.meta.env.VITE_SUPPORT_EMAIL!
 }
+
+if (typeof window === 'undefined') {
+  console.log(env)
+}

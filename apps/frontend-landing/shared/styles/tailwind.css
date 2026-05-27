@@ -99,7 +99,7 @@
     background-image: url("_VOLUME_URL/static/minecraft/static/borders.webp");
     background-size: 960px;
     bottom: -50px;
-    z-index: 700;
+    z-index: 12;
   }
 
   .borders_up {
@@ -268,4 +268,87 @@
   --color-wool-pink: #F27FA5;
 
   --spacing-container-lg: calc(var(--breakpoint-lg) - 1rem);
+}
+
+.accordion-item-content {
+  &[data-state='open'] {
+      animation-duration: 200ms;
+      animation-timing-function: ease-out;
+
+      &[data-orientation='vertical'] {
+        animation-name: expand-height, fade-in;
+      }
+      &[data-orientation='horizontal'] {
+        animation-name: expand-width, fade-in;
+        will-change: width;
+      }
+    }
+
+    &[data-state='closed'] {
+      animation-duration: 200ms;
+      animation-timing-function: ease-out;
+
+      &[data-orientation='vertical'] {
+        animation-name: collapse-height, fade-out;
+      }
+
+      &[data-orientation='horizontal'] {
+        animation-name: collapse-width, fade-out;
+        will-change: width;
+      }
+    }
+
+    &[data-orientation='horizontal'] > * {
+      white-space: nowrap;
+    }
+}
+
+@keyframes expand-height {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--height);
+  }
+}
+@keyframes expand-width {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--width);
+  }
+}
+@keyframes collapse-width {
+  from {
+    width: var(--width);
+  }
+  to {
+    width: 0;
+  }
+}
+@keyframes collapse-height {
+  from {
+    height: var(--height);
+  }
+  to {
+    height: 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

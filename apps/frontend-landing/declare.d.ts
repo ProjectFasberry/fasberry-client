@@ -1,7 +1,7 @@
-import { Rec } from "@reatom/framework";
-import { PersistRecord } from "@reatom/persist";
-import { Locale } from "./shared/locales";
-import { JSXElement } from "solid-js";
+import type { Rec } from "@reatom/framework";
+import type { PersistRecord } from "@reatom/persist";
+import type { Locale } from "./shared/locales";
+import type { JSXElement } from "solid-js";
 import 'solid-js';
 
 declare global {

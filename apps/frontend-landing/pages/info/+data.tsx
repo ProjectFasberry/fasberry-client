@@ -1,15 +1,15 @@
 import { useConfig } from 'vike-solid/useConfig';
-import { PageContextServer } from 'vike/types';
+import type { PageContextServer } from 'vike/types';
 import { getUrl } from '@/shared/lib/helpers';
 
-export const data = async (pageContext: PageContextServer) => {
+export const data = async (pageCtx: PageContextServer) => {
   const config = useConfig()
 
   config({
     Head: (
       <>
-        <link rel="canonical" href={getUrl(pageContext)} />
-        <meta property="og:url" content={getUrl(pageContext)} />
+        <link rel="canonical" href={getUrl(pageCtx)} />
+        <meta property="og:url" content={getUrl(pageCtx)} />
       </>
     )
   })
