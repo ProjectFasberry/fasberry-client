@@ -4,7 +4,7 @@ import { useAtom, useCtx } from "@reatom/npm-solid-js";
 import { renderToHTMLString } from "@tiptap/static-renderer";
 import { For, Index, onMount, Show } from "solid-js";
 import { rules } from "../(models)/rules.model";
-import { getDayjs } from "@/shared/lib/create-dayjs";
+import { dayjs } from "@/shared/lib/create-dayjs";
 import { Typography } from "@/shared/ui/typography";
 
 const RuleItem = (props: { content: any }) => {
@@ -49,8 +49,6 @@ export const Rules = () => {
 
   const [dataAtom] = useAtom(rules.fetchList.dataAtom)
   const [statusesAtom] = useAtom(rules.fetchList.statusesAtom);
-
-  const dayjs = getDayjs();
 
   return (
     <Show

@@ -8,6 +8,8 @@
 		"module": "esnext",
 		"noPropertyAccessFromIndexSignature": false,
 		"noEmit": true,
+		// TODO: enable in a future release
+		// "noUncheckedIndexedAccess": true,
 		"moduleResolution": "Bundler",
 		"verbatimModuleSyntax": true,
 		"jsx": "react-jsx",

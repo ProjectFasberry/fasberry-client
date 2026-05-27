@@ -1,4 +1,4 @@
-import { For, mergeProps, onMount, Show } from "solid-js";
+import { For, mergeProps, onMount, onCleanup, Show } from "solid-js";
 import { type PlayerStatusProps, serverStatus } from "../(models)/server-status.model";
 import { useAtom, useCtx } from "@reatom/npm-solid-js";
 import { pageState } from "@/shared/models/global.model";
@@ -48,24 +48,19 @@ const PlayerStatusImage = (props: PlayerStatusImageProps) => {
 }
 
 const PlayerStatus = (props: PlayerStatusProps) => {
-  const nicknameByCookie = null;
-
   return (
     <Dialog.Root>
       <Dialog.Trigger class="w-full">
         <div
-          title="Перейти к игроку"
-          class="flex items-center w-full px-4 py-3 rounded-xl duration-300 hover:bg-neutral-700 bg-neutral-800 justify-start gap-4"
+          class="
+            flex items-center w-full px-4 py-3 rounded-xl duration-300
+          hover:bg-neutral-700 bg-neutral-800 justify-start gap-4
+          "
         >
           <PlayerStatusImage type="small" nickname={props.nickname} />
           <Typography color="white" class="text-xl">
             {props.nickname}
           </Typography>
-          {nicknameByCookie && (
-            <Typography color="gray" class="text-lg">
-              Это вы
-            </Typography>
-          )}
         </div>
       </Dialog.Trigger>
       <Portal>
@@ -127,24 +122,22 @@ export const ServerStatus = () => {
     serverStatus.fetch(ctx)
   })
 
+  onCleanup(() => {
+    serverStatus.fetch.abort(ctx)
+  })
+
   const [dataAtom] = useAtom(serverStatus.fetch.dataAtom)
   const [statuses] = useAtom(serverStatus.fetch.statusesAtom);
 
   return (
     <Show
-      when={!statuses().isPending && !isClientAtom()}
+      when={isClientAtom() && !statuses().isPending}
       fallback={<ServerStatusSkeleton />}
     >
-      <Show
-        when={dataAtom()}
-        fallback={null}
-      >
+      <Show when={dataAtom()}>
         {(data) => {
           const isServerOnline = data().proxy.status === 'online'
-
           const playersList = data().proxy.players
-          const playersOnline = data().proxy.online
-          const playersMax = data().proxy.max
 
           return (
             <>
@@ -156,7 +149,7 @@ export const ServerStatus = () => {
               {(isServerOnline && playersList) && (
                 <>
                   <p class="text-xl lg:text-2xl">
-                    Все игроки: {playersOnline}/{playersMax}
+                    Все игроки: {data().proxy.online}/{data().proxy.max}
                   </p>
                   <div class="flex flex-col gap-2 h-full">
                     {playersList.length === 0 && (

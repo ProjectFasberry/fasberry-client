@@ -51,24 +51,14 @@ export const IDEAS = [
 ]
 
 export const selectedKeyAtom = atom(0, "selectedKey").pipe(
-  withAssign((atom, name) => ({
+  withAssign((atom) => ({
     prev: action((ctx) => {
-      const target = ctx.get(atom)
-
-      if (target === 0) {
-        atom(ctx, IDEAS.length - 1)
-      } else {
-        atom(ctx, target - 1);
-      }
-    }, `${name}.prev`),
+      const current = ctx.get(atom);
+      atom(ctx, (current - 1 + IDEAS.length) % IDEAS.length);
+    }),
     next: action((ctx) => {
-      const target = ctx.get(atom)
-
-      if (target === IDEAS.length - 1) {
-        atom(ctx, 0);
-      } else {
-        atom(ctx, target + 1);
-      }
-    }, `${name}.next`)
+      const current = ctx.get(atom);
+      atom(ctx, (current + 1) % IDEAS.length);
+    })
   }))
 )

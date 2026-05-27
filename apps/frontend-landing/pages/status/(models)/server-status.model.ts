@@ -1,6 +1,6 @@
 import { client } from "@/shared/api/client"
 import { wrapClient } from "@/shared/lib/api";
-import { reatomAsync, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework"
+import { reatomAsync, withAbort, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework"
 import { atom, withAssign } from "@reatom/framework";
 
 export type Player = { uuid: string; name_raw: string };
@@ -31,7 +31,8 @@ export const serverStatus = atom(null, "serverStatus").pipe(
     }).pipe(
       withCache({ swr: false }),
       withDataAtom(),
-      withStatusesAtom()
+      withStatusesAtom(),
+      withAbort()
     )
   }))
 )

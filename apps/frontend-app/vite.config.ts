@@ -10,45 +10,37 @@ import { visualizer } from "rollup-plugin-visualizer";
 
 type Stage = "staging" | "prod"
 
-type StagePluginOpts = {}
+type StageOpts = Partial<BuildEnvironmentOptions> & Partial<{
+  chunksHashing: boolean,
+  chunksGroping: boolean,
+  visualizer: boolean
+}>
 
-type StageOpts = {
-  buildOpts: BuildEnvironmentOptions & {
-    chunkHashing?: boolean,
-    chunkGroping?: boolean
-  },
-  pluginOpts: Partial<StagePluginOpts>
-}
-
-const STAGES: Record<Stage, StageOpts> = {
+const STAGES: Partial<Record<Stage, StageOpts>> = {
   "staging": {
-    buildOpts: {
-      sourcemap: true,
-      minify: "esbuild",
-      chunkHashing: true,
-      chunkGroping: true
-    },
-    pluginOpts: {}
+    sourcemap: true,
+    minify: "esbuild",
+    chunksHashing: true,
+    chunksGroping: true,
+    visualizer: true
   },
   "prod": {
-    buildOpts: {
-      sourcemap: false,
-      minify: "esbuild",
-      chunkHashing: true,
-      chunkGroping: true
-    },
-    pluginOpts: {}
+    sourcemap: false,
+    minify: "esbuild",
+    chunksHashing: false,
+    chunksGroping: true,
+    visualizer: false
   }
 }
 
 const CHUNK_GROUPS = [
   { name: 'lib', matches: ['reatom', 'zod', 'ky', '@scure'] },
   { name: 'editor', matches: ['@monaco-editor', 'tiptap'] },
-  { name: 'ui', matches: ['embla-carousel', '@radix-ui', "floating-ui", 'vaul', '@monaco-editor', 'number-flow'] },
+  { name: 'ui-old', matches: ['embla-carousel', '@radix-ui', "floating-ui", 'vaul', '@monaco-editor', 'number-flow'] },
   { name: "dev", matches: ["tweakpane"] },
   { name: "setting-base", matches: ["@yudiel/react-qr-scanner"] },
   { name: "captcha", matches: ["@better-captcha"] },
-  { name: "ui-zagjs", matches: ["@zag-js", "ark-ui"] }
+  { name: "ui-new", matches: ["@zag-js", "ark-ui"] }
 ];
 
 export default defineConfig(({ mode }) => {
@@ -56,10 +48,15 @@ export default defineConfig(({ mode }) => {
   const host = env.VITE_APP_HOST ?? "0.0.0.0"
   const port = Number(env.VITE_APP_PORT)
 
-  const stage = process.env["STAGE"] as Stage | undefined
-  const target: Partial<StageOpts> = stage ? STAGES[stage] : {};
+  const stage = process.env["STAGE"] as Maybe<Stage>
+  const stageOpts: StageOpts = stage ? (STAGES[stage] ?? {}) : {};
 
   let isSSR = false;
+
+  const {
+    chunksGroping, chunksHashing, visualizer: visualizerIsEnabled,
+    ...stageBuildOpts
+  } = stageOpts;
 
   return {
     logLevel: 'info',
@@ -84,7 +81,7 @@ export default defineConfig(({ mode }) => {
         },
         buildStart() {
           if (!isSSR && process.env.NODE_ENV === 'production') {
-            console.log(`Build for stage: ${stage}`, target)
+            console.log(`Build for stage: ${stage}`, stageOpts)
           }
         }
       },
@@ -93,8 +90,8 @@ export default defineConfig(({ mode }) => {
         outdir: "./paraglide",
         strategy: ["url", "baseLocale"]
       }),
-      visualizer({
-        filename: "stats.html",
+      visualizerIsEnabled && visualizer({
+        filename: "dist/bundleStats.html",
         template: "treemap",
         gzipSize: true
       }),
@@ -103,20 +100,18 @@ export default defineConfig(({ mode }) => {
       noExternal: process.env.NODE_ENV === 'production' || undefined
     },
     build: {
-      ...target?.buildOpts,
+      ...stageBuildOpts,
       emptyOutDir: true,
       target: "esnext",
       rollupOptions: {
         output: {
-          chunkFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: chunksHashing ? 'assets/[name]-[hash].js' : undefined,
           manualChunks(id) {
             if (!id.includes('node_modules')) return;
 
-            if (id.includes('@scure/bip39/wordlists/english.js')) {
-              return 'bip39-english-wordlist';
-            }
+            if (id.includes('@scure/bip39/wordlists/english.js')) return 'english-wordlist';
 
-            if (target.buildOpts?.chunkGroping) {
+            if (chunksGroping) {
               for (const group of CHUNK_GROUPS) {
                 if (group.matches.some(match => id.includes(match))) {
                   return group.name;
@@ -125,13 +120,19 @@ export default defineConfig(({ mode }) => {
             }
 
             const parts = id.split('node_modules/');
-            const pathParts = parts[parts.length - 1].split('/');
+            const pathParts = parts[parts.length - 1]?.split('/');
 
-            const name = pathParts[0].startsWith('@')
-              ? `${pathParts[0]}/${pathParts[1]}`
-              : pathParts[0];
+            if (pathParts) {
+              const part = pathParts[0]
 
-            return name.split('@')[0];
+              if (part) {
+                const name = part.startsWith('@')
+                  ? `${part}/${pathParts[1]}`
+                  : part
+
+                return name.split('@')[0];
+              }
+            }
           }
         }
       }

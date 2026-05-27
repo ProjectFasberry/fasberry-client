@@ -14,7 +14,7 @@ import { parseBoolean } from "@/shared/lib/utils"
 import { pageState } from "@/shared/models/page-context.model"
 import { translate } from "@/shared/locales/helpers"
 
-// todo: replace any assertion
+// TODO: replace any assertion
 export type Payment = any
 
 type StoreCategory = "donate" | "event" | "all"

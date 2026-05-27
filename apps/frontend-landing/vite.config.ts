@@ -7,15 +7,24 @@ import svg from '@neodx/svg/vite';
 import { cloudflare } from '@cloudflare/vite-plugin'
 import { visualizer } from 'rollup-plugin-visualizer';
 
+type Stage = "prod" | "dev";
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
+
+  const stage = process.env["STAGE"] as Maybe<Stage>
+  const isProd = stage === 'prod';
+
+  console.log(`Building for stage ${stage}`);
 
   return {
     plugins: [
       vike(),
       vikeSolid(),
       cloudflare({
-        viteEnvironment: { name: 'ssr' }
+        viteEnvironment: {
+          name: 'ssr'
+        }
       }),
       tailwindcss(),
       svg({
@@ -25,7 +34,7 @@ export default defineConfig(({ mode }) => {
         metadata: 'shared/sprite.gen.ts',
         resetColors: false
       }),
-      visualizer({
+      !isProd && visualizer({
         filename: 'dist/bundle-stats.html',
         gzipSize: true,
         brotliSize: true,
@@ -37,7 +46,6 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       rolldownOptions: {
         output: {
-          chunkFileNames: 'assets/[name]-[hash].js',
           codeSplitting: {
             groups: [
               {

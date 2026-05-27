@@ -9,8 +9,7 @@ dayjs.extend(relativeTime);
 dayjs.extend(localeData);
 dayjs.extend(duration);
 dayjs.extend(localizedFormat);
+
 dayjs.locale("ru");
 
-export function getDayjs(): typeof dayjs {
-  return dayjs
-}
+export { dayjs };

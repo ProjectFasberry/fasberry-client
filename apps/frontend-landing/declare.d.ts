@@ -21,7 +21,9 @@ declare global {
   }
 
   type WrappedResponse<T> = { data: T } | { error: string };
+
   type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][]
+  type Maybe<T> = T | undefined
 }
 
 declare module 'solid-js' {

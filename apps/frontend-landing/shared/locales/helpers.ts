@@ -1,5 +1,3 @@
-// TODO: impl react-intl;
-
 import type { PageContext, PageContextServer } from "vike/types";
 import { localeDefault } from ".";
 import { translations } from "./translations";

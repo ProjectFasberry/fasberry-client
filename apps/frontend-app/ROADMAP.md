@@ -1,1 +1,2 @@
 - [ ] drop @tabler/icons-react
+- [ ] i18n (en/ru)

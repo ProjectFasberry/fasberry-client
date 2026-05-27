@@ -1,6 +1,6 @@
 import { Typography } from '@/shared/ui/typography';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { getDayjs } from '@/shared/lib/create-dayjs';
+import { dayjs } from '@/shared/lib/create-dayjs';
 import { Dialog } from '@ark-ui/solid/dialog';
 import { Button } from '@/shared/ui/button';
 import { useAtom, useCtx } from '@reatom/npm-solid-js';
@@ -19,7 +19,6 @@ const SelectedModpack = () => {
 
   const { mods, shaders } = modpack
 
-  const dayjs = getDayjs()
   const created_at = dayjs(modpack.created_at).format('YYYY-MM-DD HH:mm:ss')
 
   return (
