@@ -8,7 +8,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!apps/frontend-landing"]
+		"includes": ["**", "!apps/landing"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -49,7 +49,7 @@
 			}
 		},
 		{
-			"includes": ["apps/frontend-app/**"],
+			"includes": ["apps/app/**"],
 			"javascript": {
 				"jsxRuntime": "reactClassic"
 			},

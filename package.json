@@ -8,7 +8,7 @@
 		"lint": "pnpm --filter * lint",
 		"type-check": "pnpm --filter * type-check",
 		"circular-check": "pnpm --filter * circlular-check",
-		"_postinstall": "[ \"$NODE_ENV\" != \"production\" ] && lefthook install || true"
+		"postinstall": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",

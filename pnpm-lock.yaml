@@ -27,7 +27,7 @@ importers:
         specifier: 2.1.4
         version: 2.1.4
 
-  apps/frontend-app:
+  apps/app:
     dependencies:
       '@ark-ui/react':
         specifier: 5.36.2
@@ -229,7 +229,7 @@ importers:
         specifier: 5.1.4
         version: 5.1.4(typescript@5.8.3)(vite@7.2.7(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0))
 
-  apps/frontend-landing:
+  apps/landing:
     dependencies:
       '@ark-ui/solid':
         specifier: 5.36.2

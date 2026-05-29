@@ -1,8 +1,8 @@
 {
 	"files": [],
 	"references": [
-		{ "path": "./apps/frontend-app" },
-		{ "path": "./apps/frontend-landing" },
+		{ "path": "./apps/app" },
+		{ "path": "./apps/landing" },
 		{ "path": "./packages/ui" }
 	]
 }
