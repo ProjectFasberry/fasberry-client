@@ -4,7 +4,7 @@ import { SVG_OPTIONS } from "@/shared/consts/svg";
 
 function findFilePath() {
   let currentDir = import.meta.dir;
-  const targetRelativePath = `apps/frontend-app/${SVG_OPTIONS.metadata}`;
+  const targetRelativePath = `apps/app/${SVG_OPTIONS.metadata}`;
 
   for (let i = 0; i < 5; i++) {
     const fullPath = join(currentDir, targetRelativePath);
