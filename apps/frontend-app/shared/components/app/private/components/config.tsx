@@ -1,98 +1,99 @@
 import { Typography } from "@/shared/ui/typography"
 import { CreateNews, EditNews, NewsWrapper, ViewNews } from "./news"
-import { actionsParentAtom, actionsTypeAtom, type ActionParent, type ActionType } from "../models/actions.model"
+import { actionsState, type ActionParent, type ActionType } from "../models/actions.model"
 import type { ReactNode } from "react"
 import { BannersWrapper, CreateBanner, EditBanner, ViewBanner } from "./banners"
 import { CreateDictionaries, DictionariesWrapper, ViewDictionaries } from "./dictionaries"
 import { CreateEvent, EventsWrapper, ViewEvent } from "./events"
 import { reatomComponent } from "@reatom/npm-react"
-import { ActionsHeader } from "./ui"
+import { WithHeader, SectionWrapper } from "./ui"
 import { Roles } from "./roles"
 import { Methods } from "./methods"
 import { Options } from "./options"
+import { atom } from "@reatom/framework"
 
-const list: Record<string, Partial<Record<ActionType, ReactNode>>> = {
+type ComponentType = Nullable<() => ReactNode>;
+
+const COMPONENTS: Record<string, Partial<Record<ActionType, ComponentType>>> = {
   "news": {
-    "create": <CreateNews />,
-    "edit": <EditNews />,
-    "view": <ViewNews />
+    "create": CreateNews,
+    "edit": EditNews,
+    "view": ViewNews
   },
   "event": {
-    "create": <CreateEvent />,
+    "create": CreateEvent,
     "edit": null,
-    "view": <ViewEvent />,
+    "view": ViewEvent,
   },
   "banner": {
-    "create": <CreateBanner />,
-    "edit": <EditBanner />,
-    "view": <ViewBanner />,
+    "create": CreateBanner,
+    "edit": EditBanner,
+    "view": ViewBanner,
   },
   "dictionaries": {
-    "create": <CreateDictionaries />,
+    "create": CreateDictionaries,
     "edit": null,
-    "view": <ViewDictionaries />,
+    "view": ViewDictionaries,
   }
 }
 
-const ActionsHeaderSlot = reatomComponent<{ parent: ActionParent }>(({ ctx, parent }) => {
-  const targetParent = ctx.spy(actionsParentAtom)
-  const defaultComponent = list[parent]?.view ?? null
-  if (!targetParent) return defaultComponent
+const actionsHeaderComponentAtom = (parent: ActionParent) => atom((ctx): ComponentType => {
+  const targetParent = ctx.spy(actionsState.parent)
+  if (!targetParent) return COMPONENTS[parent]?.view ?? null
 
   if (parent !== targetParent) return null;
 
-  const targetType = ctx.spy(actionsTypeAtom);
+  const targetType = ctx.spy(actionsState.type);
+  return COMPONENTS[parent][targetType] ?? null
+})
 
-  return list[parent][targetType]
+const ActionsHeaderSlot = reatomComponent<{ parent: ActionParent }>(({ ctx, parent }) => {
+  const Component = ctx.spy(actionsHeaderComponentAtom(parent));
+  if (!Component) return null;
+  return <Component />
 }, "ActionsHeaderSlot")
 
 export const Config = () => {
   return (
-    <div className="flex flex-col gap-12 w-full h-full">
-      <div className="flex flex-col sm:flex-row gap-6 sm:items-stretch h-full w-full">
-        <div className="flex flex-col gap-4 w-full">
-          <Typography className="text-xl font-bold">
-            Глобальные параметры
-          </Typography>
+    <div className="flex flex-col gap-4 w-full h-full">
+      <SectionWrapper className="flex flex-col sm:flex-row gap-2 sm:items-stretch h-full w-full">
+        <div className="flex flex-col gap-1 w-full">
+          <Typography className="text-lg font-bold">Глобальные параметры</Typography>
           <Options />
         </div>
-        <div className="flex flex-col gap-4 w-full">
-          <Typography className="text-xl font-bold">
-            Платежные методы
-          </Typography>
+        <div className="flex flex-col gap-1 w-full">
+          <Typography className="text-lg font-bold">Платежные методы</Typography>
           <Methods />
         </div>
-      </div>
-      <div className="flex flex-col gap-4 w-full h-full">
-        <Typography className="text-xl font-bold">
-          Роли
-        </Typography>
+      </SectionWrapper>
+      <SectionWrapper className="flex flex-col gap-1 w-full h-full">
+        <Typography className="text-lg font-bold">Роли</Typography>
         <Roles />
-      </div>
-      <div className="flex flex-col gap-4 w-full h-fulll">
-        <ActionsHeader title="Ивенты">
+      </SectionWrapper>
+      <SectionWrapper className="flex flex-col gap-1 w-full h-fulll">
+        <WithHeader title="Ивенты">
           <ActionsHeaderSlot parent="event" />
-        </ActionsHeader>
+        </WithHeader>
         <EventsWrapper />
-      </div>
-      <div className="flex flex-col gap-4 w-full h-full">
-        <ActionsHeader title="Баннеры">
+      </SectionWrapper>
+      <SectionWrapper className="flex flex-col gap-2 w-full h-full">
+        <WithHeader title="Баннеры">
           <ActionsHeaderSlot parent="banner" />
-        </ActionsHeader>
+        </WithHeader>
         <BannersWrapper />
-      </div>
-      <div className="flex flex-col gap-4 w-full h-full">
-        <ActionsHeader title="Новости" >
+      </SectionWrapper>
+      <SectionWrapper className="flex flex-col gap-2 w-full h-full">
+        <WithHeader title="Новости" >
           <ActionsHeaderSlot parent="news" />
-        </ActionsHeader>
+        </WithHeader>
         <NewsWrapper />
-      </div>
-      <div className="flex flex-col gap-4 w-full h-full">
-        <ActionsHeader title="Справочник">
+      </SectionWrapper>
+      <SectionWrapper className="flex flex-col gap-2 w-full h-full">
+        <WithHeader title="Справочник">
           <ActionsHeaderSlot parent="dictionaries" />
-        </ActionsHeader>
+        </WithHeader>
         <DictionariesWrapper />
-      </div>
+      </SectionWrapper>
     </div>
   )
 }

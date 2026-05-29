@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/button";
 import { spawn } from "@reatom/framework";
 import { CartItem } from "./cart-item";
 import { ChangeRecipientDialog } from "../recipient/change-recipient";
-import { IconCreditCardPay } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { expImage } from "@/shared/consts/images";
 import { order } from "../../models/store-order.model";
 
@@ -99,7 +99,7 @@ export const CartActions = () => {
                 text-nowrap truncate gap-1 min-w-0 h-10
               "
             >
-              <IconCreditCardPay size={22} />
+              <Icon name="sprite:credit-card-pay" className="size-5" />
               Пополнить счет
             </Link>
           </div>

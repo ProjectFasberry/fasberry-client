@@ -12,8 +12,8 @@ import { Portal } from "@ark-ui/react/portal"
 import { createListCollection, Select } from "@ark-ui/react/select"
 import { type SetAtom } from "@reatom/framework"
 import { reatomComponent } from "@reatom/npm-react"
-import { IconCheck, IconSelector, IconX } from "@tabler/icons-react"
-import { usersManagementModel, type CreateUserVariant } from "../models/users.model"
+import { Icon } from "@/shared/ui/icon"
+import { usersManagementModel, type CreateUserVariant } from "../../models/users.model"
 
 const {
   CREATE_USER_FIELDS, CREATE_USER_OPTIONS, CREATE_USER_ROLE_OPTIONS,
@@ -65,10 +65,10 @@ const CreateUserFormField = reatomComponent<{ field: typeof CREATE_USER_FIELDS[n
         </Select.Trigger>
         <div className={selectIndicatorsVariant()}>
           <Select.ClearTrigger className={selectClearTriggerVariant()}>
-            <IconX size={20} />
+            <Icon name='sprite:x' className="size-5" />
           </Select.ClearTrigger>
           <Select.Indicator className={selectIndicatorVariant()}>
-            <IconSelector size={20} />
+            <Icon name='sprite:selector' className="size-5" />
           </Select.Indicator>
         </div>
       </Select.Control>
@@ -82,7 +82,7 @@ const CreateUserFormField = reatomComponent<{ field: typeof CREATE_USER_FIELDS[n
                     {option.label}
                   </Select.ItemText>
                   <Select.ItemIndicator className={selectItemIndicatorVariant()}>
-                    <IconCheck size={16} />
+                    <Icon name="sprite:check" className="size-4" />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}

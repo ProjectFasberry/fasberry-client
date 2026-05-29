@@ -5,7 +5,7 @@ import { currentUserState } from "@/shared/models/current-user/index.model";
 import { action, atom } from "@reatom/framework";
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
-import { IconArrowsDiagonal } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Dialog } from '@ark-ui/react/dialog'
 import { Portal } from '@ark-ui/react/portal'
 import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog";
@@ -68,7 +68,7 @@ const UserInfo = reatomComponent(({ ctx }) => {
           <span className="hidden sm:inline">Роль:&nbsp;</span>
           <span>{roleTitle.toLowerCase()}</span>
         </Typography>
-        <IconArrowsDiagonal className="text-neutral-400 h-3 w-3 sm:h-4.5 sm:w-4.5" />
+        <Icon name="sprite:arrows-diagonal" className="text-neutral-400 h-3 w-3 sm:h-4.5 sm:w-4.5" />
       </Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop className={dialogBackdropVariant()} />
@@ -103,7 +103,7 @@ const linkVariant = tv({
     data-[state=active]:bg-neutral-50 data-[state=active]:text-neutral-950
   `,
   slots: {
-    text: "font-semibold text-nowrap text-sm sm:text-base"
+    text: "font-semibold text-nowrap text-sm"
   }
 })
 

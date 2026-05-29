@@ -38,7 +38,7 @@ const LOGIN_VARIANTS_EVENTS: Partial<Record<AuthLoginVariant, (ctx: AsyncCtx) =>
 export const loginState = atom(null, "loginState").pipe(
   withAssign((_, name) => ({
     qr: atom(null, `${name}.qr`).pipe(
-      withAssign(() => ({
+      withAssign((_, name) => ({
         socket: atom<WebSocket | null>(null, `${name}.socket`).pipe(withReset()),
         url: atom<string | null>(null, `${name}.qrUrl`).pipe(withReset()),
         token: atom<string | null>(null, `${name}.token`).pipe(withReset()),
@@ -74,7 +74,7 @@ export const login = atom(null, "login").pipe(
       return result.visitorId;
     },
     basic: atom(null, `${name}.basic`).pipe(
-      withAssign(() => ({
+      withAssign((_, name) => ({
         submit: reatomAsync(async (ctx) => {
           const pofIsActive = spyOptionAtom(ctx, "flags", "isPof", true)
           const token = ctx.get(pof.token);
@@ -134,7 +134,9 @@ export const login = atom(null, "login").pipe(
         )
       }))
     ),
-    afterEvent: action((ctx) => ctx.schedule(() => window.location.reload())),
+    afterEvent: action((ctx) => {
+      ctx.schedule(() => window.location.reload())
+    }),
     qr: atom(null, `${name}.qr`).pipe(
       withAssign((_, name) => ({
         generate: reatomAsync(async (ctx) => {
@@ -283,7 +285,7 @@ export const login = atom(null, "login").pipe(
 );
 
 export const authLoginVariantAtom = atom<AuthLoginVariant>("password", "authLoginVariant").pipe(
-  withAssign((target, name) => ({
+  withAssign((target) => ({
     select: reatomAsync(async (ctx, variant: AuthLoginVariant) => {
       target(ctx, variant);
       LOGIN_VARIANTS_EVENTS[variant]?.(ctx);

@@ -1,4 +1,4 @@
-import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { useState } from "react";
 
 const CopyButton = ({ content }: { content: string }) => {
@@ -18,12 +18,12 @@ const CopyButton = ({ content }: { content: string }) => {
     <button
       type="button"
       onClick={handleCopy}
-      className="absolute right-1 top-1 p-1 hover:bg-neutral-600 rounded-sm bg-neutral-700 transition-colors"
+      className="absolute right-1 *:size-[14px] top-1 p-1 hover:bg-neutral-600 rounded-sm bg-neutral-700 transition-colors"
       aria-label="Копировать"
     >
       {isCopied
-        ? <IconCheck size={12} className="text-green-400" />
-        : <IconCopy size={12} />
+        ? <Icon name="sprite:check" className="text-green-400" />
+        : <Icon name="sprite:copy" />
       }
     </button>
   )

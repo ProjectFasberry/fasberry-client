@@ -2,22 +2,19 @@
 	"name": "fasberry-client",
 	"private": true,
 	"scripts": {
-		"start": "bun scripts/run start",
-		"build": "bun scripts/run build",
-		"dev": "bun scripts/run dev",
-		"lint": "bun scripts/run lint",
-		"type-check": "bun scripts/run type-check",
-		"circular-check": "bun run scripts/run circlular-check",
+		"start": "pnpm --filter * start",
+		"build": "pnpm --filter * build",
+		"dev": "pnpm --filter * dev",
+		"lint": "pnpm --filter * lint",
+		"type-check": "pnpm --filter * type-check",
+		"circular-check": "pnpm --filter * circlular-check",
 		"_postinstall": "[ \"$NODE_ENV\" != \"production\" ] && lefthook install || true"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
 		"@types/bun": "1.2.22",
 		"concurrently": "9.1.2",
+		"cross-env": "10.1.0",
 		"lefthook": "2.1.4"
-	},
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	]
+	}
 }

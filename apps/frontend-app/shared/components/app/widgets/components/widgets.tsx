@@ -4,9 +4,10 @@ import { tv } from "tailwind-variants"
 import { widgetsState } from "../models/widgets.model"
 import { AuthWidgetActions } from "./widget-variants"
 import { type ReactNode } from "react"
+import { Icon } from "@/shared/ui/icon"
 
 const widgetVariant = tv({
-  base: `flex items-center p-2 sm:p-3 lg:p-4 gap-2 sm:gap-4 
+  base: `flex items-center p-2 sm:p-3 lg:p-4 gap-2 sm:gap-4
     justify-between rounded-lg w-full overflow-hidden max-h-16 bg-neutral-800`
 })
 
@@ -18,7 +19,7 @@ export const Widgets = reatomComponent(({ ctx }) => {
   const active = ctx.spy(widgetsState.current)
   if (!active) return null;
 
-  const { icon: Icon, id, description, title } = active
+  const { icon: iconName, id, description, title } = active
   const action = WIDGETS_COMPONENTS[id]
 
   return (
@@ -31,9 +32,9 @@ export const Widgets = reatomComponent(({ ctx }) => {
           className={widgetVariant()}
         >
           <div className="flex items-center gap-2 sm:gap-4">
-            {Icon && (
+            {iconName && (
               <div className="flex items-center justify-center bg-white/20 rounded-xl h-10 aspect-square shrink-0">
-                <Icon size={26} />
+                <Icon name={iconName} className="size-[26px]" />
               </div>
             )}
             <div className="flex flex-col justify-center min-w-0">

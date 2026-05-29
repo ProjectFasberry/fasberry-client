@@ -15,20 +15,20 @@ import { type StoreItem } from '../../shop/models/store-item.model';
 
 type CreateItemStoreSchema = z.infer<typeof storeItemCreateSchema>
 
-export const createStoreItemState = atom(null).pipe(
-  withAssign(() => ({
-    title: atom<CreateItemStoreSchema["title"]>("").pipe(withReset()),
-    imgUrl: atom<Nullable<CreateItemStoreSchema["imageUrl"]>>(null).pipe(withReset()),
-    currency: atom<CreateItemStoreSchema["currency"]>("CHARISM").pipe(withReset()),
-    value: atom<Nullable<CreateItemStoreSchema["value"]>>(null).pipe(withReset()),
-    content: atom<JSONContent>({}).pipe(withReset()),
-    price: atom<CreateItemStoreSchema["price"]>("0").pipe(withReset()),
-    command: atom<CreateItemStoreSchema["command"]>("").pipe(withReset()),
-    type: atom<Nullable<CreateItemStoreSchema["type"]>>(null).pipe(withReset())
+export const createStoreItemState = atom(null, "createStoreItemState").pipe(
+  withAssign((_, name) => ({
+    title: atom<CreateItemStoreSchema["title"]>("", `${name}.title`).pipe(withReset()),
+    imgUrl: atom<Nullable<CreateItemStoreSchema["imageUrl"]>>(null, `${name}.imgUrl`).pipe(withReset()),
+    currency: atom<CreateItemStoreSchema["currency"]>("CHARISM", `${name}.currency`).pipe(withReset()),
+    value: atom<Nullable<CreateItemStoreSchema["value"]>>(null, `${name}.value`).pipe(withReset()),
+    content: atom<JSONContent>({}, `${name}.content`).pipe(withReset()),
+    price: atom<CreateItemStoreSchema["price"]>("0", `${name}.price`).pipe(withReset()),
+    command: atom<CreateItemStoreSchema["command"]>("", `${name}.command`).pipe(withReset()),
+    type: atom<Nullable<CreateItemStoreSchema["type"]>>(null, `${name}.type`).pipe(withReset())
   }))
 )
-export const createStoreItem = atom(null).pipe(
-  withAssign(() => ({
+export const createStoreItem = atom(null, "createStoreItem").pipe(
+  withAssign((_, name) => ({
     resetFull: action((ctx) => {
       createStoreItemState.title.reset(ctx)
       createStoreItemState.imgUrl.reset(ctx)
@@ -56,7 +56,7 @@ export const createStoreItem = atom(null).pipe(
         .pipe(withJsonBody(body))
         .exec()
     }, {
-      name: "_",
+      name: `${name}.submit`,
       onFulfill: (ctx, res) => {
         toast.success("Товар создан");
 
@@ -80,8 +80,8 @@ export const createStoreItem = atom(null).pipe(
 )
 
 export const itemToDeleteAtom = atom<StoreItem | null>(null).pipe(withReset())
-export const deleteStoreItem = atom(null).pipe(
-  withAssign(() => ({
+export const deleteStoreItem = atom(null, "deleteStoreItem").pipe(
+  withAssign((_, name) => ({
     before: action((ctx, item: StoreItem) => {
       alertDialog.open(ctx, {
         title: `Вы точно хотите удалить товар "${item.title}"?`,
@@ -98,7 +98,7 @@ export const deleteStoreItem = atom(null).pipe(
         .delete<{ id: number }>(`privated/store/item/${id}`)
         .exec()
     }, {
-      name: "_",
+      name: `${name}.submit`,
       onFulfill: (ctx, res) => {
         toast.success("Товар удален");
 
@@ -113,8 +113,8 @@ export const deleteStoreItem = atom(null).pipe(
 )
 
 export const itemToEditAtom = atom<StoreItem | null>(null).pipe(withReset())
-export const editStoreItem = atom(null).pipe(
-  withAssign(() => ({
+export const editStoreItem = atom(null, "editStoreItem").pipe(
+  withAssign((_, name) => ({
     submit: reatomAsync(async (ctx, id: number) => {
       const json = {}
 
@@ -128,7 +128,7 @@ export const editStoreItem = atom(null).pipe(
         .pipe(withJsonBody(body))
         .exec()
     }, {
-      name: "_",
+      name: `${name}.submit`,
       onReject: (_, e) => logError(e, { type: "combined" })
     }).pipe(
       withStatusesAtom()
@@ -136,16 +136,16 @@ export const editStoreItem = atom(null).pipe(
   }))
 )
 
-export const storeState = atom(null).pipe(
-  withAssign(() => ({
-    searchParams: reatomRecord<Record<string, string>>({}),
-    searchParamTarget: atom<"create" | "edit" | "view">("view"),
-    category: atom<StoreItemsParams["category"]>("all"),
-    wallet: atom<StoreItemsParams["wallet"]>("ALL")
+export const storeState = atom(null, "storeState").pipe(
+  withAssign((_, name) => ({
+    searchParams: reatomRecord<Record<string, string>>({}, `${name}.searchParams`),
+    searchParamTarget: atom<"create" | "edit" | "view">("view", `${name}.searchParamTarget`),
+    category: atom<StoreItemsParams["category"]>("all", `${name}.category`),
+    wallet: atom<StoreItemsParams["wallet"]>("ALL", `${name}.wallet`)
   }))
 )
-export const storeItems = atom(null).pipe(
-  withAssign(() => ({
+export const storeItems = atom(null, "storeItems").pipe(
+  withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       const params: StoreItemsParams = {
         category: ctx.get(storeState.category),
@@ -155,7 +155,7 @@ export const storeItems = atom(null).pipe(
 
       return await ctx.schedule(() => getStoreItems(params))
     }, {
-      name: "_",
+      name: `${name}.fetch`,
       onReject: (_, e) => logError(e, { type: "combined" })
     }).pipe(
       withDataAtom(null),

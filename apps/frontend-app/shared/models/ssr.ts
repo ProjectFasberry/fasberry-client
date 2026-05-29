@@ -68,8 +68,14 @@ export const snapshots = atom(null, "snapshots").pipe(
     init: action((ctx, rootSnapshot: Snapshot): void => {
       if (!rootSnapshot) return;
 
-      for (const [key, snapshot] of Array.from(snapshotsMap)) {
-        snapshot(ctx, rootSnapshot);
+      for (const [key, snapshotAtom] of Array.from(snapshotsMap)) {
+        const currentSnapshotState = ctx.get(snapshotAtom);
+
+        if (JSON.stringify(currentSnapshotState) === JSON.stringify(rootSnapshot)) {
+          continue;
+        }
+
+        snapshotAtom(ctx, rootSnapshot);
       }
     }, `${name}.init`)
   }))

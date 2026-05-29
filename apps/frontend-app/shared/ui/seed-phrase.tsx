@@ -2,7 +2,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { type ComponentPropsWithoutRef, createContext, type PropsWithChildren, type ReactNode, useContext, useRef } from 'react';
 import { cn } from '../lib/cn';
-import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { Icon } from "@/shared/ui/icon"
 
 type SeedPhraseContextType = {
   words: string[];
@@ -54,9 +54,9 @@ const SeedPhraseHeader = ({
           background='default'
           disabled={!isOneWordFilled}
           onClick={() => onChangeVisibilityStatus?.(!isHidden)}
-          className="p-2 aspect-square"
+          className="p-2 aspect-square *:size-4"
         >
-          {isHidden ? <IconEye size={16} /> : <IconEyeOff size={16} />}
+          {isHidden ? <Icon name="sprite:eye" /> : <Icon name="sprite:eye-off" />}
         </Button>
       )}
     </div>

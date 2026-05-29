@@ -2,7 +2,7 @@ import { PageLoader } from "@/shared/ui/page-loader";
 import { atom } from "@reatom/framework";
 import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography";
-import { IconCheck, IconCopy, IconEye } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { useEffect } from "react";
 import { type Payment } from "../../../models/store.model";
 import { AutoWidthInput } from "@/shared/ui/autowidth-input";
@@ -67,9 +67,9 @@ const OrderLoader = reatomComponent(({ ctx }) => {
       className={`flex z-[1000] items-center flex-col gap-4 fixed justify-center h-full w-full
         ${animateOut ? "fade-out-background" : "fade-in-background"}`}
     >
-      <IconCheck
-        size={46}
-        className={`text-green-500 ${animateOut ? "fade-out-icon" : "fade-in-and-scale-icon"}`}
+      <Icon
+        name='sprite:check'
+        className={`size-[46px] text-green-500 ${animateOut ? "fade-out-icon" : "fade-in-and-scale-icon"}`}
       />
     </div>
   )
@@ -88,7 +88,7 @@ const OrderDetails = reatomComponent(({ ctx }) => {
         <div className="flex items-center relative cursor-pointer w-fit gap-2 bg-neutral-700 rounded-lg py-2 px-3 text-base">
           <AutoWidthInput value={data.pay_url} />
           <button onClick={() => defaultOrderEvents.copyHref(ctx, data.pay_url)} className="group">
-            <IconCopy size={16} className="text-neutral-400 group-hover:text-neutral-50" />
+            <Icon name="sprite:copy" className="size-4 text-neutral-400 group-hover:text-neutral-50" />
           </button>
         </div>
         {ctx.spy(isCopiedAtom) && <p className="text-green-500 text-base mt-1">Скопировано</p>}
@@ -107,7 +107,7 @@ const OrderQR = ({ url }: { url: string }) => {
         <div
           className="flex items-center w-full h-full justify-center group-hover:opacity-100 opacity-0 absolute bg-black/60 z-[2]"
         >
-          <IconEye size={24} />
+          <Icon name="sprite:eye" className="size-6" />
         </div>
         <QrCode.Root
           defaultValue={url}

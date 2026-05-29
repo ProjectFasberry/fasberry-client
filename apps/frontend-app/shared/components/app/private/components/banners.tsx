@@ -2,9 +2,9 @@ import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Typography } from "@/shared/ui/typography"
 import { type AtomState } from "@reatom/framework"
-import { IconEye } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { type ReactNode } from "react"
-import { actionsTypeAtom, getSelectedParentAtom } from "../models/actions.model"
+import { actionsState, getSelectedParentAtom } from "../models/actions.model"
 import { ToActionButtonX } from "./global"
 import { ActionButton, DeleteButton } from "./ui"
 import { banners, deleteBanner, createBanner, createBannerState } from "../models/banner.model"
@@ -83,7 +83,7 @@ const BannerListItem = reatomComponent<BannerPayload>(({ ctx, id, title, descrip
         <div className="flex items-center gap-1">
           <Dialog.Root>
             <Dialog.Trigger asChild>
-              <ActionButton icon={IconEye} variant="default" />
+              <ActionButton icon="sprite:eye" variant="default" />
             </Dialog.Trigger>
             <Portal>
               <Dialog.Backdrop className={dialogBackdropVariant()} />
@@ -128,7 +128,7 @@ const BannersList = reatomComponent(({ ctx }) => {
   return data.map(b => <BannerListItem key={b.id} {...b} />)
 }, "BannersList")
 
-const VARIANTS: Record<AtomState<typeof actionsTypeAtom>, ReactNode> = {
+const VARIANTS: Record<AtomState<typeof actionsState.type>, ReactNode> = {
   "create": <CreateBannerForm />,
   "edit": null,
   "view": (
@@ -143,7 +143,7 @@ export const BannersWrapper = reatomComponent(({ ctx }) => {
     return VARIANTS["view"]
   }
 
-  return VARIANTS[ctx.spy(actionsTypeAtom)]
+  return VARIANTS[ctx.spy(actionsState.type)]
 }, "BannersWrapper")
 
 export const ViewBanner = () => <ToActionButtonX title="Создать" parent="banner" type="create" />

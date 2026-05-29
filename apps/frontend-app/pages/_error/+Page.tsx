@@ -2,9 +2,11 @@ import { Link } from "@/shared/components/config/link";
 import { getStaticImage } from "@/shared/lib/volume-helpers";
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";
-import { IconArrowRight } from "@tabler/icons-react";
 import { type ReactNode } from "react";
 import { usePageContext } from "vike-react/usePageContext";
+import { Icon } from "@/shared/ui/icon"
+import { spyOptionAtom } from "@/shared/models/app/utils";
+import { reatomComponent } from "@reatom/npm-react";
 
 const Back = () => {
   return (
@@ -13,7 +15,7 @@ const Back = () => {
         <Typography className='text-center font-semibold'>
           В безопасное место
         </Typography>
-        <IconArrowRight size={18} />
+        <Icon name="sprite:arrow-right" className="size-[18px]" />
       </Button>
     </Link>
   )

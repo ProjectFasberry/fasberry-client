@@ -1,4 +1,4 @@
-import { DeleteButton, EditButton, ToLink } from "@/shared/components/app/private/components/ui"
+import { DeleteButton, EditButton, SectionWrapper, ToLink } from "@/shared/components/app/private/components/ui"
 import { itemToEditAtom, editStoreItem, deleteStoreItem, storeState, storeItems, createStoreItem } from "@/shared/components/app/private/models/store.model"
 import { EditorMenuBar } from "@/shared/components/config/editor/editor"
 import { createLink } from "@/shared/components/config/link"
@@ -7,7 +7,7 @@ import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Typography } from "@/shared/ui/typography"
-import { IconArrowLeft, IconPlus } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { type PropsWithChildren, type ReactNode } from "react"
 import { navigate } from "vike/client/router"
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react"
@@ -68,7 +68,7 @@ const StoreCreateItem = () => {
       <Typography className="font-semibold text-lg text-neutral-50">
         Создать
       </Typography>
-      <IconPlus size={18} />
+      <Icon name="sprite:plus" className="size-[18px]" />
     </Button>
   )
 }
@@ -100,13 +100,13 @@ const Wrapper = reatomComponent<PropsWithChildren>(({ ctx, children }) => {
     ctx.spy(createStoreItem.submit.statusesAtom).isPending;
 
   return (
-    <div
+    <SectionWrapper
       data-state={isLoading ? "loading" : "idle"}
       className="flex flex-col gap-4 w-full h-full
         data-[state=loading]:pointer-events-none data-[state=loading]:opacity-60 data-[state=idle]:pointer-events-auto"
     >
       {children}
-    </div>
+    </SectionWrapper>
   )
 }, "Wrapper")
 
@@ -213,7 +213,7 @@ const Back = reatomComponent(({ ctx }) => {
       className="p-0 h-8 w-8 aspect-square bg-neutral-800"
       onClick={() => window.history.back()}
     >
-      <IconArrowLeft size={16} />
+      <Icon name="sprite:arrow-left" className="size-4" />
     </Button>
   )
 }, "Back")

@@ -1,10 +1,10 @@
 import { Button } from "@/shared/ui/button"
-import { IconArrowLeft } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { navigate } from "vike/client/router"
 
 type BackButtonProps = {
   event?: "history" | "custom",
-  href?: string, 
+  href?: string,
   onClick?: () => void
 }
 
@@ -28,7 +28,7 @@ export const BackButton = ({ href, onClick, event = "history" }: BackButtonProps
       onClick={handle}
       className="min-h-8 h-8 sm:min-h-8 sm:h-8 p-0 aspect-square w-fit"
     >
-      <IconArrowLeft className="size-4 sm:size-5 text-neutral-400" />
+      <Icon name="sprite:arrow-left" className="size-4 sm:size-5 text-neutral-400" />
     </Button>
   )
 }

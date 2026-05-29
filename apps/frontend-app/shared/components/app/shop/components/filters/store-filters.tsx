@@ -2,7 +2,7 @@ import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
 import { atom, type Ctx } from "@reatom/framework";
 import { type Filter, filterIsAppliedAtom, filtersState, storeItems, storeItemsState } from "../../models/store.model";
-import { IconFilter, IconSearch } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { pageState } from "@/shared/models/page-context.model";
 import { Input } from "@/shared/ui/input";
 import { Vaul, VaulContent, VaulHeader, VaulTrigger } from "@/shared/ui/vaul";
@@ -16,9 +16,9 @@ export const StoreSearch = reatomComponent(({ ctx }) => {
 
   return (
     <div className="flex h-10 items-center justify-start w-full relative">
-      <IconSearch
-        size={18}
-        className="text-neutral-400 absolute left-2 sm:left-4"
+      <Icon
+        name="sprite:search"
+        className="size-[18px] text-neutral-400 absolute left-2 sm:left-4"
       />
       <Input
         value={searchQuery}
@@ -78,7 +78,7 @@ export const StoreFiltersSheet = () => {
     <Vaul openAtom={storeFiltersIsOpenAtom}>
       <VaulTrigger>
         <div className="flex bg-neutral-800 items-center justify-center rounded-xl h-10 aspect-square p-2 sm:p-3 lg:p-4">
-          <IconFilter size={20} className="text-neutral-400" />
+          <Icon name="sprite:filter" className="size-5 text-neutral-400" />
         </div>
       </VaulTrigger>
       <VaulContent>

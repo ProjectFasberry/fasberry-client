@@ -2,7 +2,7 @@ import { currentUserState } from "@/shared/models/current-user/index.model";
 import { reatomComponent } from "@reatom/npm-react";
 import { referrals } from "../models/referrals.model";
 import { Button } from "@/shared/ui/button";
-import { IconBook, IconPlus } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { toast } from "sonner";
 import { env } from "@/shared/env";
 
@@ -23,7 +23,7 @@ export const ReferralsLink = reatomComponent(({ ctx }) => {
         className="gap-2 sm:w-fit w-full font-semibold truncate"
         onClick={handle}
       >
-        <IconPlus size={20} />
+        <Icon name="sprite:plus" className="size-5" />
         Пригласить игрока
       </Button>
       <a
@@ -35,7 +35,7 @@ export const ReferralsLink = reatomComponent(({ ctx }) => {
           background="default"
           className="gap-2 flex-1 min-w-0 truncate w-full font-semibold"
         >
-          <IconBook size={20} />
+          <Icon name="sprite:book" className="size-5" />
           Как работает реферальная система
         </Button>
       </a>

@@ -1,6 +1,6 @@
 import { reatomComponent } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
-import { IconGift, IconTrash } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { Typography } from "@/shared/ui/typography"
 import { createLink } from "@/shared/components/config/link"
 import { storeItem } from "../../models/store-item.model"
@@ -18,7 +18,7 @@ const CartItemRemoveFromCart = reatomComponent<{ id: number }>(({ ctx, id }) => 
       onClick={() => cart.removeItem(ctx, id)}
       disabled={ctx.spy(cart.removeItem.statusesAtom).isPending}
     >
-      <IconTrash size={22} />
+      <Icon name="sprite:trash" className="size-5" />
     </Button>
   )
 }, "CartItemRemoveFromCart")
@@ -73,7 +73,7 @@ export const CartItem = reatomComponent<CartItemProps>(({
               className="p-0 h-8 aspect-square"
               onClick={() => changeLocalRecipient.openDialog(ctx, item)}
             >
-              <IconGift size={20} />
+              <Icon name="sprite:gift" className="size-5" />
             </Button>
             <CartItemRemoveFromCart id={id} />
           </div>

@@ -1,9 +1,10 @@
 import { join, resolve } from "node:path";
 import { existsSync } from "node:fs";
+import { SVG_OPTIONS } from "@/shared/consts/svg";
 
 function findFilePath() {
   let currentDir = import.meta.dir;
-  const targetRelativePath = "apps/frontend-app/shared/sprite.gen.ts";
+  const targetRelativePath = `apps/frontend-app/${SVG_OPTIONS.metadata}`;
 
   for (let i = 0; i < 5; i++) {
     const fullPath = join(currentDir, targetRelativePath);

@@ -1,14 +1,14 @@
 import { Typography } from "@/shared/ui/typography";
-import { IconArrowRight } from "@tabler/icons-react";
 import { Intro } from "@/shared/components/app/intro/components/intro";
 import { EventsList } from "@/shared/components/app/events/components/events";
 import { CONTACTS } from "@/shared/consts/contacts";
 import { action } from "@reatom/framework";
 import { reatomComponent } from "@reatom/npm-react";
 import { LandsListShorted } from "@/shared/components/app/lands/components/lands-list";
-import { NewsList } from "@/shared/components/app/news/components/news";
+import { NewsList } from "@/shared/components/app/news/components/news-main-list";
 import { translate } from "@/shared/locales/helpers";
 import { userState } from "@/shared/models/app/index.model";
+import { Icon } from "@/shared/ui/icon"
 
 const ruAttr = ['ru-RU', 'RU', 'ru'];
 
@@ -41,7 +41,7 @@ const Contacts = reatomComponent(({ ctx }) => {
               {item.title}
             </Typography>
           </div>
-          <IconArrowRight size={36} className="duration-150 -rotate-45 group-hover:rotate-0" />
+          <Icon name="sprite:arrow-right" className="size-[18px] duration-150 -rotate-45 group-hover:rotate-0" />
         </a>
       ))}
     </div>

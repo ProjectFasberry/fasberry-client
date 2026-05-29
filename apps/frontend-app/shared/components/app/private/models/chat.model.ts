@@ -91,9 +91,9 @@ export type ChatItemViews = {
 }
 
 export const chatHistoryState = atom(null, "chatHistoryState").pipe(
-  withAssign(() => ({
-    data: atom<ChatItem[] | null>((ctx) => Array.from(ctx.spy(chatDataMapAtom).values())),
-    meta: atom<PaginatedMeta | null>(null)
+  withAssign((_, name) => ({
+    data: atom<ChatItem[] | null>((ctx) => Array.from(ctx.spy(chatDataMapAtom).values()), `${name}.data`),
+    meta: atom<PaginatedMeta | null>(null, `${name}.meta`)
   }))
 )
 export const chatHistory = atom(null, "chatHistory").pipe(
@@ -143,7 +143,7 @@ export const chatCreate = atom(null, "chatCraete").pipe(
 )
 
 const msgDelete = atom(null, "msgDelete").pipe(
-  withAssign((ctx, name) => ({
+  withAssign((_, name) => ({
     atomsReset: action((ctx) => {
       chatCreateMessageAtom.reset(ctx)
     }, `${name}.atomsReset`),
@@ -156,7 +156,9 @@ const msgDelete = atom(null, "msgDelete").pipe(
       const socket = chatWs.getSocket(ctx)
       const payloadStr = JSON.stringify(payload)
       socket.send(payloadStr)
-    }, `${name}.submit`).pipe(
+    }, {
+      name: `${name}.submit`
+    }).pipe(
       withStatusesAtom(),
       withErrorAtom()
     )
@@ -164,10 +166,10 @@ const msgDelete = atom(null, "msgDelete").pipe(
 )
 
 const msgEditState = atom(null, "msgEditState").pipe(
-  withAssign(() => ({
-    msgId: atom<Nullable<number>>(null).pipe(withReset()),
-    newMsg: atom<Nullable<string>>(null).pipe(withReset()),
-    oldMsg: atom<string>("").pipe(withReset())
+  withAssign((_, name) => ({
+    msgId: atom<Nullable<number>>(null, `${name}.msgId`).pipe(withReset()),
+    newMsg: atom<Nullable<string>>(null, `${name}.newMsg`).pipe(withReset()),
+    oldMsg: atom<string>("", `${name}.oldMsg`).pipe(withReset())
   }))
 )
 
@@ -236,14 +238,14 @@ const msgEdit = atom(null, "msgEdit").pipe(
 const chatItemViewsAtom = reatomMap<number, ChatItemViews[]>()
 const getChatItemViews = (id: number) => atom((ctx) => ctx.spy(chatItemViewsAtom).get(id) ?? [])
 
-const msgViews = atom(null).pipe(
-  withAssign(() => ({
+const msgViews = atom(null, "msgViews").pipe(
+  withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx, id: number) => {
       return await ctx.schedule(() =>
         client<{ data: ChatItemViews[], meta: PaginatedMeta }>(`privated/chat/${id}/views`).exec()
       )
     }, {
-      name: "chatItemViewsAction",
+      name: `${name}.fetch`,
       onFulfill: (ctx, res) => chatItemViewsAtom(ctx, new Map(res.data.map(e => [e.message_id, res.data]))),
       onReject: (_, e) => logError(e)
     }).pipe(

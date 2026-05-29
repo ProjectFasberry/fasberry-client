@@ -1,5 +1,5 @@
 import { Typography } from "@/shared/ui/typography"
-import { IconLoader2 } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 
 export type LoaderProps = { title: string, subtitle?: string }
 
@@ -11,7 +11,7 @@ export const LoaderNode = ({ title, subtitle }: LoaderProps) => {
         pointer-events-auto overflow-hidden duration-300 z-100 items-center justify-center h-full w-full
       "
     >
-      <IconLoader2 className="animate-spin" size={40} />
+      <Icon name="sprite:loader-2" className="animate-spin size-10" />
       <Typography className="font-semibold text-xl">{title}</Typography>
       {subtitle && (
         <Typography color="gray" className="text-sm">{subtitle}</Typography>

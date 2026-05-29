@@ -6,4 +6,4 @@ pre-commit:
       run: bun x @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
       stage_fixed: true
     type-check:
-      run: bun run type-check
+      run: pnpm --filter * type-check

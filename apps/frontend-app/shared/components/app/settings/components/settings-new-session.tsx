@@ -3,7 +3,7 @@ import { Typography } from "@/shared/ui/typography"
 import { Dialog } from "@ark-ui/react/dialog"
 import { Portal } from "@ark-ui/react/portal"
 import { reatomComponent } from "@reatom/npm-react"
-import { IconArrowLeft, IconCheck, IconQrcode, IconX } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { scan, scanReaderModel, scanState } from "../models/settings-devices.model"
 import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog"
 import { Scanner } from "@yudiel/react-qr-scanner"
@@ -24,7 +24,7 @@ const ConnectNewVerifyExpiredOrNotfound = () => {
 const ConnectNewVerifyConfirmed = () => {
   return (
     <div className="flex flex-col gap-4 w-full items-center justify-center">
-      <IconCheck size={32} className="text-green-600" />
+      <Icon name="sprite:check" className="size-8 text-green-600" />
       <div className="flex flex-col text-sm items-center justify-center w-full">
         <Typography className="font-semibold">Запрос принят</Typography>
         <span className="text-neutral-400">Теперь вы можете закрыть это окно</span>
@@ -36,7 +36,7 @@ const ConnectNewVerifyConfirmed = () => {
 const ConnectNewVerifyDeclined = () => {
   return (
     <div className="flex flex-col gap-4 w-full items-center justify-center">
-      <IconX size={32} className="text-red-600" />
+      <Icon name='sprite:x' className="size-8 text-red-600" />
       <div className="flex flex-col text-sm items-center justify-center w-full">
         <Typography className="font-semibold">Запрос отклонён</Typography>
         <Typography color="gray">Теперь вы можете закрыть это окно</Typography>
@@ -98,7 +98,7 @@ const ConnectNewVerifyContent = reatomComponent(({ ctx }) =>
 const ConnectNewVerifyError = () => {
   return (
     <div className="flex flex-col gap-4 w-full items-center justify-center">
-      <IconX className="text-red" size={22} />
+      <Icon name="sprite:x" className="text-red size-[22px]" />
       <ConnectNewVerifyExpiredOrNotfound />
     </div>
   )
@@ -127,7 +127,7 @@ const ScanReader = reatomComponent(({ ctx }) => {
     <div className="fixed top-0 bottom-0 right-0 left-0 z-1000 w-full h-dvh bg-neutral-900">
       <div className="absolute right-0 left-0 z-100 w-full flex items-center px-4 justify-between top-4">
         <div className="flex items-center justify-start">
-          <IconArrowLeft size={26} onClick={() => scan.stop(ctx)} />
+          <Icon name="sprite:arrow-left" className="size-[26px]" onClick={() => scan.stop(ctx)} />
         </div>
         <div className="flex items-center justify-center">
           <Typography>
@@ -189,7 +189,7 @@ export const ConnectNewSession = reatomComponent(({ ctx }) => {
         className="gap-2 font-semibold"
         onClick={() => scan.start(ctx)}
       >
-        <IconQrcode size={16} />
+        <Icon name="sprite:qrcode" className="size-4" />
         Привязать устройство
       </Button>
       <ScanReader />

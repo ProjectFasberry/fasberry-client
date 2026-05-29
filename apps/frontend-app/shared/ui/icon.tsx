@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { type ComponentProps, forwardRef, useMemo } from 'react';
-import { type SpritePrepareConfig, sprites, type SpritesMeta } from '../sprite.gen';
+import { type SpritePrepareConfig, sprites, type SpritesMeta } from '../types/gen/icon/sprite.gen';
 
 /** Icon props extending SVG props and requiring specific icon name */
 export interface IconProps extends ComponentProps<'svg'> {

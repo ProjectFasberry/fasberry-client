@@ -1,5 +1,5 @@
 import { Switch as SwitchDefault, type SwitchRootProps } from "@ark-ui/react/switch"
-import { IconLoader2 } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { tv } from "tailwind-variants"
 
 export type SwitchProps = SwitchRootProps & {
@@ -33,7 +33,7 @@ export const Switch = ({ label, isLoading, ...props }: SwitchProps) => {
         <SwitchDefault.Thumb className={switchThumbVariant()}>
           {isLoading && (
             <div className="absolute z-2 w-full h-full flex items-center justify-center inset-0">
-              <IconLoader2 size={10} className="text-neutral-950 animate-spin duration-150 ease-in" />
+              <Icon name="sprite:loader-2" className="size-[10px] text-neutral-950 animate-spin duration-150 ease-in" />
             </div>
           )}
         </SwitchDefault.Thumb>

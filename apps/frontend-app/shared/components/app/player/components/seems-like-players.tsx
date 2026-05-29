@@ -6,7 +6,7 @@ import { createLink, Link } from "@/shared/components/config/link";
 import { atom } from "@reatom/framework";
 import { pageState } from "@/shared/models/page-context.model";
 import { playerSLP, playerSLPState } from "../models/player-seems-like.model";
-import { IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { scrollableVariant } from "@/shared/consts/style-variants";
 import { translate } from "@/shared/locales/helpers";
 import { Tooltip } from '@ark-ui/react/tooltip'
@@ -24,7 +24,7 @@ const PlayerSeemsLikeShowToggle = reatomComponent(({ ctx }) => {
           onClick={() => playerSLPState.settings.isShow.toggle(ctx)}
           className="cursor-pointer"
         >
-          <IconX size={22} className="text-neutral-400" />
+          <Icon name="sprite:x" className="size-[22px] text-neutral-400" />
         </button>
       </Tooltip.Trigger>
       <Portal>

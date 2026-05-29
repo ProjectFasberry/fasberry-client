@@ -4,7 +4,7 @@ import { Typography } from "@/shared/ui/typography"
 import { topup, topupErrorAtom, type TopupMethodListPayload, topupNavigationModel, topupState, type TopupType } from "../../models/store-top-up.model";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
-import { IconCheck, IconExchange, IconSelector, IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { belkoinImage, charismImage } from "@/shared/consts/images";
 import { isEmptyArray } from "@/shared/lib/helpers";
 import React, { type ReactNode } from "react";
@@ -103,10 +103,10 @@ const TopUpCurrencies = reatomComponent(({ ctx }) => {
         </Select.Trigger>
         <div className={selectIndicatorsVariant()}>
           <Select.ClearTrigger className={selectClearTriggerVariant()}>
-            <IconX size={20} />
+            <Icon name="sprite:x" className="size-5" />
           </Select.ClearTrigger>
           <Select.Indicator className={selectIndicatorVariant()}>
-            <IconSelector size={20} />
+            <Icon name="sprite:selector" className="size-5" />
           </Select.Indicator>
         </div>
       </Select.Control>
@@ -120,7 +120,7 @@ const TopUpCurrencies = reatomComponent(({ ctx }) => {
                     {item}
                   </Select.ItemText>
                   <Select.ItemIndicator className={selectItemIndicatorVariant()}>
-                    <IconCheck size={16} />
+                    <Icon name="sprite:check" className="size-4" />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}
@@ -176,7 +176,7 @@ const ExchangeItem = ({ type, values }: { type: string, values: Record<string, n
         <Typography className="text-lg leading-5">
           {TARGET_TITLE[type as keyof typeof TARGET_TITLE]}
         </Typography>
-        <IconExchange size={16} className="text-neutral-400" />
+        <Icon name="sprite:exchange" className="size-4 text-neutral-400" />
       </div>
       <div className="flex flex-col gap-2 w-full h-full">
         <Typography color="gray">Курс на текущий момент</Typography>
@@ -230,7 +230,7 @@ const TopupValue = reatomComponent(({ ctx }) => {
           </Select.Trigger>
           <div className={selectIndicatorsVariant()}>
             <Select.Indicator className={selectIndicatorVariant()}>
-              <IconSelector size={20} />
+              <Icon name="sprite:selector" className="size-5" />
             </Select.Indicator>
           </div>
         </Select.Control>
@@ -266,9 +266,9 @@ const TopupConfirm = reatomComponent(({ ctx }) => {
     <div className="flex flex-col items-center justify-center w-full gap-4">
       <div className="flex flex-col gap-2 bg-neutral-900 min-h-36 rounded-xl w-full h-full items-center justify-center">
         {isSuccess ? (
-          <IconCheck size={36} className='text-green-400' />
+          <Icon name="sprite:check" className='size-9 text-green-400' />
         ) : (
-          <IconX size={36} className="text-red" />
+          <Icon name="sprite:x" className="size-9 text-red" />
         )}
         <Typography className="text-lg font-semibold">{title}</Typography>
       </div>

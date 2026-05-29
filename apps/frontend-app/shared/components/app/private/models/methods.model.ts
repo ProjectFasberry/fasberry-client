@@ -18,13 +18,11 @@ const getMethodIsLoading = (id: number) => atom((ctx) =>
   ctx.spy(methodsAtom).get(id)?.meta.isLoading ?? false
 )
 
-const methods = atom(null).pipe(
+const methods = atom(null, "methods").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
-        client
-          .get<PrivatedMethodsPayload>("privated/store/methods/list", { signal: ctx.controller.signal })
-          .exec()
+        client<PrivatedMethodsPayload>("privated/store/methods/list", { signal: ctx.controller.signal }).exec()
       )
     }, {
       name: `${name}.fetch`,

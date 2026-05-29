@@ -1,6 +1,6 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
-import { IconLoader2, IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button";
 import { tv } from "tailwind-variants";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -8,7 +8,6 @@ import { connectionsModel, type ConnectionsAvailablePayload } from "../models/se
 import { SettingsContentWrapper } from "./ui";
 import { action, onDisconnect } from "@reatom/framework";
 import { SOCIALS_ICONS } from "@/shared/consts/icons";
-import { Icon } from "@/shared/ui/icon";
 import { IconLoader } from "@/shared/ui/icon-loader";
 import { Dialog } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal";
@@ -72,7 +71,7 @@ const ConnectionsAvailableItem = reatomComponent<ConnectionsAvailablePayload[num
     >
       {isProcessing && (
         <div className="absolute flex items-center justify-center w-full h-full inset-0 z-1 bg-black/60">
-          <IconLoader2 size={16} className="animate-spin duration-300 text-neutral-50" />
+          <Icon name="sprite:loader-2" className="size-4 animate-spin duration-300 text-neutral-50" />
         </div>
       )}
       <Icon name={SOCIALS_ICONS[social]} className='size-6' />
@@ -112,12 +111,12 @@ const ConnectionsListItem = reatomComponent<PlayerSocialsItem>(({ ctx, social, c
       </div>
       <Button
         background="default"
-        className="h-6 w-6 p-0 rounded-sm aspect-square"
+        className="h-6 w-6 p-0 rounded-sm aspect-square *:size-[18px]"
         onClick={() => connectionsControl.removeBefore(ctx, social)}
         disabled={ctx.spy(connectionsControl.removeBefore.statusesAtom).isPending}
       >
         {isLoading
-          ? <IconLoader2 className="animate-spin duration-300" size={18} /> : <IconX size={18} />
+          ? <Icon name="sprite:loader-2" className="animate-spin duration-300" /> : <Icon name="sprite:x" />
         }
       </Button>
     </div>

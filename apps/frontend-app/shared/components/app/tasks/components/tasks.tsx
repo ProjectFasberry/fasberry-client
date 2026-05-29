@@ -1,6 +1,6 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { tasks, tasksFilter, type TasksFilterSortBy } from "../models/tasks.model"
-import { IconArrowDown, IconArrowUp, IconSearch } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button"
 import { Typography } from "@/shared/ui/typography"
 import { Input } from "@/shared/ui/input"
@@ -120,9 +120,9 @@ const TasksFilterSearch = reatomComponent(({ ctx }) => {
       className="flex items-center w-full lg:w-2/3 h-10 relative inert:pointer-events-none inert:opacity-70"
       inert={ctx.spy(tasks.fetch.statusesAtom).isPending}
     >
-      <IconSearch
-        size={20}
-        className="text-neutral-400 absolute z-1 left-4"
+      <Icon
+        name="sprite:search"
+        className="size-5 text-neutral-400 absolute z-1 left-4"
       />
       <Input
         className="w-full h-10 pl-12"
@@ -177,11 +177,11 @@ const TasksFilterAsc = reatomComponent(({ ctx }) => {
   return (
     <Button
       background="default"
-      className="aspect-square h-10 w-10 p-0 text-neutral-400"
+      className="aspect-square h-10 w-10 p-0 text-neutral-400 *:size-5"
       onClick={() => tasksFilter.asc(ctx, (state) => !state)}
       disabled={ctx.spy(tasks.fetch.statusesAtom).isPending}
     >
-      {asc ? <IconArrowUp size={20} /> : <IconArrowDown size={20} />}
+      {asc ? <Icon name="sprite:arrow-up" /> : <Icon name="sprite:arrow-down" />}
     </Button>
   )
 }, "TasksFilterAsc")

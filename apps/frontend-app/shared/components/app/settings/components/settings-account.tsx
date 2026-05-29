@@ -10,7 +10,7 @@ import { currentUserState } from "@/shared/models/current-user/index.model"
 import { Avatar } from "@/shared/ui/avatar"
 import { Menu } from "@ark-ui/react/menu"
 import { dropdownMenuItemVariants, menuContentVariant, menuTriggerVariant } from "@/shared/ui/menu"
-import { IconDots } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import dayjs from "@/shared/lib/create-dayjs"
 import { settingsAccountModel } from "../models/settings-account.model"
 import { Input } from "@/shared/ui/input"
@@ -127,7 +127,7 @@ const SettingsMainInfo = reatomComponent(({ ctx }) => {
           onSelect={({ value }) => INFO_ACTIONS_LIST.find(d => d.value === value)?.action(uuid)(ctx)}
         >
           <Menu.Trigger className={menuTriggerVariant()}>
-            <IconDots size={22} className="text-neutral-400" />
+            <Icon name="sprite:dots" className="size-[22px] text-neutral-400" />
           </Menu.Trigger>
           <Portal>
             <Menu.Positioner>

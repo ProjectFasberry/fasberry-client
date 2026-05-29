@@ -1,5 +1,5 @@
-import { IconLoader2, type Icon, type IconProps } from "@tabler/icons-react";
+import { Icon, type IconProps } from "@/shared/ui/icon"
 
-export const IconLoader = (props?: IconProps) => {
-  return <IconLoader2 {...props} className="animate-spin text-neutral-500 duration-200" />
+export const IconLoader = (props?: Partial<IconProps>) => {
+  return <Icon name="sprite:loader-2" {...props} className="animate-spin text-neutral-500 duration-200" />
 }

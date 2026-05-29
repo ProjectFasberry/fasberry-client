@@ -2,7 +2,7 @@ import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
 import { Button } from "@/shared/ui/button";
 import { getStaticImage } from "@/shared/lib/volume-helpers";
-import { IconPlus } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { balance, balanceState } from "../models/balance.model";
 import { navigate } from "vike/client/router";
 import { getFromDictionary } from "@/shared/models/app/utils";
@@ -121,7 +121,7 @@ const BalanceCard = reatomComponent<BalanceCardProps>(({ ctx, value, wallet, ima
             className="p-0"
             onClick={() => navigate(`/store/cart/topup?target=${value}`)}
           >
-            <IconPlus size={20} className="text-neutral-950" />
+            <Icon name="sprite:plus" className="size-5 text-neutral-950" />
           </Button>
         </div>
       </div>

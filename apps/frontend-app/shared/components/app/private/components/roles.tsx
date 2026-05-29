@@ -4,18 +4,18 @@ import { Typography } from "@/shared/ui/typography"
 import { Button } from "@/shared/ui/button"
 import { ActionButton, AddButton, DeleteButton, EditButton } from "./ui"
 import { tv } from "tailwind-variants"
-import { IconArrowBackUp, IconCheck, IconPlus } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import {
   getDeletedPermIsSelectedAtom,
   permission,
   getPermIsSelectedAtom,
-  permissionsByRoleListAction,
+  permissionsByRole,
   roleDeletedPermsAtom,
   roleEditableAtom,
   getRoleIsSelectedRoleAtom,
   roleNewPermsAtom,
   rolesIsEditableAtom,
-  rolesListAction,
+  rolesList,
   saveChangesAction,
   saveChangesIsValidAtom,
   toggleRoleEditAction
@@ -120,11 +120,11 @@ const RolesListItemPermsSkeleton = () => {
 
 const RolesListItemPerms = reatomComponent(({ ctx }) => {
   const id = ctx.spy(roleEditableAtom)?.id
-  const data = ctx.spy(permissionsByRoleListAction.dataAtom)
+  const data = ctx.spy(permissionsByRole.fetchList.dataAtom)
 
-  useUpdate((ctx) => id && permissionsByRoleListAction(ctx, id), [id])
+  useUpdate((ctx) => id && permissionsByRole.fetchList(ctx, id), [id])
 
-  if (ctx.spy(permissionsByRoleListAction.statusesAtom).isPending) {
+  if (ctx.spy(permissionsByRole.fetchList.statusesAtom).isPending) {
     return <RolesListItemPermsSkeleton />
   }
 
@@ -161,7 +161,7 @@ const RolesListItemSaveChanges = reatomComponent(({ ctx }) => {
 
   return (
     <ActionButton
-      icon={IconCheck}
+      icon="sprite:check"
       onClick={() => saveChangesAction(ctx)}
       disabled={isDisabled}
       variant="selected"
@@ -185,7 +185,7 @@ const RolesListItemAddPerm = reatomComponent(({ ctx }) => {
           disabled={isDisabled}
         >
           Добавить
-          <IconPlus size={18} />
+          <Icon name="sprite:plus" className="size-[18px]" />
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
@@ -243,7 +243,7 @@ const RolesListItem = reatomComponent<RolePayload>(({ ctx, id, name }) => {
           {isSelected ? (
             <>
               <ActionButton
-                icon={IconArrowBackUp}
+                icon="sprite:arrow-back-up"
                 variant="default"
                 onClick={() => toggleRoleEditAction(ctx, { id, name })}
               />
@@ -274,11 +274,11 @@ const RolesListSkeleton = () => {
 }
 
 const RolesList = reatomComponent(({ ctx }) => {
-  useUpdate(rolesListAction, []);
+  useUpdate(rolesList.fetch, []);
 
-  const data = ctx.spy(rolesListAction.dataAtom)
+  const data = ctx.spy(rolesList.fetch.dataAtom)
 
-  if (ctx.spy(rolesListAction.statusesAtom).isPending) {
+  if (ctx.spy(rolesList.fetch.statusesAtom).isPending) {
     return <RolesListSkeleton />
   }
 
@@ -306,7 +306,7 @@ const RolesEditablePermHeader = reatomComponent(({ ctx }) => {
       </Typography>
       <div className="flex items-center text-sm">
         <Typography>
-          {"("}всего: {ctx.spy(permissionsByRoleListAction.dataAtom)?.permissions.length ?? 0},&nbsp;
+          {"("}всего: {ctx.spy(permissionsByRole.fetchList.dataAtom)?.permissions.length ?? 0},&nbsp;
         </Typography>
         <Typography className="text-green-500">
           +: {ctx.spy(roleNewPermsAtom).length},&nbsp;

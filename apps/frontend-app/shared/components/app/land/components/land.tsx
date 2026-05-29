@@ -4,7 +4,7 @@ import { Avatar } from "@/shared/ui/avatar"
 import { Typography } from "@/shared/ui/typography"
 import { createLink, Link } from "@/shared/components/config/link"
 import { FormattedText } from "./land-title"
-import { IconCircleFilled, IconCrown, IconLink } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button"
 import { navigate } from "vike/client/router"
 import { changesIsExist, landMode, saveChanges } from "../models/edit-land.model"
@@ -116,11 +116,11 @@ export const Land = reatomComponent(({ ctx }) => {
               <Typography>
                 {members.length} {members.length === 1 ? "участник" : "участников"}
               </Typography>
-              <IconCircleFilled size={10} />
+              <Icon name="sprite:circle" className="size-2.5" />
               <Typography onClick={() => navigate("#points", { overwriteLastHistoryEntry: false })}>
                 1 метка
               </Typography>
-              <IconCircleFilled size={10} />
+              <Icon name="sprite:circle" className="size-2.5"  />
               <Typography>
                 Нет дискорд сервера
               </Typography>
@@ -160,7 +160,7 @@ export const Land = reatomComponent(({ ctx }) => {
                 <Typography className="text-xl">
                   Баннер
                 </Typography>
-                <IconLink size={24} />
+                <Icon name="sprite:link" className="size-6" />
               </a>
             </div>
           </div>
@@ -192,7 +192,7 @@ export const Land = reatomComponent(({ ctx }) => {
                   </Typography>
                 </div>
                 {idx === 0 && (
-                  <IconCrown size={24} className='text-gold' />
+                  <Icon name="sprite:crown" className='size-6 text-gold' />
                 )}
               </Link>
             ))}

@@ -1,12 +1,12 @@
 import { reatomComponent } from "@reatom/npm-react";
 import {
   isCheckedAtom, userIsSelectedAtom, type PrivatedUser, users, usersControl, usersControlState, usersDataArrAtom
-} from "../models/users.model";
+} from "../../models/users.model";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { tv } from "tailwind-variants";
 import { currentUserState } from "@/shared/models/current-user/index.model";
 import { Link } from "@/shared/components/config/link";
-import { Avatar } from "../../../../ui/avatar";
+import { Avatar } from "../../../../../ui/avatar";
 import { Typography } from "@/shared/ui/typography"
 import { UserActionsChangeRoleLocal } from "./users.change-role";
 import { UserActionsWrapper } from "./users.restrict";

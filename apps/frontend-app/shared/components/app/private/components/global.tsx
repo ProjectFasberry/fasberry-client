@@ -1,7 +1,7 @@
 import { reatomComponent } from "@reatom/npm-react";
-import { type ActionParent, actionsGoBackAction, type ActionType, createActionsLinkAction, getIsSelectedActionAtom } from "../models/actions.model";
+import { type ActionParent, type ActionType, actions, getIsSelectedActionAtom } from "../models/actions.model";
 import { Button } from "@/shared/ui/button";
-import { IconCheck, IconPlus, IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Typography } from "@/shared/ui/typography"
 
 export const ToActionButtonX = reatomComponent<{
@@ -13,9 +13,9 @@ export const ToActionButtonX = reatomComponent<{
 
   const handle = () => {
     if (isSelected) {
-      actionsGoBackAction(ctx)
+      actions.goBack(ctx)
     } else {
-      createActionsLinkAction(ctx, { parent, type })
+      actions.createLink(ctx, { parent, type })
     }
   }
 
@@ -30,15 +30,15 @@ export const ToActionButtonX = reatomComponent<{
       "
     >
       {isSelected ? null : title}
-      {isSelected ? <IconX size={18} /> : <IconPlus size={18} />}
+      {isSelected ? <Icon name="sprite:x" className="size-[18px]" /> : <Icon name="sprite:plus" className="size-[18px]" />}
     </Button>
   )
 }, "ToActionButtonX")
 
-export const ButtonXSubmit = ({ 
-  title, isDisabled, action 
-}: { 
-  title: string, isDisabled: boolean, action: () => void 
+export const ButtonXSubmit = ({
+  title, isDisabled, action
+}: {
+  title: string, isDisabled: boolean, action: () => void
 }) => {
   return (
     <Button
@@ -49,7 +49,7 @@ export const ButtonXSubmit = ({
       <Typography className="font-semibold">
         {title}
       </Typography>
-      <IconCheck size={18} />
+      <Icon name="sprite:check" className="size-[18px]" />
     </Button>
   )
 }

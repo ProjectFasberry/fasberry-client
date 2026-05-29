@@ -1,7 +1,4 @@
-import {
-  IconAspectRatio, IconBuildingStore, IconDeviceDesktop, IconLink, IconLogout2, IconShieldHalfFilled, IconUserCircle,
-  type TablerIcon
-} from "@tabler/icons-react"
+import { Icon, type IconName } from "@/shared/ui/icon"
 import {
   settings, SETTINGS_NAVIGATION, settingsNavigationItemIsActiveAtom,
   type SettingsNavigation, type SettingsNavigationNode, type SettingsParent
@@ -11,22 +8,22 @@ import { reatomComponent } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
 import { type Ctx, spawn } from "@reatom/framework"
 
-type SettingsNavigationItem = { icon: TablerIcon, className?: string }
+type SettingsNavigationItem = { icon: IconName, className?: string }
 
 const SETTINGS_NAVIGATION_ICONS: Partial<Record<SettingsParent, Record<string, SettingsNavigationItem>>> = {
   main: {
-    account: { icon: IconUserCircle },
-    devices: { icon: IconDeviceDesktop },
-    security: { icon: IconShieldHalfFilled },
-    connections: { icon: IconLink },
-    store: { icon: IconBuildingStore }
+    account: { icon: "sprite:user-circle" },
+    devices: { icon: "sprite:device-desktop" },
+    security: { icon: "sprite:shield-half" },
+    connections: { icon: "sprite:link" },
+    store: { icon: "sprite:building-store" }
   },
   app: {
-    appearance: { icon: IconAspectRatio }
+    appearance: { icon: "sprite:aspect-ratio" }
   },
   account: {
     logout: {
-      className: "text-red", icon: IconLogout2
+      className: "text-red", icon: "sprite:logout"
     }
   }
 }
@@ -56,7 +53,7 @@ const NavigationItemNode = reatomComponent<{ parent: SettingsParent, node: Setti
   const isActive = ctx.spy(settingsNavigationItemIsActiveAtom(parent, node.value))
   const variant = isActive ? "active" : "default"
 
-  const Icon: TablerIcon | undefined = SETTINGS_NAVIGATION_ICONS[parent]?.[node.value]?.icon
+  const iconName = SETTINGS_NAVIGATION_ICONS[parent]?.[node.value]?.icon
   const className = SETTINGS_NAVIGATION_ICONS[parent]?.[node.value]?.className
 
   return (
@@ -65,7 +62,7 @@ const NavigationItemNode = reatomComponent<{ parent: SettingsParent, node: Setti
       onClick={() => AS_EVENTS[node.as ?? "link"](ctx, node, parent)}
       className={navigationItemNodeVariant({ variant, className })}
     >
-      {Icon && <Icon size={20} />}
+      {iconName && <Icon name={iconName} className="size-5"  />}
       {node.title}
     </Button>
   )

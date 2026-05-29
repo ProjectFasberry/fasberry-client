@@ -1,9 +1,10 @@
 import { reatomComponent, useAtom } from "@reatom/npm-react";
-import { chatWs } from "../models/chat.model";
+import { chatWs } from "../../models/chat.model";
 import { Typography } from "@/shared/ui/typography"
 import { createPageModel } from "@/shared/lib/events";
-import { ChatMessages } from "./chat/list";
-import { ChatCreateMessage } from "./chat/footer";
+import { ChatMessages } from "./list";
+import { ChatCreateMessage } from "./footer";
+import { SectionWrapper } from "../ui";
 
 const page = createPageModel({
   name: "chat",
@@ -43,10 +44,10 @@ export const Chat = () => {
   const [_] = useAtom(page.dataAtom);
 
   return (
-    <div className="flex flex-col gap-4 w-full overflow-hidden h-[90vh]">
+    <SectionWrapper className="flex flex-col gap-4 w-full overflow-hidden h-[90vh]">
       <ChatHeader />
       <ChatBody />
       <ChatFooter />
-    </div>
+    </SectionWrapper>
   )
 }

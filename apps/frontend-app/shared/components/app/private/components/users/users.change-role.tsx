@@ -1,12 +1,12 @@
 import { getFromDictionary } from "@/shared/models/app/utils"
 import { reatomComponent } from "@reatom/npm-react"
 import { Typography } from "@/shared/ui/typography"
-import { usersRoles, usersControlState } from "../models/users.model"
-import { IconDotsVertical, IconPencil } from "@tabler/icons-react"
+import { usersRoles, usersControlState } from "../../models/users.model"
+import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { type Role as RoleType } from "@/shared/components/app/private/models/users.model"
-import { itemVariant } from "./ui"
+import { itemVariant } from "../ui"
 import { Menu } from '@ark-ui/react/menu'
 import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
 
@@ -84,7 +84,7 @@ export const UserActionsChangeRoleGlobal = reatomComponent(({ ctx }) => {
     <Menu.Root>
       <Menu.Trigger asChild>
         <Button background="default" className="p-0 h-8 w-8 aspect-square">
-          <IconDotsVertical size={16} />
+          <Icon name="sprite:dots-vertical" className="size-4" />
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
@@ -121,7 +121,7 @@ export const UserActionsChangeRoleLocal = reatomComponent<{
     <Menu.Root>
       <Menu.Trigger asChild>
         <Button background="white" className="flex py-1 gap-1 items-center justify-center max-w-36 px-2 h-5">
-          <IconPencil size={12} />
+          <Icon name="sprite:pencil" className="size-[12px]" />
           <Typography className='select-none text-sm leading-4'>
             {roleTitle}
           </Typography>

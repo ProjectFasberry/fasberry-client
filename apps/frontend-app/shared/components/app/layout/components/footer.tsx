@@ -1,4 +1,4 @@
-import { IconBrandDiscordFilled, IconBrandTelegram } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { Link } from "../../../config/link"
 import { Typography } from "@/shared/ui/typography"
 import { CONTACTS } from "../../../../consts/contacts"
@@ -15,8 +15,8 @@ export const Footer = () => {
   return (
     <div
       className="
-        flex items-center justify-center w-full pb-24 h-full lg:min-h-40 p-3 lg:p-4 
-        bg-gradient-to-br from-green-800/40 via-green-800/50 to-green-800/40 border-t border-green-700/20 
+        flex items-center justify-center w-full pb-24 h-full lg:min-h-40 p-3 lg:p-4
+        bg-gradient-to-br from-green-800/40 via-green-800/50 to-green-800/40 border-t border-green-700/20
         lg:backdrop-blur-md
       "
     >
@@ -28,16 +28,16 @@ export const Footer = () => {
             </div>
             <div
               className="
-                flex items-center gap-2 
+                flex items-center gap-2
                 *:bg-neutral-600/40 *:hover:bg-neutral-600/60 *:duration-150
                 *:flex *:items-center *:justify-center *:p-2 *:rounded-full
               "
             >
               <a href={discordHref} aria-label="Дискорд">
-                <IconBrandDiscordFilled size={18} />
+                <Icon name="sprite:brand-discord" className="size-[18px]" />
               </a>
               <a href={telegramHref} aria-label="Телеграм">
-                <IconBrandTelegram size={18} />
+                <Icon name="sprite:brand-telegram" className="size-[18px]" />
               </a>
             </div>
           </div>

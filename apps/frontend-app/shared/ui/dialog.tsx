@@ -2,7 +2,7 @@ import type { CSSProperties } from "react"
 import { tv } from "tailwind-variants"
 import { DIALOG_DELAY } from "../consts"
 import { Dialog } from "@ark-ui/react/dialog"
-import { IconX } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 
 const dialogBackdropVariant = tv({
   base: `
@@ -42,7 +42,7 @@ const dialogCloseVariant = tv({
 const DialogClose = () => {
   return (
     <Dialog.CloseTrigger className={dialogCloseVariant()}>
-      <IconX />
+      <Icon name="sprite:x" className="size-4" />
     </Dialog.CloseTrigger>
   )
 }

@@ -1,4 +1,4 @@
-import { IconCheck } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { tv, type VariantProps } from "tailwind-variants"
 import { Checkbox as CheckboxDefault } from '@ark-ui/react/checkbox'
 import { cn } from "../lib/cn"
@@ -46,7 +46,7 @@ export const Checkbox = ({
       <CheckboxDefault.Control className={checkboxVariant({ variant })}>
         <CheckboxDefault.Indicator>
           {withIndicator && (
-            <IconCheck size={14} className="group-data-[state=checked]:block group-data-[state=unchecked]:hidden m-auto -z-1" />
+            <Icon name="sprite:check" className="size-[14px] group-data-[state=checked]:block group-data-[state=unchecked]:hidden m-auto -z-1" />
           )}
         </CheckboxDefault.Indicator>
       </CheckboxDefault.Control>

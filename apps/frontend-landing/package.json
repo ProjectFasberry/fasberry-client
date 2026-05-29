@@ -14,7 +14,7 @@
 		"type-check": "tsc --build",
 		"circular-check": "bunx dpdm --no-warning ./renderer/+Layout.tsx",
 		"------------------": "",
-		"deploy": "STAGE=prod bun run build && wrangler deploy"
+		"deploy": "cross-env STAGE=prod bun run build && wrangler deploy"
 	},
 	"sideEffects": [
 		"**/*.css"
@@ -49,8 +49,7 @@
 		"@neodx/svg": "0.8.0",
 		"@repo/config-biome": "workspace:*",
 		"@repo/config-typescript": "workspace:*",
-		"@tailwindcss/typography": "0.5.16",
-		"@tailwindcss/vite": "4.1.12",
+		"@tailwindcss/vite": "4.3.0",
 		"rollup-plugin-visualizer": "7.0.1",
 		"tailwind-scrollbar": "4.0.2",
 		"tailwindcss": "4.1.8",

@@ -1,5 +1,5 @@
 import { reatomComponent } from "@reatom/npm-react"
-import { usersControlState, usersControl, USER_ACTIONS } from "../models/users.model"
+import { usersControlState, usersControl, USER_ACTIONS } from "../../models/users.model"
 import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
 import type { AtomMut } from "@reatom/framework"

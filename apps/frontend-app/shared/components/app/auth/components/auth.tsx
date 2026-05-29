@@ -4,7 +4,7 @@ import { Input } from "@/shared/ui/input"
 import { env } from "@/shared/env";
 import { CapWidget } from "@better-captcha/react/provider/cap-widget";
 import { pof } from "../../../../models/shared.model";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { ErrorBlock } from "@/shared/ui/error-block";
 import { translate } from "@/shared/locales/helpers";
 
@@ -30,7 +30,7 @@ const PasswordVisibility = reatomComponent(({ ctx }) => (
     className="flex *:m-auto hover:text-neutral-50 duration-150 ease text-neutral-400 absolute p-1 right-0 top-1/2 -translate-1/2"
     onClick={() => authState.settings.showPassword(ctx, (state) => !state)}
   >
-    {ctx.spy(authState.settings.showPassword) ? <IconEye size={18} /> : <IconEyeOff size={18} />}
+    {ctx.spy(authState.settings.showPassword) ? <Icon name="sprite:eye" className="size-[18px]" /> : <Icon name="sprite:eye-off" className="size-[18px]" />}
   </div>
 ), "PasswordVisibility")
 

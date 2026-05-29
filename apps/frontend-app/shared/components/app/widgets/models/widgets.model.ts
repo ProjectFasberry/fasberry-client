@@ -2,12 +2,12 @@ import { currentUserState } from "@/shared/models/current-user/index.model";
 import { action, type Atom, atom, type Ctx } from "@reatom/framework";
 import { withAssign } from "@reatom/framework";
 import { withCookie } from "@reatom/persist-web-storage";
-import { IconLock, type TablerIcon } from "@tabler/icons-react";
+import { type IconName } from "@/shared/ui/icon"
 import { type ReactNode } from "react";
 import { navigate } from "vike/client/router";
 
 type WidgetBase = {
-  icon?: TablerIcon,
+  icon?: IconName,
   title: string,
   description?: string,
   onAction: (ctx: Ctx) => void,
@@ -36,7 +36,7 @@ const WIDGETS_SOURCES: Map<string, WidgetItem> = new Map([
       return !!user;
     }),
     title: "Вы не авторизованы",
-    icon: IconLock,
+    icon: "sprite:lock",
     description: 'Авторизируйтесь, чтобы получить доступ к полному функционалу сайта.',
     onAction: () => {
       navigate("/auth")

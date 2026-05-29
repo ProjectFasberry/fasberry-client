@@ -1,0 +1,11 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+allowBuilds:
+  "@tailwindcss/oxide": false
+  esbuild: false
+  lefthook: false
+  sharp: false
+  workerd: false
+overrides:
+  "@reatom/core": "3.10.3"

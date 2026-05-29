@@ -3,7 +3,7 @@ import { Input } from "@/shared/ui/input";
 import { changeGlobalRecipient, changeGlobalRecipientState, changeGlobalRecipientIsValidAtom } from "../models/settings-store.model";
 import { Button } from "@/shared/ui/button";
 import { SettingsContentWrapper, SettingsSection } from "./ui";
-import { IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { currentUserState } from "@/shared/models/current-user/index.model";
 
 const GlobalRecipient = reatomComponent(({ ctx }) => {
@@ -43,7 +43,7 @@ const GlobalRecipient = reatomComponent(({ ctx }) => {
               disabled={ctx.spy(changeGlobalRecipient.submit.statusesAtom).isPending}
               onClick={() => changeGlobalRecipient.resetToDefault(ctx)}
             >
-              <IconX size={18} />
+              <Icon name="sprite:x" className="size-[18px]" />
             </Button>
           )}
           <Button

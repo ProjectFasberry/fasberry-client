@@ -2,7 +2,7 @@ import { Editor, EditorContent, useEditor, useEditorState } from "@tiptap/react"
 import { tv } from "tailwind-variants"
 import { scrollableVariant } from "@/shared/consts/style-variants"
 import { reatomComponent } from "@reatom/npm-react"
-import { IconArrowBackUp, IconArrowForwardUp, IconPictureInPicture, IconSettings } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { Menu } from '@ark-ui/react/menu'
 import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
 import { EDITOR_DEFAULT_CONTENT, editorBar, editorBarState, editorExtensions, editorSelectors, editorState } from "./editor.model"
@@ -36,20 +36,20 @@ export const EditorMenuBar = reatomComponent<{ editor: Editor }>(({ ctx, editor 
           disabled={!editorState.canUndo}
           className={controlVariant()}
         >
-          <IconArrowBackUp />
+          <Icon name='sprite:arrow-back-up' />
         </button>
         <button
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editorState.canRedo}
           className={controlVariant()}
         >
-          <IconArrowForwardUp />
+          <Icon name="sprite:arrow-forward-up" />
         </button>
         <div>
           <Menu.Root>
             <Menu.Trigger asChild>
               <button className={controlVariant()} data-state={"inactive"}>
-                <IconSettings />
+                <Icon name="sprite:settings" />
               </button>
             </Menu.Trigger>
             <Menu.Positioner>
@@ -208,7 +208,7 @@ export const EditorMenuBar = reatomComponent<{ editor: Editor }>(({ ctx, editor 
           onClick={() => editorBar.addImage(ctx, editor)}
           data-state={isLink ? 'active' : 'inactive'}
         >
-          <IconPictureInPicture />
+          <Icon name="sprite:picture-in-picture" />
         </button>
         {isLink && (
           <>

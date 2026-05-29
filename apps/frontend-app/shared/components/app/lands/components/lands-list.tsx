@@ -7,7 +7,7 @@ import { Typography } from "@/shared/ui/typography"
 import { FormattedText } from "../../land/components/land-title"
 import { DefaultBanner } from "../../land/components/land-banner"
 import { Avatar } from "../../../../ui/avatar"
-import { IconCircleFilled } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { MasonryGrid } from "@repo/ui/masonry-grid"
 import { NotFound } from "@/shared/ui/not-found"
 import { pageState } from "@/shared/models/page-context.model"
@@ -45,11 +45,11 @@ const LandCard = ({ level, members, name, title, ulid, details: { banner } }: La
         {title && <FormattedText text={title} />}
         <div className="flex flex-col select-none gap-1">
           <Typography className={landCardVariants().stat()}>
-            <IconCircleFilled size={8} />
+            <Icon name="sprite:circle" className="size-2" />
             {members.length} {translate["shared.lands.single.attributes.members"]()}
           </Typography>
           <Typography className={landCardVariants().stat()}>
-            <IconCircleFilled size={8} />
+            <Icon name="sprite:circle" className="size-2" />
             {level} {translate["shared.lands.single.attributes.level"]()}
           </Typography>
         </div>

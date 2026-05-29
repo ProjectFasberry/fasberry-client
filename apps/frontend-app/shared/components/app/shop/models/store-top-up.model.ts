@@ -61,7 +61,10 @@ const handlers: Record<TopUpSearch, (ctx: Ctx, value: string) => void> = {
 
 topupState.search.onChange((ctx, state) => {
   for (const key in state) {
-    handlers[key as TopUpSearch](ctx, state[key as TopUpSearch]!)
+    const target = state[key as TopUpSearch];
+    if (!target) continue;
+
+    handlers[key as TopUpSearch]?.(ctx, target)
   }
 })
 

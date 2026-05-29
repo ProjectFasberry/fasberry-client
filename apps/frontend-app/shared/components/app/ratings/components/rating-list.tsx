@@ -11,7 +11,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { type ReactNode } from "react";
 import { type AtomState } from "@reatom/framework";
 import { ratingAscAtom, ratingByAtom, ratingDataAtom, ratingsAction, updateRatingAction } from "../models/ratings.model";
-import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button";
 import {
   Table,
@@ -213,7 +213,7 @@ const RatingsFilter = reatomComponent(({ ctx }) => {
       className='bg-neutral-800 hover:bg-neutral-700 aspect-square text-neutral-400 h-8 w-8 p-1'
       onClick={() => ratingAscAtom(ctx, (state) => !state)}
     >
-      {current ? <IconArrowDown /> : <IconArrowUp />}
+      {current ? <Icon name="sprite:arrow-down" /> : <Icon name="sprite:arrow-up" />}
     </Button>
   )
 }, "RatingsFilter")

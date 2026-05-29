@@ -1,4 +1,4 @@
-import { action, atom, withAssign, connectLogger, type Unsubscribe, withInit, type Ctx } from "@reatom/framework";
+import { action, atom, withAssign, connectLogger, type Unsubscribe, withInit, type Ctx, createLogBatched, type AtomCache } from "@reatom/framework";
 import type { PageContext } from "vike/types";
 import { withSsr } from "../ssr";
 import { detectHardwareAcceleration, detectMobile, parseBoolean } from "../../lib/utils";
@@ -97,17 +97,35 @@ const lazyInitDevModules = action(async (ctx, by: string) => {
   }
 })
 
+const loggerIsConnectedAtom = atom(false)
+
 export const app = atom(null, "app").pipe(
   withAssign((_, name) => ({
     /** Executed once on the server and once on the client. */
-    preInit: action((ctx, pageCtx: PageContext) => {
-      if (import.meta.env.DEV && ENVIRONMENT === 'client') {
-        connectLogger(ctx)
-      }
-
-      const rootSnapshot = pageCtx.snapshot;
+    preInit: action((ctx, rootSnapshot: Snapshot) => {
       snapshots.init(ctx, rootSnapshot)
     }, `${name}.preInit`),
+    initReatomLogger: action((ctx) => {
+      const isConnected = ctx.get(loggerIsConnectedAtom);
+      if (isConnected) return;
+
+      connectLogger(ctx, {
+        showCause: true,
+        skipUnnamed: true,
+        skip: (patch: AtomCache) => false,
+        log: createLogBatched(
+          {
+            debounce: 400,
+            limit: 5000,
+            getTimeStamp: () => new Date().toLocaleTimeString(),
+            log: console.log,
+            shouldGroup: false,
+          },
+        ),
+      })
+
+      loggerIsConnectedAtom(ctx, true)
+    }),
     init: action((ctx) => {
       let unsubs: Unsubscribe[] = [];
 

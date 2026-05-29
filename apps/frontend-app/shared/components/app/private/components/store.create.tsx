@@ -7,7 +7,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { createStoreItem, createStoreItemState } from "../models/store.model";
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";
-import { IconCheck, IconSelector, IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Portal } from '@ark-ui/react/portal'
 import { Select, createListCollection } from '@ark-ui/react/select'
 import {
@@ -95,10 +95,10 @@ export const CreateItem = reatomComponent(({ ctx }) => {
             </Select.Trigger>
             <div className={selectIndicatorsVariant()}>
               <Select.ClearTrigger className={selectClearTriggerVariant()}>
-                <IconX size={20} />
+                <Icon name="sprite:x" className="size-5" />
               </Select.ClearTrigger>
               <Select.Indicator className={selectIndicatorVariant()}>
-                <IconSelector size={20} />
+                <Icon name="sprite:selector" className="size-5" />
               </Select.Indicator>
             </div>
           </Select.Control>
@@ -112,7 +112,7 @@ export const CreateItem = reatomComponent(({ ctx }) => {
                         {item.title}
                       </Select.ItemText>
                       <Select.ItemIndicator className={selectItemIndicatorVariant()}>
-                        <IconCheck size={16} />
+                        <Icon name="sprite:check" className="size-4"/>
                       </Select.ItemIndicator>
                     </Select.Item>
                   ))}
@@ -135,10 +135,10 @@ export const CreateItem = reatomComponent(({ ctx }) => {
             </Select.Trigger>
             <div className={selectIndicatorsVariant()}>
               <Select.ClearTrigger className={selectClearTriggerVariant()}>
-                <IconX size={20} />
+                <Icon name="sprite:x" className="size-5" />
               </Select.ClearTrigger>
               <Select.Indicator className={selectIndicatorVariant()}>
-                <IconSelector size={20} />
+                <Icon name="sprite:selector" className="size-5" />
               </Select.Indicator>
             </div>
           </Select.Control>
@@ -152,7 +152,7 @@ export const CreateItem = reatomComponent(({ ctx }) => {
                         {item.title}
                       </Select.ItemText>
                       <Select.ItemIndicator className={selectItemIndicatorVariant()}>
-                        <IconCheck size={16} />
+                        <Icon name="sprite:check" className="size-4"/>
                       </Select.ItemIndicator>
                     </Select.Item>
                   ))}
@@ -176,7 +176,7 @@ export const CreateItem = reatomComponent(({ ctx }) => {
           <Typography className="font-semibold text-lg text-neutral-50">
             Создать
           </Typography>
-          <IconCheck size={18} />
+          <Icon name="sprite:check" className="size-[18px]" />
         </Button>
       </div>
     </div>

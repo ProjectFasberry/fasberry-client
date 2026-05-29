@@ -4,7 +4,7 @@ import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Typography } from "@/shared/ui/typography"
 import React, { useRef, useState } from "react";
-import { IconButterfly, IconManFilled, IconPlus, IconRotate, IconRun, IconUpload, IconX, type TablerIcon } from "@tabler/icons-react";
+import { Icon, type IconName } from "@/shared/ui/icon"
 import { pageState } from "@/shared/models/page-context.model";
 import { Button } from "@/shared/ui/button";
 import { type SkinAnimationType, skinModel, type SkinVariant, type SkinsHistory } from "../models/skin.model";
@@ -269,9 +269,9 @@ const SelectedSkinData = reatomComponent(({ ctx }) => {
             </Typography>
           </div>
         </div>
-        <IconX
-          size={20}
-          className="text-neutral-400"
+        <Icon
+          name='sprite:x'
+          className="text-neutral-400 size-5"
           onClick={() => skinsState.control.file.reset(ctx)}
         />
       </div>
@@ -317,7 +317,7 @@ const SkinControlInput = reatomComponent(({ ctx }) => {
     >
       <input ref={inputRef} onChange={onChange} type="file" className="hidden" />
       <div className='flex items-center justify-center rounded-lg h-10 w-10 border border-neutral-800'>
-        <IconUpload size={24} className="text-neutral-400" />
+        <Icon name="sprite:upload" className="size-6 text-neutral-400" />
       </div>
       <Typography className="font-semibold tracking-6">
         Перетяните или выберите файл
@@ -357,7 +357,7 @@ const SkinControlChangeSkin = reatomComponent(({ ctx }) => {
         <Button
           className={skinControlVariants({ variant: "default", className: "p-0 hover:bg-neutral-800" })}
         >
-          <IconUpload size={18} />
+          <Icon name="sprite:upload" className="size-[18px]" />
         </Button>
       </Dialog.Trigger>
       <Portal>
@@ -405,7 +405,7 @@ const SkinSetButton = reatomComponent(({ ctx }) => {
       className={skinControlVariants({ variant: "default", className: "p-0 hover:bg-neutral-800" })}
       onClick={() => skins.control.set(ctx)}
     >
-      <IconPlus size={18} />
+      <Icon name="sprite:plus" className="size-[18px]" />
     </Button>
   )
 }, "SkinSetButton")
@@ -419,15 +419,15 @@ const SkinControlRotate = reatomComponent(({ ctx }) => {
       onClick={() => skin.animation.isRotate(ctx, (state) => !state)}
       className={skinControlVariants({ variant })}
     >
-      <IconRotate size={18} />
+      <Icon name="sprite:rotate" className="size-[18px]" />
     </div>
   )
 }, "SkinControlRotate")
 
-const SKIN_ANIMATIONS: { animation: SkinAnimationType; icon: TablerIcon }[] = [
-  { animation: "idle", icon: IconManFilled },
-  { animation: "run", icon: IconRun, },
-  { animation: "flying", icon: IconButterfly },
+const SKIN_ANIMATIONS: { animation: SkinAnimationType; icon: IconName }[] = [
+  { animation: "idle", icon: "sprite:man" },
+  { animation: "run", icon: "sprite:run", },
+  { animation: "flying", icon: "sprite:butterfly" },
 ];
 
 const SkinControlsList = reatomComponent(({ ctx }) => {
@@ -441,7 +441,7 @@ const SkinControlsList = reatomComponent(({ ctx }) => {
         onClick={() => skin.animation.type(ctx, control.animation)}
         className={skinControlVariants({ variant: variant(control) })}
       >
-        <control.icon size={18} />
+        <Icon name={control.icon} className="size-[18px]" />
       </div>
     ))
   )

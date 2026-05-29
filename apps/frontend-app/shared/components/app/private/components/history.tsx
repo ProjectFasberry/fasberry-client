@@ -5,6 +5,7 @@ import { tv } from "tailwind-variants";
 import { getHistoryItemStatusAtom, history, type HistoryPayload } from "../models/history.model";
 import { getFromDictionary } from "@/shared/models/app/utils";
 import dayjs from "@/shared/lib/create-dayjs";
+import { SectionWrapper } from "./ui";
 
 const historyListItemVariant = tv({
   base: ``,
@@ -42,19 +43,21 @@ export const HistoryList = reatomComponent(({ ctx }) => {
   if (!data) return null;
 
   return (
-    <Table>
-      <TableCaption>История</TableCaption>
-      <TableHeader>
-        <TableRow className="*:font-semibold *:text-base">
-          <TableHead className="w-[64px]">#</TableHead>
-          <TableHead>Инициатор</TableHead>
-          <TableHead>Ивент</TableHead>
-          <TableHead className="text-right">Дата</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((item, idx) => <HistoryListItem key={item.id} {...item} idx={idx} />)}
-      </TableBody>
-    </Table>
+    <SectionWrapper>
+      <Table>
+        <TableCaption>История</TableCaption>
+        <TableHeader>
+          <TableRow className="*:font-semibold *:text-base">
+            <TableHead className="w-[64px]">#</TableHead>
+            <TableHead>Инициатор</TableHead>
+            <TableHead>Ивент</TableHead>
+            <TableHead className="text-right">Дата</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((item, idx) => <HistoryListItem key={item.id} {...item} idx={idx} />)}
+        </TableBody>
+      </Table>
+    </SectionWrapper>
   )
 }, "HistoryList")

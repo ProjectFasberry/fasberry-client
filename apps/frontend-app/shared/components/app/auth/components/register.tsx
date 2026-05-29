@@ -6,7 +6,7 @@ import { Input } from "@/shared/ui/input"
 import { type JSX, type ReactNode, useState } from "react"
 import { Button } from "@/shared/ui/button"
 import { SeedPhrase, SeedPhraseFooter, SeedPhraseHeader, SeedPhraseBody } from "@/shared/ui/seed-phrase"
-import { IconCheck, IconDownload, IconSelector, IconX } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import {
   type AuthRegisterType,
   registerNavigationModel, register, registerSeedPhraseModel, registerState, findoutSelectedTypeAtom, FINDOUT_OPTIONS
@@ -82,10 +82,10 @@ const FindoutOptions = reatomComponent(({ ctx }) => {
         </Select.Trigger>
         <div className={selectIndicatorsVariant()}>
           <Select.ClearTrigger className={selectClearTriggerVariant()}>
-            <IconX size={20} />
+            <Icon name="sprite:x" className="size-5" />
           </Select.ClearTrigger>
           <Select.Indicator className={selectIndicatorVariant()}>
-            <IconSelector size={20} />
+            <Icon name="sprite:selector" className="size-5" />
           </Select.Indicator>
         </div>
       </Select.Control>
@@ -99,7 +99,7 @@ const FindoutOptions = reatomComponent(({ ctx }) => {
                     {item.title}
                   </Select.ItemText>
                   <Select.ItemIndicator className={selectItemIndicatorVariant()}>
-                    <IconCheck size={16} />
+                    <Icon name="sprite:check" className="size-4" />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}
@@ -211,7 +211,7 @@ const RegisterSeedPhraseSave = reatomComponent(({ ctx }) => {
               onClick={() => register.downloadPhrase(ctx)}
             >
               {translate["auth.register.seed-phrase.download"]()}
-              <IconDownload size={16} />
+              <Icon name='sprite:download' className="size-4" />
             </Button>
           </div>
           <p className="text-neutral-400 text-xs text-center">
@@ -226,7 +226,7 @@ const RegisterSeedPhraseSave = reatomComponent(({ ctx }) => {
 const RegisterConfirmLoading = () => {
   return (
     <>
-      <IconLoader size={36} />
+      <IconLoader className="size-9" />
       <div className="flex flex-col gap-1 justify-center items-center w-full">
         <Typography className="text-xl font-semibold">
           Регистрируем
@@ -242,7 +242,7 @@ const RegisterConfirmError = reatomComponent(({ ctx }) => {
   return (
     <>
       <div className="flex flex-col gap-2 w-full items-center justify-center">
-        <IconX size={32} className="text-red-600" />
+        <Icon name="sprite:x" className="text-[32px] text-red-600" />
         <p className="text-xl w-full sm:w-2/3 leading-5 font-semibold text-center">
           {translate["auth.register.error"]()}
         </p>
@@ -269,7 +269,7 @@ const RegisterConfirmSuccess = reatomComponent(({ ctx }) => {
   return (
     <>
       <div className="flex flex-col gap-2 w-full items-center justify-center">
-        <IconCheck size={32} className="text-green-400" />
+        <Icon name="sprite:check" className="size-8 text-green-400" />
         <p className="text-xl w-full sm:w-2/3 leading-5 font-semibold text-center">
           {translate["auth.register.success"]()}
         </p>

@@ -1,6 +1,6 @@
 import { reatomComponent } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
-import { IconHeart } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { tv } from "tailwind-variants"
 import { isIdentityAtom, player } from "../models/player.model"
 import { navigate } from "vike/client/router"
@@ -20,7 +20,7 @@ const likeButtonVariants = tv({
 })
 
 const rateButtonChildVariants = tv({
-  base: `text-lg`,
+  base: `size-6`,
   variants: {
     variant: {
       default: "",
@@ -48,7 +48,7 @@ export const Rate = reatomComponent<RateProps>(({
         className={likeButtonVariants({ variant: "filled" })}
         onClick={() => navigate(`/player/${nickname}/rates`)}
       >
-        <IconHeart className={rateButtonChildVariants({ variant: "filled" })} />
+        <Icon name="sprite:heart" className={rateButtonChildVariants({ variant: "filled" })} />
         <span className={rateButtonChildVariants({ variant: "filled" })}>
           {count}
         </span>
@@ -66,7 +66,7 @@ export const Rate = reatomComponent<RateProps>(({
       onClick={() => player.rate.submit(ctx, nickname)}
       className={likeButtonVariants({ variant: parentVariant })}
     >
-      <IconHeart className={rateButtonChildVariants({ variant: childVariant })} />
+      <Icon name="sprite:heart" className={rateButtonChildVariants({ variant: childVariant })} />
       <span className={rateButtonChildVariants({ variant: childVariant })}>
         {count}
       </span>

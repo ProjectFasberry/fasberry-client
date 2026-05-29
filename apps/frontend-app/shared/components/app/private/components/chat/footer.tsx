@@ -1,7 +1,7 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { chatCreate, chatCreateMessageAtom } from "../../models/chat.model";
 import { Input } from "@/shared/ui/input";
-import { IconBrandTelegram } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button";
 
 export const ChatCreateMessage = reatomComponent(({ ctx }) => {
@@ -30,7 +30,7 @@ export const ChatCreateMessage = reatomComponent(({ ctx }) => {
         background="default"
         className="h-10 min-w-10 min-h-10 w-10 p-0"
       >
-        <IconBrandTelegram size={20} className="text-neutral-300" />
+        <Icon name="sprite:brand-telegram" className="size-5 text-neutral-300" />
       </Button>
     </form>
   )

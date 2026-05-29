@@ -1,18 +1,20 @@
 import { CONFIG_PANEL_READ_PERMISSION, currentUserState } from "@/shared/models/current-user/index.model";
 import { action, type Action, atom, type CtxSpy } from "@reatom/framework";
-import { IconBasket, IconCategory, IconMap, IconMountain, IconStars } from "@tabler/icons-react"
 import { settingsState } from "../../settings/models/settings.model";
+import { type IconName } from "@/shared/ui/icon"
 import { logout } from "../../auth/models/logout.model";
 import { pageState } from "@/shared/models/page-context.model";
 import { translate } from "@/shared/locales/helpers";
 import { userState } from "@/shared/models/app/index.model";
 
-const HEADERS_LINKS = [
-  { title: translate["shared.header.links.main.value"](), icon: IconCategory, label: translate["shared.header.links.main.label"](), href: "/" },
-  { title: translate["shared.header.links.ratings.value"](), icon: IconStars, label: translate["shared.header.links.ratings.value"](), href: "/ratings" },
-  { title: translate["shared.header.links.store.value"](), icon: IconBasket, label: translate["shared.header.links.store.value"](), href: "/store" },
-  { title: translate["shared.header.links.map.value"](), icon: IconMap, lable: translate["shared.header.links.map.value"](), href: "/map" },
-  { title: translate["shared.header.links.lands.value"](), icon: IconMountain, label: translate["shared.header.links.lands.value"](), href: "/lands" }
+const HEADERS_LINKS: {
+  title: string, icon: IconName, label: string, href: string
+}[] = [
+  { title: translate["shared.header.links.main.value"](), icon: "sprite:category", label: translate["shared.header.links.main.label"](), href: "/" },
+  { title: translate["shared.header.links.ratings.value"](), icon: "sprite:stars", label: translate["shared.header.links.ratings.value"](), href: "/ratings" },
+  { title: translate["shared.header.links.store.value"](), icon: "sprite:basket", label: translate["shared.header.links.store.value"](), href: "/store" },
+  { title: translate["shared.header.links.map.value"](), icon: "sprite:map", label: translate["shared.header.links.map.value"](), href: "/map" },
+  { title: translate["shared.header.links.lands.value"](), icon: "sprite:mountain", label: translate["shared.header.links.lands.value"](), href: "/lands" }
 ]
 const HEADER_MENU_LINKS = [
   { title: translate["shared.header.menu.cart"](), type: "default", href: "/store/cart", },

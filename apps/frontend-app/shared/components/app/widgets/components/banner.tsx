@@ -1,7 +1,7 @@
 import { Link } from "@/shared/components/config/link";
 import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
-import { IconX } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { bannerIsExistsAtom, banner } from "../models/banner.model";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -15,7 +15,7 @@ const BannerView = reatomComponent<{ id: number }>(({ ctx, id }) => {
       disabled={ctx.spy(banner.fetch.statusesAtom).isPending}
       onClick={() => banner.createView(ctx, id)}
     >
-      <IconX size={16} />
+      <Icon name="sprite:x" className="size-4" />
     </Button>
   )
 }, "BannerView")

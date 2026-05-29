@@ -1,9 +1,9 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { UserActionsChangeRoleGlobal } from "./users.change-role";
-import { users, usersState, usersLengthAtom, usersSelectedLengthAtom, usersSelectedOverAtom, usersControl, usersControlState } from "../models/users.model";
+import { users, usersState, usersLengthAtom, usersSelectedLengthAtom, usersSelectedOverAtom, usersControl, usersControlState } from "../../models/users.model";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Button } from "@/shared/ui/button";
-import { IconArrowDown, IconArrowUp, IconBan } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input";
 import { Menu } from '@ark-ui/react/menu'
 import { UserActionsWrapper } from "./users.restrict";
@@ -20,7 +20,7 @@ const UsersGlobalActions = reatomComponent(({ ctx }) => {
       <Menu.Root>
         <Menu.Trigger asChild>
           <Button background="default" className="h-8 w-8 aspect-square p-0">
-            <IconBan size={16} />
+            <Icon name="sprite:ban" className="size-4" />
           </Button>
         </Menu.Trigger>
         <Menu.Positioner>
@@ -68,14 +68,14 @@ const UsersFiltersAsc = reatomComponent(({ ctx }) => {
       onClick={() => usersState.filters.asc(ctx, (state) => !state)}
       disabled={ctx.spy(users.fetch.statusesAtom).isPending}
     >
-      {ctx.spy(usersState.filters.asc) ? <IconArrowUp size={16} /> : <IconArrowDown size={16} />}
+      {ctx.spy(usersState.filters.asc) ? <Icon name="sprite:arrow-up" className="size-4" /> : <Icon name="sprite:arrow-down" className="size-4" />}
     </Button>
   )
 }, 'UsersFiltersAsc')
 
 const UsersFiltersSelect = reatomComponent(({ ctx }) => {
   return (
-    <div className="flex justify-between min-h-10 h-10 duration-100 ease-in group-data-[view=true]:px-4 w-full items-center">
+    <div className="flex justify-between min-h-10 h-10 duration-100 ease-in px-3 w-full items-center">
       <div className="flex items-center gap-2">
         <Checkbox
           id="users-filter-selectAll"
@@ -142,7 +142,7 @@ const UsersFiltersSort = reatomComponent(({ ctx }) => {
   )
 }, "UsersFiltersSort")
 
-export const { Component: UsersFiltersViewer,inViewAtom: usersFiltersInViewAtom } = createViewerModel({
+export const { Component: UsersFiltersViewer, inViewAtom: usersFiltersInViewAtom } = createViewerModel({
   name: "users-filters",
   logging: true
 })
@@ -151,8 +151,8 @@ export const UsersFilters = reatomComponent(({ ctx }) => {
   return (
     <div
       className="
-        flex top-14 lg:top-1 z-10 group mb-4 flex-col w-full sticky gap-2 bg-neutral-900 rounded-xl duration-100 ease-in
-        border data-[view=true]:border-transparent data-[view=false]:border-neutral-800 data-[view=false]:p-4
+        flex top-14 lg:top-1 z-10 group mb-4 flex-col p-4 w-full sticky gap-2 bg-neutral-900 rounded-xl duration-100 ease-in
+        border data-[view=true]:border-transparent data-[view=false]:border-neutral-800
       "
       ref={el => {
         const un = ctx.subscribe(usersFiltersInViewAtom, (state) => {

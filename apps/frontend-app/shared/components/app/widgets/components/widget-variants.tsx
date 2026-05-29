@@ -1,7 +1,7 @@
 import { reatomComponent } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
 import { widgetsState } from "../models/widgets.model"
-import { IconArrowRight, IconX } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { Typography } from "@/shared/ui/typography"
 
 export const AuthWidgetActions = reatomComponent(({ ctx }) => {
@@ -14,7 +14,7 @@ export const AuthWidgetActions = reatomComponent(({ ctx }) => {
         className="bg-neutral-50 px-2"
         onClick={() => current.onAction(ctx)}
       >
-        <IconArrowRight size={20} className="sm:hidden inline text-neutral-950" />
+        <Icon name="sprite:arrow-right" className="size-5 sm:hidden inline text-neutral-950" />
         <Typography className="hidden sm:inline text-neutral-950 font-semibold text-sm">
           Авторизоваться
         </Typography>
@@ -23,7 +23,7 @@ export const AuthWidgetActions = reatomComponent(({ ctx }) => {
         className="bg-neutral-700 px-2"
         onClick={() => current.onHide(ctx)}
       >
-        <IconX size={20} className="sm:hidden inline" />
+        <Icon name="sprite:x" className="size-5 sm:hidden inline" />
         <Typography className="hidden text-nowrap sm:inline font-semibold text-sm">
           Не показывать
         </Typography>

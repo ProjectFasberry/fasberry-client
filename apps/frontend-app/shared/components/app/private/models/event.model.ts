@@ -5,14 +5,14 @@ import { client, withJsonBody } from "@/shared/lib/client-wrapper"
 import { toast } from "sonner"
 import { notifyAboutRestrictRole } from "./actions.model"
 
-type EventPayload = ExtractApiData<"getServerEventsList">["data"][number]
-
 export const events = atom(null, "events").pipe(
-  withAssign(() => ({
+  withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
         getEvents({ limit: 12 }, { signal: ctx.controller.signal })
       )
+    }, {
+      name: `${name}.fetch`
     }).pipe(
       withDataAtom(null),
       withCache({ swr: false }),
@@ -22,11 +22,11 @@ export const events = atom(null, "events").pipe(
 )
 
 export const createEventState = atom(null, "createEventState").pipe(
-  withAssign(() => ({
-    title: atom("", "createEventTitle").pipe(withReset()),
-    description: atom("", "createEventDescription").pipe(withReset()),
-    initiator: atom("", "createEventInitiator").pipe(withReset()),
-    type: atom("", "createEventType").pipe(withReset())
+  withAssign((_, name) => ({
+    title: atom("", `${name}.title`).pipe(withReset()),
+    description: atom("", `${name}.description`).pipe(withReset()),
+    initiator: atom("", `${name}.initiator`).pipe(withReset()),
+    type: atom("", `${name}.type`).pipe(withReset())
   }))
 )
 export const createEvent = atom(null, "createEvent").pipe(
@@ -46,7 +46,7 @@ export const createEvent = atom(null, "createEvent").pipe(
       }
 
       return await client
-        .post<EventPayload>("privated/events/create", { throwHttpErrors: false })
+        .post<ExtractApiData<"postPrivatedEventsCreate">["data"]>("privated/events/create", { throwHttpErrors: false })
         .pipe(withJsonBody(json))
         .exec()
     }, {
@@ -60,7 +60,9 @@ export const createEvent = atom(null, "createEvent").pipe(
         createEvent.resetFull(ctx)
       },
       onReject: (_, e) => notifyAboutRestrictRole(e),
-    }).pipe(withStatusesAtom())
+    }).pipe(
+      withStatusesAtom()
+    )
   }))
 )
 export const deleteEvent = atom(null, "deleteEvent").pipe(
@@ -69,6 +71,8 @@ export const deleteEvent = atom(null, "deleteEvent").pipe(
 
     }, {
       name: `${name}.submit`
-    }).pipe(withStatusesAtom())
+    }).pipe(
+      withStatusesAtom()
+    )
   }))
 )

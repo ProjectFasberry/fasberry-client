@@ -1,4 +1,5 @@
-import { action, atom, type AtomState } from "@reatom/framework"
+import { isError } from "@/shared/lib/helpers";
+import { action, atom, withAssign, type AtomState } from "@reatom/framework"
 import { isDeepEqual, reatomRecord, withReset } from "@reatom/framework"
 import { toast } from "sonner";
 
@@ -8,82 +9,97 @@ const TYPES = ["create", "edit", "view"] as const;
 export type ActionParent = typeof PARENTS[number]
 export type ActionType = typeof TYPES[number]
 
-export const actionsSearchParamsAtom = reatomRecord<Record<string, string>>({}, "actionsSearchParams").pipe(withReset())
-export const actionsParentAtom = atom<ActionParent | null>(null, "actionsParent").pipe(withReset())
-export const actionsTypeAtom = atom<ActionType>("view", "actionsType").pipe(withReset())
-export const actionsTargetAtom = atom<Nullable<string>>(null, "actionsTarget").pipe(withReset())
+export const actionsState = atom(null, "actionsState").pipe(
+  withAssign((_, name) => ({
+    searchParams: reatomRecord<Record<string, string>>({}, `${name}.searchParams`).pipe(withReset()),
+    parent: atom<ActionParent | null>(null, `${name}.parent`).pipe(withReset()),
+    type: atom<ActionType>("view", `${name}.type`).pipe(withReset()),
+    target: atom<Nullable<string>>(null, `${name}.target`).pipe(withReset()),
+  }))
+)
+export const actions = atom(null, "actions").pipe(
+  withAssign((_, name) => ({
+    createLinkValue: action((ctx, params: CreateLinkParams) => {
+      const url = new URL(window.location.href);
+      const next = { ...ctx.get(actionsState.searchParams) }
 
-export const getIsSelectedActionAtom = (targetParent: ActionParent, targetType: ActionType) => atom(
-  (ctx) => {
-    const parent = ctx.spy(actionsParentAtom) === targetParent;
-    const type = ctx.spy(actionsTypeAtom) === targetType
-    return parent && type
-  },
-  "getIsSelectedAction"
+      const parent = params.parent;
+      const type = params.type;
+
+      if (!parent || !type) throw new Error("Parent or type is not defined")
+      if (!PARENTS.includes(parent)) throw new Error("Parent is not defined")
+      if (!TYPES.includes(type)) throw new Error("Type is not defined")
+
+      next.parent = parent
+      url.searchParams.set('parent', parent)
+
+      next.type = type
+      url.searchParams.set('type', type)
+
+      if (params.type === 'create') {
+        delete next.target
+        url.searchParams.delete('target')
+      }
+
+      if (params.type !== 'create' && params.target?.trim()) {
+        next.target = params.target
+        url.searchParams.set('target', params.target)
+      }
+
+      return { next, url }
+    }, `${name}.createLinkValue`),
+    createLink: action((ctx, params: CreateLinkParams) => {
+      const { next, url } = actions.createLinkValue(ctx, params)
+
+      actionsState.searchParams(ctx, next)
+      window.history.pushState({}, '', url)
+    }, `${name}.createLink`),
+    goBack: action((ctx) => {
+      const url = new URL(window.location.href)
+
+      url.searchParams.delete('parent')
+      url.searchParams.delete('type')
+      url.searchParams.delete('target')
+
+      window.history.pushState({}, '', url)
+
+      actionsState.searchParams.reset(ctx)
+      actionsState.parent.reset(ctx)
+      actionsState.type.reset(ctx)
+      actionsState.target.reset(ctx)
+    }, `${name}.goBack`)
+  }))
 )
 
-actionsSearchParamsAtom.onChange((ctx, state) => {
+export const getIsSelectedActionAtom = (targetParent: ActionParent, targetType: ActionType) => atom((ctx) =>
+  (ctx.spy(actionsState.parent) === targetParent) && (ctx.spy(actionsState.type) === targetType)
+)
+
+actionsState.searchParams.onChange((ctx, state) => {
   const { parent, type, target } = state
 
   if (!PARENTS.includes(parent as ActionParent) || !TYPES.includes(type as ActionType)) return;
 
-  actionsParentAtom(ctx, parent as ActionParent)
-  actionsTypeAtom(ctx, type as ActionType)
+  actionsState.parent(ctx, parent as ActionParent)
+  actionsState.type(ctx, type as ActionType)
 
   if (type !== 'create') {
-    if (typeof target === 'string' && target.trim()) {
-      actionsTargetAtom(ctx, target)
+    if (target.trim().length >= 1) {
+      actionsState.target(ctx, target)
     }
   } else {
-    actionsTargetAtom(ctx, null)
+    actionsState.target(ctx, null)
   }
 })
 
 type CreateLinkParams = {
-  parent?: AtomState<typeof actionsParentAtom>,
-  type?: AtomState<typeof actionsTypeAtom>,
+  parent?: AtomState<typeof actionsState.parent>,
+  type?: AtomState<typeof actionsState.type>,
   target?: string,
 }
 
-export const createActionsLinkValueAction = action((ctx, params: CreateLinkParams) => {
-  const url = new URL(window.location.href);
-  const next = { ...ctx.get(actionsSearchParamsAtom) }
-
-  const parent = params.parent;
-  const type = params.type;
-
-  if (!parent || !type) throw new Error("Parent or type is not defined")
-  if (!PARENTS.includes(parent)) throw new Error("Parent is not defined")
-  if (!TYPES.includes(type)) throw new Error("Type is not defined")
-
-  next.parent = parent
-  url.searchParams.set('parent', parent)
-
-  next.type = type
-  url.searchParams.set('type', type)
-
-  if (params.type === 'create') {
-    delete next.target
-    url.searchParams.delete('target')
-  }
-
-  if (params.type !== 'create' && params.target?.trim()) {
-    next.target = params.target
-    url.searchParams.set('target', params.target)
-  }
-
-  return { next, url }
-}, "createActionsLinkValueAction")
-
-export const createActionsLinkAction = action((ctx, params: CreateLinkParams) => {
-  const { next, url } = createActionsLinkValueAction(ctx, params)
-
-  actionsSearchParamsAtom(ctx, next)
-  window.history.pushState({}, '', url)
-}, "createActionsLinkAction")
-
-export const actionsCanGoBackAtom = (inputParent: AtomState<typeof actionsParentAtom>) => atom((ctx) => {
-  const state = ctx.spy(actionsSearchParamsAtom);
+export const actionsCanGoBackAtom = (inputParent: AtomState<typeof actionsState.parent>) => atom((ctx) => {
+  const state = ctx.spy(actionsState.searchParams);
   const { parent: currentParent, type, target } = state;
 
   const isThisParent = currentParent === inputParent
@@ -97,30 +113,15 @@ export const actionsCanGoBackAtom = (inputParent: AtomState<typeof actionsParent
   return result
 }, 'actionsCanGoBack')
 
-export const actionsGoBackAction = action((ctx) => {
-  const url = new URL(window.location.href)
-
-  url.searchParams.delete('parent')
-  url.searchParams.delete('type')
-  url.searchParams.delete('target')
-
-  window.history.pushState({}, '', url)
-
-  actionsSearchParamsAtom.reset(ctx)
-  actionsParentAtom.reset(ctx)
-  actionsTypeAtom.reset(ctx)
-  actionsTargetAtom.reset(ctx)
-}, "actionsGoBackAction")
-
 export function notifyAboutRestrictRole(e: Error | unknown) {
-  if (e instanceof Error) {
-    if (e.message === 'restricted_by_role') {
-      toast.error("Действие недоступно из-за политики ролей")
-    }
+  if (!isError(e)) return;
+
+  if (e.message === 'restricted_by_role') {
+    toast.error("Действие недоступно из-за политики ролей")
   }
 }
 
-export const getSelectedParentAtom = (parent: ActionParent) => atom((ctx) => ctx.spy(actionsParentAtom) === parent)
+export const getSelectedParentAtom = (parent: ActionParent) => atom((ctx) => ctx.spy(actionsState.parent) === parent)
 
 export const compareChanges = (actual: Record<string, string | null>, old: Record<string, string | null>) => {
   return Object.keys(actual).some((key) => {
@@ -148,10 +149,7 @@ export const compareChanges = (actual: Record<string, string | null>, old: Recor
   })
 }
 
-export const collectChanges = (
-  actual: Record<string, any>,
-  old: Record<string, any>
-) => {
+export const collectChanges = (actual: Record<string, any>, old: Record<string, any>) => {
   const changes: Record<string, any> = {}
 
   for (const key of Object.keys(actual)) {

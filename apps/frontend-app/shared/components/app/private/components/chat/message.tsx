@@ -7,7 +7,7 @@ import { Avatar } from "@/shared/ui/avatar";
 import { Portal } from "@ark-ui/react/portal";
 import { Menu } from "@ark-ui/react/menu";
 import { dropdownMenuItemVariants, menuContentVariant } from "@/shared/ui/menu";
-import { IconCheck, IconChecks, IconCopy, IconPencil, IconTrash } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input";
 import { Typography } from "@/shared/ui/typography";
 import { ActionButton, DeleteButton } from "../ui";
@@ -45,7 +45,7 @@ const ChatMessagesItemEditActions = reatomComponent<Pick<ChatItem, "id">>(({ ctx
     <div className="flex items-center gap-1">
       <ActionButton
         variant="selected"
-        icon={IconCheck}
+        icon="sprite:check"
         disabled={isDisabled}
         onClick={() => msgEdit.submit(ctx)}
       />
@@ -77,7 +77,7 @@ const ChatMessageViewsMenu = reatomComponent<{ id: number }>(({ ctx, id }) => {
   return (
     <Menu.Root>
       <Menu.TriggerItem className={dropdownMenuItemVariants()}>
-        <IconChecks size={16} />
+        <Icon name="sprite:checks" className="size-4" />
         {ctx.spy(msgViews.fetch.statusesAtom).isPending
           ? <Skeleton className="h-5 w-5" /> : data.length
         }
@@ -114,20 +114,20 @@ const MESSAGE_ACTIONS_LIST: MessageAction[] = [
   {
     label: "Редактировать",
     value: "edit",
-    icon: IconPencil,
+    icon: "sprite:pencil",
     action: msgEdit.start
   },
   {
     label: "Скопировать текст",
     value: "copy-text",
-    icon: IconCopy,
+    icon: "sprite:copy",
     action: msgCopyText
   },
   {
     label: (ctx, dataAtom: Atom<string[]>) => ctx.spy(msgViews.fetch.statusesAtom).isPending
       ? <Skeleton className="h-5 w-5" /> : ctx.spy(dataAtom).length.toString(),
     value: "views",
-    icon: IconChecks,
+    icon: "sprite:checks",
     action: null,
     nested: {
       component: (id) => <ChatMessageViewsMenu id={id} />
@@ -136,7 +136,7 @@ const MESSAGE_ACTIONS_LIST: MessageAction[] = [
   {
     label: "Удалить",
     value: "delete",
-    icon: IconTrash,
+    icon: "sprite:trash",
     action: msgDelete.submit,
     onlyOwner: true,
     style: { variant: "danger" }

@@ -1,5 +1,6 @@
 import { Link } from "@/shared/components/config/link"
 import { navigationModel } from "../models/navigation.model"
+import { Icon } from "@/shared/ui/icon";
 
 const { HEADERS_LINKS } = navigationModel();
 
@@ -22,7 +23,7 @@ export const MobileBottomBar = () => {
               data-[state=inactive]:text-neutral-50 data-[state=active]:text-green-400
             "
           >
-            <link.icon size={26} />
+            <Icon name={link.icon} className="size-[26px]" />
             <span className="font-semibold text-[12px]">{link.title}</span>
           </Link>
         ))}

@@ -1,39 +1,18 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
-import {
-  deleteNews,
-  newsListAction,
-} from "../models/news.model";
 import { Skeleton } from "@/shared/ui/skeleton";
-import { Avatar } from "../../../../ui/avatar";
+import { Avatar } from "@/shared/ui/avatar";
 import { createLink, Link } from "@/shared/components/config/link";
 import { Typography } from "@/shared/ui/typography"
 import { type ReactNode } from "react";
-import { DeleteButton, EditButton, ToLink } from "./ui";
-import {
-  actionsTypeAtom,
-  type ActionType,
-  createActionsLinkAction,
-  getSelectedParentAtom
-} from "../models/actions.model";
-import { ToActionButtonX } from "./global";
-import {
-  createNews,
-  createNewsDescriptionAtom,
-  createNewsImageAtom,
-  createNewsTempContentAtom,
-  createNewsTitleAtom,
-  editNews,
-  editNewsState
-} from "../models/news.model"
+import { actionsState, type ActionType, actions, getSelectedParentAtom } from "../models/actions.model";
+import { ToActionButtonX, ButtonXSubmit } from "./global";
+import { createNews, createNewsState, editNews, editNewsState, deleteNews, newsList } from "../models/news.model"
 import { Input } from "@/shared/ui/input"
 import { type Atom, type AtomMut, type Ctx } from "@reatom/framework"
-import { ActionButton } from "./ui"
-import { IconCheck } from "@tabler/icons-react"
+import { DeleteButton, EditButton, ToLink, ActionButton } from "./ui"
 import { EditorMenuBar } from "@/shared/components/config/editor/editor"
 import { Editor, EditorContent, generateJSON, type JSONContent, useEditor, useEditorState } from "@tiptap/react"
 import { CharacterCount, Placeholder } from "@tiptap/extensions"
-import { useEffect } from "react"
-import { ButtonXSubmit } from "./global"
 import { editorExtensions } from "@/shared/components/config/editor/editor.model";
 
 type News = ExtractApiData<"getSharedNewsList">["data"]["data"][number]
@@ -52,32 +31,13 @@ const NewsContentApply = reatomComponent<{
     }
 
     const json = generateJSON(contentStr, editorExtensions)
-
     saveAction(json)
   }
 
   const isDisabled = !ctx.spy(isValidAtom)
 
-  return <ActionButton variant="selected" icon={IconCheck} disabled={isDisabled} onClick={handle} />
+  return <ActionButton variant="selected" icon="sprite:check" disabled={isDisabled} onClick={handle} />
 }, "CreateNewsContentApply")
-
-const CharactersCount = ({ editor, limit }: { editor: Editor, limit: number }) => {
-  const { charactersCount, wordsCount } = useEditorState({
-    editor,
-    selector: context => ({
-      charactersCount: context.editor.storage.characterCount.characters(),
-      wordsCount: context.editor.storage.characterCount.words(),
-    }),
-  })
-
-  if (!editor) return null
-
-  return (
-    <div className="text-neutral-400 text-sm">
-      {charactersCount}/{limit} символов ({wordsCount} слов)
-    </div>
-  )
-}
 
 const NewsContent = reatomComponent<{
   initValue?: string | null | JSONContent,
@@ -87,6 +47,8 @@ const NewsContent = reatomComponent<{
 }>(({
   ctx, tempContentAtom, initValue, saveAction, isValidAtom
 }) => {
+  console.log(initValue);
+
   const editor = useEditor({
     extensions: [
       ...editorExtensions,
@@ -95,16 +57,26 @@ const NewsContent = reatomComponent<{
         placeholder: 'Напишите что-нибудь...',
       }),
     ],
+    content: initValue,
     onUpdate: ({ editor }) => {
       tempContentAtom(ctx, editor.getHTML())
     }
   })
 
-  useEffect(() => {
-    if (initValue) {
-      editor.commands.setContent(initValue)
-    }
-  }, [initValue])
+  const { charactersCount, wordsCount } = useEditorState({
+    editor,
+    selector: (ctx) => {
+      if (ctx.editor.isDestroyed) return {
+        charactersCount: 0,
+        wordsCount: 0,
+      };
+
+      return {
+        charactersCount: ctx.editor.storage.characterCount.characters(),
+        wordsCount: ctx.editor.storage.characterCount.words(),
+      }
+    },
+  })
 
   return (
     <div className="flex flex-col group gap-4 w-full h-full">
@@ -116,10 +88,9 @@ const NewsContent = reatomComponent<{
         />
       </div>
       <div className="flex items-center justify-end gap-4 w-full">
-        <CharactersCount
-          editor={editor}
-          limit={1024}
-        />
+        <div className="text-neutral-400 text-sm">
+          {charactersCount}/{1024} символов ({wordsCount} слов)
+        </div>
         <NewsContentApply
           tempContentAtom={tempContentAtom}
           isValidAtom={isValidAtom}
@@ -130,14 +101,11 @@ const NewsContent = reatomComponent<{
   )
 }, "CreateNewsContent")
 
-//
 const EditNewsSubmit = reatomComponent(({ ctx }) => {
-  const isDisabled = !ctx.spy(editNews.isValid)
-    || ctx.spy(editNews.submit.statusesAtom).isPending
+  const isDisabled = !ctx.spy(editNews.isValid) || ctx.spy(editNews.submit.statusesAtom).isPending
 
   return <ButtonXSubmit title="Редактировать" isDisabled={isDisabled} action={() => editNews.submit(ctx)} />
 }, "EditNewsSubmit")
-
 const EditNewsTitleInput = reatomComponent(({ ctx }) => {
   const old = ctx.get(editNewsState.title.historyAtom)[1]
   const value = ctx.spy(editNewsState.title)
@@ -150,7 +118,6 @@ const EditNewsTitleInput = reatomComponent(({ ctx }) => {
     />
   )
 }, "EditNewsTitleInput")
-
 const EditNewsDescInput = reatomComponent(({ ctx }) => {
   const old = ctx.get(editNewsState.description.historyAtom)[1]
   const value = ctx.spy(editNewsState.description)
@@ -163,7 +130,6 @@ const EditNewsDescInput = reatomComponent(({ ctx }) => {
     />
   )
 }, "EditNewsDescInput")
-
 const EditNewsForm = reatomComponent(({ ctx }) => {
   const item = ctx.spy(editNews.item);
   if (!item) return <Typography>Выбранный объект не найден</Typography>
@@ -184,40 +150,36 @@ const EditNewsForm = reatomComponent(({ ctx }) => {
   )
 }, "EditNewsForm")
 
-//
 const CreateNewsTitle = reatomComponent(({ ctx }) => {
   return (
     <Input
       placeholder="Заголовок"
-      value={ctx.spy(createNewsTitleAtom)}
-      onChange={(e) => createNewsTitleAtom(ctx, e.target.value)}
+      value={ctx.spy(createNewsState.title)}
+      onChange={(e) => createNewsState.title(ctx, e.target.value)}
     />
   )
 }, "CreateNewsTitle")
-
 const CreateNewsDesc = reatomComponent(({ ctx }) => {
   return (
     <Input
       placeholder="Описание"
-      value={ctx.spy(createNewsDescriptionAtom)}
-      onChange={(e) => createNewsDescriptionAtom(ctx, e.target.value)}
+      value={ctx.spy(createNewsState.desc)}
+      onChange={(e) => createNewsState.desc(ctx, e.target.value)}
     />
   )
 }, "CreateNewsDesc")
-
 const CreateNewsImage = reatomComponent(({ ctx }) => {
   return (
     <Input
       placeholder="Изображение"
-      value={ctx.spy(createNewsImageAtom)}
-      onChange={e => createNewsImageAtom(ctx, e.target.value)}
+      value={ctx.spy(createNewsState.imageUrl)}
+      onChange={e => createNewsState.imageUrl(ctx, e.target.value)}
     />
   )
 }, "CreateNewsImage")
 
 const CreateNewsSubmit = reatomComponent(({ ctx }) => {
-  const isDisabled = !ctx.spy(createNews.isValid)
-    || ctx.spy(createNews.submit.statusesAtom).isPending
+  const isDisabled = !ctx.spy(createNews.isValid) || ctx.spy(createNews.submit.statusesAtom).isPending
 
   return <ButtonXSubmit title="Создать" action={() => createNews.submit(ctx)} isDisabled={isDisabled} />
 }, "CreateNewsSubmit")
@@ -232,7 +194,7 @@ const CreateNewsForm = () => {
         <NewsContent
           isValidAtom={createNews.contentIsValid}
           saveAction={createNews.saveContent}
-          tempContentAtom={createNewsTempContentAtom}
+          tempContentAtom={createNewsState.tempContent}
         />
       </div>
     </div>
@@ -275,7 +237,7 @@ const NewsListItem = reatomComponent<News>(({ ctx, id, title, imageUrl, creator 
                 link={createLink("news", id)}
               />
               <EditButton
-                onClick={() => createActionsLinkAction(ctx, { parent: "news", type: "edit", target: id.toString() })}
+                onClick={() => actions.createLinkValue(ctx, { parent: "news", type: "edit", target: id.toString() })}
               />
               <DeleteButton
                 onClick={() => deleteNews.deleteBefore(ctx, { id, title })}
@@ -290,14 +252,11 @@ const NewsListItem = reatomComponent<News>(({ ctx, id, title, imageUrl, creator 
 }, "NewsListItem")
 
 const NewsList = reatomComponent(({ ctx }) => {
-  useUpdate(newsListAction, [])
+  useUpdate(newsList.fetch, [])
 
-  const data = ctx.spy(newsListAction.dataAtom)?.data;
+  if (ctx.spy(newsList.fetch.statusesAtom).isPending) return <Skeleton className="h-16 w-full" />
 
-  if (ctx.spy(newsListAction.statusesAtom).isPending) {
-    return <Skeleton className="h-16 w-full" />
-  }
-
+  const data = ctx.spy(newsList.fetch.dataAtom)?.data;
   if (!data) return null;
 
   return (
@@ -307,7 +266,6 @@ const NewsList = reatomComponent(({ ctx }) => {
   )
 }, "NewsList")
 
-//
 const VARIANTS: Record<ActionType, ReactNode> = {
   "create": <CreateNewsForm />,
   "edit": <EditNewsForm />,
@@ -315,15 +273,11 @@ const VARIANTS: Record<ActionType, ReactNode> = {
 }
 
 export const NewsWrapper = reatomComponent(({ ctx }) => {
-  if (!ctx.spy(getSelectedParentAtom("news"))) {
-    return VARIANTS["view"]
-  }
-
-  return VARIANTS[ctx.spy(actionsTypeAtom)]
+  if (!ctx.spy(getSelectedParentAtom("news"))) return VARIANTS["view"]
+  return VARIANTS[ctx.spy(actionsState.type)]
 }, "NewsWrapper")
 
 export const ViewNews = () => <ToActionButtonX title="Создать" parent="news" type="create" />
-
 export const CreateNews = () => {
   return (
     <div className="flex items-center gap-1">
@@ -332,7 +286,6 @@ export const CreateNews = () => {
     </div>
   )
 }
-
 export const EditNews = () => {
   return (
     <div className="flex items-center gap-1">

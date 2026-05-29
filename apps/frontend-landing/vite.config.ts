@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
   const stage = process.env["STAGE"] as Maybe<Stage>
   const isProd = stage === 'prod';
 
-  console.log(`Building for stage ${stage}`);
+  let isSSR = false;
 
   return {
     plugins: [
@@ -38,7 +38,18 @@ export default defineConfig(({ mode }) => {
         filename: 'dist/bundle-stats.html',
         gzipSize: true,
         brotliSize: true,
-      })
+      }),
+      {
+        name: "log-on-client",
+        configResolved(resolvedConfig) {
+          isSSR = !!resolvedConfig.build.ssr;
+        },
+        buildStart() {
+          if (!isSSR && process.env.NODE_ENV === 'production') {
+            console.log(`Building for stage ${stage}`)
+          }
+        }
+      },
     ],
     build: {
       target: "esnext",

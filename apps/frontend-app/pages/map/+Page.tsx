@@ -9,7 +9,7 @@ import { reatomComponent, useAtom } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Typography } from "@/shared/ui/typography"
-import { IconExternalLink } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 
 const mapImage = getStaticImage("arts/6.jpg")
 
@@ -60,7 +60,7 @@ const ServersList = reatomComponent(({ ctx }) => {
               <Typography className='font-semibold leading-6'>
                 {translate["map.goTo"]()}
               </Typography>
-              <IconExternalLink size={16} />
+              <Icon name="sprite:external-link" className="size-4" />
             </Button>
           </Link>
         </div>
@@ -81,7 +81,7 @@ const page = createPageModel({
 
 export default function Page() {
   const [_] = useAtom(page.dataAtom);
-  
+
   return (
     <div className="flex flex-col w-full h-full gap-6">
       <PageHeaderImage img={mapImage} />

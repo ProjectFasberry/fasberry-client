@@ -1,7 +1,7 @@
 import Editor, { type OnMount } from "@monaco-editor/react";
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { Button } from "@/shared/ui/button";
-import { IconCircleDashed } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 import { configAtom, saveConfig, traefikConfig } from "../models/traefik.model";
 
 export const ConfigEditor = reatomComponent(({ ctx }) => {
@@ -33,7 +33,7 @@ export const ConfigEditor = reatomComponent(({ ctx }) => {
         >
           {savingStatus.isPending ? 'Сохранение' : 'Сохранить (Ctrl+S)'}
           {savingStatus.isPending && (
-            <IconCircleDashed size={16} className="animate-spin duration-300" />
+            <Icon name="sprite:loader-2" className="size-4 animate-spin duration-300" />
           )}
         </Button>
         {fetchStatus.isPending && <span className="text-white">Загрузка...</span>}

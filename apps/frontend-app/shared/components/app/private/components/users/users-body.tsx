@@ -1,12 +1,13 @@
-import { UsersViewer } from "../models/users.model"
+import { UsersViewer } from "../../models/users.model"
+import { SectionWrapper } from "../ui"
 import { Users, UsersItemMenu } from "./users.list"
 
 export const UsersBody = () => {
   return (
-    <div className="flex flex-col">
+    <SectionWrapper className="flex flex-col">
       <Users />
       <UsersViewer />
       <UsersItemMenu />
-    </div>
+    </SectionWrapper>
   )
 }

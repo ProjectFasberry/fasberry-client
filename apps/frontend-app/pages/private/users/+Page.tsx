@@ -1,5 +1,5 @@
-import { UsersBody } from "@/shared/components/app/private/components/users-body";
-import { UsersHeader } from "@/shared/components/app/private/components/users-header";
+import { UsersBody } from "@/shared/components/app/private/components/users/users-body";
+import { UsersHeader } from "@/shared/components/app/private/components/users/users-header";
 import { users, usersRoles } from "@/shared/components/app/private/models/users.model";
 import { createPageModel } from "@/shared/lib/events";
 import { useAtom } from "@reatom/npm-react";

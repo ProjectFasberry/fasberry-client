@@ -1,124 +1,124 @@
 import { client, withJsonBody } from "@/shared/lib/client-wrapper"
-import { reatomAsync, withCache, withDataAtom, withErrorAtom, withStatusesAtom } from "@reatom/framework"
+import { reatomAsync, withCache, withDataAtom, withErrorAtom, withStatusesAtom, type AsyncAction } from "@reatom/framework"
 import { notifyAboutRestrictRole } from "./actions.model"
 import { toast } from "sonner"
 import { action, atom } from "@reatom/framework"
 import { withAssign, withReset } from "@reatom/framework"
 
-export type RolePayload = {
-  id: number;
-  name: string;
-}
+export type RolesPayload = ExtractApiData<"getPrivatedRoleList">["data"];
+export type RolePayload = RolesPayload[number]
 
 export type RolePermission = {
-  id: number;
-  name: string;
+  id: number; name: string;
 }
-
 export type RolesRolePermissionListPayload = {
   role_id: number;
   permissions: RolePermission[];
 }
 
-export const rolesListAction = reatomAsync(async (ctx) => {
-  return await ctx.schedule(() => client<RolePayload[]>("privated/role/list").exec())
-}, {
-  name: "rolesListAction",
-  onReject: (_, e) => notifyAboutRestrictRole(e)
-}).pipe(
-  withDataAtom(),
-  withCache({ swr: false }),
-  withStatusesAtom()
-)
-
-export const permissionsAllListAction = reatomAsync(async (ctx) => {
-  return await ctx.schedule(() =>
-    client<RolePayload[]>(`privated/permissions/list/all`).exec()
+export const rolesList = {
+  fetch: reatomAsync(async (ctx) => {
+    return await ctx.schedule(() => client<RolesPayload>("privated/role/list").exec())
+  }, {
+    name: "rolesList.fetch",
+    onReject: (_, e) => notifyAboutRestrictRole(e)
+  }).pipe(
+    withDataAtom(),
+    withCache({ swr: false }),
+    withStatusesAtom()
   )
-}, {
-  name: "permissionsAllListAction",
-  onReject: (_, e) => notifyAboutRestrictRole(e)
-}).pipe(
-  withDataAtom(),
-  withCache({ swr: false }),
-  withStatusesAtom()
-)
+}
 
-export const permissionsByRoleListAction = reatomAsync(async (ctx, roleId: number) => {
-  return await ctx.schedule(() =>
-    client<RolesRolePermissionListPayload>(`privated/role/${roleId}/permission/list`).exec()
+export const permissionsAllList = {
+  fetch: reatomAsync(async (ctx) => {
+    return await ctx.schedule(() =>
+      client<RolesPayload>(`privated/permissions/list/all`, { signal: ctx.controller.signal }).exec()
+    )
+  }, {
+    name: "permissionsAllList.fetch",
+    onReject: (_, e) => notifyAboutRestrictRole(e)
+  }).pipe(
+    withDataAtom(),
+    withCache({ swr: false }),
+    withStatusesAtom()
   )
-}, {
-  name: "permissionsByRoleListAction",
-  onReject: (_, e) => notifyAboutRestrictRole(e)
-}).pipe(
-  withDataAtom(),
-  withCache({ swr: false }),
-  withStatusesAtom()
-)
+}
 
-export const addPermissionForRoleAction = reatomAsync(async (ctx, roleId: number) => {
-  const perms = ctx.get(roleNewPermsAtom).map((t) => t.id);
+export const permissionsByRole = atom(null, "permissionsByRole").pipe(
+  withAssign((_, name) => ({
+    fetchList: reatomAsync(async (ctx, roleId: number) => {
+      return await ctx.schedule(() =>
+        client<RolesRolePermissionListPayload>(`privated/role/${roleId}/permission/list`, { signal: ctx.controller.signal }).exec()
+      )
+    }, {
+      name: `${name}.fetchList`,
+      onReject: (_, e) => notifyAboutRestrictRole(e)
+    }).pipe(
+      withDataAtom(),
+      withCache({ swr: false }),
+      withStatusesAtom()
+    ),
+    add: reatomAsync(async (ctx, roleId: number) => {
+      const perms = ctx.get(roleNewPermsAtom).map((t) => t.id);
 
-  const body = {
-    permissions: perms
-  }
+      const body = {
+        permissions: perms
+      }
 
-  const result = await client
-    .post<number>(`privated/role/${roleId}/permission/add`)
-    .pipe(withJsonBody(body))
-    .exec()
+      const result = await client
+        .post<ExtractApiData<"postPrivatedRoleByIdPermissionAdd">["data"]>(`privated/role/${roleId}/permission/add`)
+        .pipe(withJsonBody(body))
+        .exec()
 
-  return { roleId, result }
-}, {
-  name: "addPermissionForRoleAction",
-  onFulfill: (ctx, { result, roleId }) => {
-    const role = ctx.get(rolesListAction.dataAtom)?.find((role) => role.id === roleId);
+      return { roleId, result }
+    }, {
+      name: `${name}.add`,
+      onFulfill: (ctx, { result, roleId }) => {
+        const role = ctx.get(rolesList.fetch.dataAtom)?.find((role) => role.id === roleId);
 
-    toast.success(`Добавлено ${result} ролей для роли ${role?.name}`);
+        toast.success(`Добавлено ${result} ролей для роли ${role?.name}`);
 
-    roleNewPermsAtom.reset(ctx)
+        roleNewPermsAtom.reset(ctx)
 
-    permissionsByRoleListAction.cacheAtom.reset(ctx)
-    permissionsByRoleListAction(ctx, roleId)
-  },
-  onReject: (_, e) => notifyAboutRestrictRole(e)
-}).pipe(
-  withDataAtom(),
-  withCache({ swr: false }),
-  withStatusesAtom()
-)
+        permissionsByRole.fetchList.cacheAtom.reset(ctx)
+        permissionsByRole.fetchList(ctx, roleId)
+      },
+      onReject: (_, e) => notifyAboutRestrictRole(e)
+    }).pipe(
+      withDataAtom(),
+      withCache({ swr: false }),
+      withStatusesAtom()
+    ),
+    delete: reatomAsync(async (ctx, roleId: number) => {
+      const perms = ctx.get(roleDeletedPermsAtom).map((t) => t.id);
 
-export const deletePermissionForRoleAction = reatomAsync(async (ctx, roleId: number) => {
-  const perms = ctx.get(roleDeletedPermsAtom).map((t) => t.id);
+      const result = await client
+        .delete<ExtractApiData<"deletePrivatedRoleByIdPermissionRemove">["data"]>(`privated/role/${roleId}/permission/remove`)
+        .pipe(withJsonBody({
+          permissions: perms
+        }))
+        .exec()
 
-  const body = {
-    permissions: perms
-  }
+      return { roleId, result }
+    }, {
+      name: `${name}.delete`,
+      onFulfill: (ctx, { result, roleId }) => {
+        const role = ctx.get(rolesList.fetch.dataAtom)?.find((role) => role.id === roleId);
 
-  const result = await client
-    .delete<number>(`privated/role/${roleId}/permission/remove`)
-    .pipe(withJsonBody(body))
-    .exec()
+        toast.success(`Удалено ${result} разрешений для роли ${role?.name}`);
 
-  return { roleId, result }
-}, {
-  name: "deletePermissionForRoleAction",
-  onFulfill: (ctx, { result, roleId }) => {
-    const role = ctx.get(rolesListAction.dataAtom)?.find((role) => role.id === roleId);
+        roleDeletedPermsAtom.reset(ctx)
 
-    toast.success(`Удалено ${result} разрешений для роли ${role?.name}`);
-
-    roleDeletedPermsAtom.reset(ctx)
-
-    permissionsByRoleListAction.cacheAtom.reset(ctx)
-    permissionsByRoleListAction(ctx, roleId)
-  },
-  onReject: (_, e) => notifyAboutRestrictRole(e)
-}).pipe(
-  withDataAtom(),
-  withCache({ swr: false }),
-  withStatusesAtom()
+        permissionsByRole.fetchList.cacheAtom.reset(ctx)
+        permissionsByRole.fetchList(ctx, roleId)
+      },
+      onReject: (_, e) => notifyAboutRestrictRole(e)
+    }).pipe(
+      withDataAtom(),
+      withCache({ swr: false }),
+      withStatusesAtom()
+    )
+  }))
 )
 
 export const roleEditableAtom = atom<RolePayload | null>(null, "roleEditable").pipe(withReset())
@@ -126,7 +126,7 @@ export const rolesIsEditableAtom = atom((ctx) => !!ctx.spy(roleEditableAtom), "r
 
 roleEditableAtom.onChange((ctx, state) => {
   if (!state) return;
-  permissionsAllListAction(ctx)
+  permissionsAllList.fetch(ctx)
 })
 
 export const roleNewPermsAtom = atom<RolePayload[]>([], "roleNewPerms").pipe(withReset())
@@ -136,7 +136,7 @@ export const getPermIsSelectedAtom = (id: number) => atom((ctx) => ctx.spy(roleN
 export const getDeletedPermIsSelectedAtom = (id: number) => atom((ctx) => ctx.spy(roleDeletedPermsAtom).some(p => p.id === id))
 
 export const permission = atom(null, "permission").pipe(
-  withAssign((ctx, name) => ({
+  withAssign((_, name) => ({
     addNewPermAction: action((ctx, payload: RolePayload) => {
       roleNewPermsAtom(ctx, (state) => state.some((item) => item.id === payload.id) ? state : [...state, payload])
     }, `${name}.addNewPermAction`),
@@ -150,10 +150,10 @@ export const permission = atom(null, "permission").pipe(
       roleDeletedPermsAtom(ctx, (state) => state.filter(item => item.id !== id))
     }, `${name}.addDeletedPermRoleAction`),
     availablePerms: atom<RolePayload[]>((ctx) => {
-      const all = ctx.spy(permissionsAllListAction.dataAtom);
+      const all = ctx.spy(permissionsAllList.fetch.dataAtom);
       if (!all) return [];
 
-      const rolePerms = ctx.spy(permissionsByRoleListAction.dataAtom)?.permissions;
+      const rolePerms = ctx.spy(permissionsByRole.fetchList.dataAtom)?.permissions;
       if (!rolePerms) return [];
 
       const roleIds = new Set(rolePerms.map(p => p.id));
@@ -174,14 +174,14 @@ export const saveChangesAction = reatomAsync(async (ctx) => {
   const newPerms = ctx.get(roleNewPermsAtom)
   const removedPerms = ctx.get(roleDeletedPermsAtom)
 
-  const events: typeof deletePermissionForRoleAction[] = [];
+  const events: AsyncAction<[roleId: number], any>[] = [];
 
   if (newPerms.length >= 1) {
-    events.push(addPermissionForRoleAction)
+    events.push(permissionsByRole.add)
   }
 
   if (removedPerms.length >= 1) {
-    events.push(deletePermissionForRoleAction)
+    events.push(permissionsByRole.delete)
   }
 
   if (events.length === 0) throw new Error("Events is empty")

@@ -5,7 +5,7 @@ import { createNewsSchema, newsUpdateSchema } from "@/shared/schemas/news";
 import { toast } from "sonner";
 import { client, withJsonBody, withQueryParams } from "@/shared/lib/client-wrapper";
 import { generateHTML, type JSONContent } from "@tiptap/react"
-import { actionsTargetAtom, collectChanges, compareChanges, notifyAboutRestrictRole } from "./actions.model";
+import { actionsState, collectChanges, compareChanges, notifyAboutRestrictRole } from "./actions.model";
 import { withUndo } from "@reatom/undo";
 import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model";
 import { navigate } from "vike/client/router";
@@ -14,55 +14,60 @@ import { editorExtensions } from "@/shared/components/config/editor/editor.model
 type NewsPayload = ExtractApiData<"getSharedNewsList">["data"]
 type News = NewsPayload["data"][number];
 
-export const newsListAction = reatomAsync(async (ctx) => {
-  return await ctx.schedule(() =>
-    client
-      .get<NewsPayload>("privated/news/list", { signal: ctx.controller.signal })
-      .pipe(withQueryParams({ asc: false, content: true }))
-      .exec()
+export const newsList = {
+  fetch: reatomAsync(async (ctx) => {
+    return await ctx.schedule(() =>
+      client
+        .get<NewsPayload>("privated/news/list", { signal: ctx.controller.signal })
+        .pipe(withQueryParams({ asc: false, content: true }))
+        .exec()
+    )
+  }, {
+    name: `newsList.fetch`
+  }).pipe(
+    withDataAtom(null),
+    withStatusesAtom(),
+    withCache({ swr: false })
   )
-}, "newsListAction").pipe(
-  withDataAtom(null),
-  withStatusesAtom(),
-  withCache({ swr: false })
+}
+
+export const createNewsState = atom(null, "createNewsState").pipe(
+  withAssign((_, name) => ({
+    title: atom("", `${name}.title`).pipe(withReset()),
+    desc: atom("", `${name}.description`).pipe(withReset()),
+    imageUrl: atom("", `${name}.imageUrl`).pipe(withReset()),
+    content: atom<JSONContent | null>(null, `${name}.content`).pipe(withReset()),
+    tempContent: atom<string>("", `${name}.tempContent`).pipe(withReset())
+  }))
 )
-
-export const createNewsTitleAtom = atom("", "createNewsTitle").pipe(withReset());
-export const createNewsDescriptionAtom = atom("", "createNewsDescription").pipe(withReset());
-export const createNewsImageAtom = atom("", "createNewsImage").pipe(withReset());
-export const createNewsContentAtom = atom<JSONContent | null>(null, "createNewsContent").pipe(withReset());
-export const createNewsTempContentAtom = atom<string>("", "createNewsTempContent").pipe(withReset());
-
-export const createNews = atom(null, "news").pipe(
-  withAssign((ctx, name) => ({
+export const createNews = atom(null, "createNews").pipe(
+  withAssign((_, name) => ({
     resetFull: action((ctx) => {
-      createNewsTitleAtom.reset(ctx)
-      createNewsDescriptionAtom.reset(ctx)
-      createNewsImageAtom.reset(ctx)
-      createNewsContentAtom.reset(ctx)
-      createNewsTempContentAtom.reset(ctx)
+      createNewsState.title.reset(ctx)
+      createNewsState.desc.reset(ctx)
+      createNewsState.imageUrl.reset(ctx)
+      createNewsState.content.reset(ctx)
+      createNewsState.tempContent.reset(ctx)
     }),
-    isValid: atom((ctx) => {
-      const value: Nullable<z.infer<typeof createNewsSchema>> = {
-        title: ctx.spy(createNewsTitleAtom),
-        description: ctx.spy(createNewsDescriptionAtom),
-        imageUrl: ctx.spy(createNewsImageAtom),
-        content: ctx.spy(createNewsContentAtom),
-      }
-
-      return createNewsSchema.safeParse(value).success
-    }),
-    contentIsValid: atom((ctx) => ctx.spy(createNewsTempContentAtom).length >= 1, `${name}.contentIsValid`),
+    isValid: atom((ctx) =>
+      createNewsSchema.safeParse({
+        title: ctx.spy(createNewsState.title),
+        description: ctx.spy(createNewsState.desc),
+        imageUrl: ctx.spy(createNewsState.imageUrl),
+        content: ctx.spy(createNewsState.content),
+      }).success
+    ),
+    contentIsValid: atom((ctx) => ctx.spy(createNewsState.tempContent).length >= 1, `${name}.contentIsValid`),
     saveContent: action((ctx, json: JSONContent) => {
-      createNewsContentAtom(ctx, json);
+      createNewsState.content(ctx, json);
       toast.success("Изменения применены")
     }),
     submit: reatomAsync(async (ctx) => {
       const json = {
-        title: ctx.get(createNewsTitleAtom),
-        description: ctx.get(createNewsDescriptionAtom),
-        imageUrl: ctx.get(createNewsImageAtom),
-        content: ctx.get(createNewsContentAtom)
+        title: ctx.get(createNewsState.title),
+        description: ctx.get(createNewsState.desc),
+        imageUrl: ctx.get(createNewsState.imageUrl),
+        content: ctx.get(createNewsState.content)
       }
 
       return await client
@@ -70,12 +75,12 @@ export const createNews = atom(null, "news").pipe(
         .pipe(withJsonBody(json))
         .exec()
     }, {
-      name: "createNewsAction",
+      name: `${name}.submit`,
       onFulfill: (ctx, res) => {
         toast.success("Новость создана")
 
-        newsListAction.cacheAtom.reset(ctx)
-        newsListAction.dataAtom(ctx, (state) => state ? { data: [...state.data, res], meta: state.meta } : null)
+        newsList.fetch.cacheAtom.reset(ctx)
+        newsList.fetch.dataAtom(ctx, (state) => state ? { data: [...state.data, res], meta: state.meta } : null)
         createNews.resetFull(ctx)
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
@@ -86,12 +91,12 @@ export const createNews = atom(null, "news").pipe(
 )
 
 export const editNewsState = atom(null, "editNewsState").pipe(
-  withAssign(() => ({
-    title: atom<string>('', 'editNewsTitle').pipe(withReset(), withUndo({ length: 200 })),
-    description: atom<string>('', 'editNewsDesc').pipe(withReset(), withUndo({ length: 200 })),
-    content: atom<JSONContent | null>(null, 'editNewsContent').pipe(withReset(), withUndo()),
-    imageUrl: atom<string>('', 'editNewsImageUrl').pipe(withReset(), withUndo()),
-    tempContent: atom<string>('', 'editNewsTempContent').pipe(withReset(), withUndo({ length: 200 }))
+  withAssign((_, name) => ({
+    title: atom<string>('', `${name}.title`).pipe(withReset(), withUndo({ length: 200 })),
+    description: atom<string>('', `${name}.description`).pipe(withReset(), withUndo({ length: 200 })),
+    content: atom<JSONContent | null>(null, `${name}.content`).pipe(withReset(), withUndo()),
+    imageUrl: atom<string>('', `${name}.imageUrl`).pipe(withReset(), withUndo()),
+    tempContent: atom<string>('', `${name}.tempContent`).pipe(withReset(), withUndo({ length: 200 }))
   }))
 )
 
@@ -106,18 +111,18 @@ const editFormAtoms: Record<string, AtomMut<any>> = {
 export const editNews = atom(null, "editNews").pipe(
   withAssign((_, name) => ({
     item: atom((ctx) => {
-      const id = ctx.spy(actionsTargetAtom);
+      const id = ctx.spy(actionsState.target);
 
       if (!id) {
         console.warn("Actions target is not defined")
         return null;
       }
 
-      const targets = ctx.spy(newsListAction.dataAtom)?.data;
+      const targets = ctx.spy(newsList.fetch.dataAtom)?.data;
 
       if (!targets) {
         console.warn("Targets is not defined. Refetching...")
-        newsListAction(ctx);
+        newsList.fetch(ctx);
         return null;
       }
 
@@ -185,7 +190,7 @@ export const editNews = atom(null, "editNews").pipe(
       toast.success("Изменения применены")
     }),
     submit: reatomAsync(async (ctx) => {
-      const id = ctx.get(actionsTargetAtom);
+      const id = ctx.get(actionsState.target);
 
       const changes = collectChanges(
         editNews.getValues(ctx),
@@ -235,8 +240,8 @@ export const deleteNews = atom(null, "deleteNews").pipe(
       onFulfill: (ctx, res) => {
         toast.success("Новость удалена")
 
-        newsListAction.cacheAtom.reset(ctx)
-        newsListAction.dataAtom(ctx, (state) => state ? { data: state.data.filter(news => news.id !== res.id), meta: state.meta } : null)
+        newsList.fetch.cacheAtom.reset(ctx)
+        newsList.fetch.dataAtom(ctx, (state) => state ? { data: state.data.filter(news => news.id !== res.id), meta: state.meta } : null)
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
     }).pipe(

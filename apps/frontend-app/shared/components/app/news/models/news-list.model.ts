@@ -5,6 +5,7 @@ import {
 } from "@reatom/framework"
 import { getNews } from "./news.model"
 import { createViewerModel } from "@/shared/models/shared.model"
+import { DEFAULT_SOFT_DELAY } from "@/shared/consts"
 
 type NewsPayload = ExtractApiData<"getSharedNewsList">["data"]
 
@@ -27,9 +28,7 @@ export const newsState = atom(null, "newsState").pipe(
       withAssign((_, name) => ({
         onChangeEvent: action(async (ctx, e: React.ChangeEvent<HTMLInputElement>) => {
           newsState.searchQuery(ctx, e.target.value);
-
-          await ctx.schedule(() => sleep(300))
-
+          await ctx.schedule(() => sleep(DEFAULT_SOFT_DELAY))
           news.refetchAll(ctx)
         }, `${name}.onChangeEvent`).pipe(
           withConcurrency()

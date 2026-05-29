@@ -2,9 +2,9 @@ import { type RatingItem as RatingItemProps, rating } from "@/shared/components/
 import { Link } from "@/shared/components/config/link"
 import { translate } from "@/shared/locales/helpers"
 import { PageLoader } from "@/shared/ui/page-loader"
-import { reatomComponent, useAtom, useUpdate } from "@reatom/npm-react"
+import { reatomComponent, useAtom } from "@reatom/npm-react"
 import { Typography } from "@/shared/ui/typography"
-import { IconChevronRight, IconTrophy } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 import { createPageModel } from "@/shared/lib/events"
 
 const RatingItem = ({
@@ -26,9 +26,9 @@ const RatingItem = ({
           >
             <div className="flex items-center gap-4 min-w-0">
               <div className="p-2.5 bg-neutral-50 rounded-xl transition-colors">
-                <IconTrophy
-                  size={20}
-                  className="duration-150 text-neutral-950 group-hover:fill-gold group-hover:text-gold"
+                <Icon
+                  name="sprite:trophy"
+                  className="size-[18px] duration-150 text-neutral-950 group-hover:fill-gold group-hover:text-gold"
                 />
               </div>
               <div className="flex flex-col min-w-0">
@@ -40,9 +40,9 @@ const RatingItem = ({
                 </span>
               </div>
             </div>
-            <IconChevronRight
-              size={18}
-              className="text-neutral-600 group-hover:text-neutral-300"
+            <Icon
+              name="sprite:chevron-right"
+              className="size-[18px] text-neutral-600 group-hover:text-neutral-300"
             />
           </Link>
         ))}

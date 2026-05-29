@@ -8,21 +8,21 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { Noop } from "@/shared/ui/noop";
 import { isEmptyArray } from "@/shared/lib/helpers";
 import { Typography } from "@/shared/ui/typography";
-import { IconDeviceDesktop, IconDeviceMobile, IconQuestionMark, type TablerIcon } from "@tabler/icons-react";
+import { Icon, type IconName } from "@/shared/ui/icon"
 
-const PLATFORM_ICONS: Record<string, TablerIcon> = {
-  "desktop": IconDeviceDesktop,
-  "mobile": IconDeviceMobile,
-  "unknown": IconQuestionMark
+const PLATFORM_ICONS: Record<string, IconName> = {
+  "desktop": "sprite:device-desktop",
+  "mobile": "sprite:device-mobile",
+  "unknown": "sprite:question-mark"
 }
 
 const SessionItemTrigger = ({ browser, os, platform, ip }: SessionPayload) => {
-  const PlatformIcon = PLATFORM_ICONS[platform?.type ?? "unknown"] ?? PLATFORM_ICONS["unknown"];
+  const platformIcon = PLATFORM_ICONS[platform?.type ?? "unknown"] ?? PLATFORM_ICONS["unknown"];
 
   return (
     <div className="flex items-center overflow-hidden hover:bg-neutral-800 duration-300 rounded-lg px-2 py-1 max-h-14 h-14 gap-2 w-full">
       <div className="flex bg-neutral-700 rounded-full items-center justify-center aspect-square h-full">
-        <PlatformIcon size={24} />
+        <Icon name={platformIcon} className='size-[24px]' />
       </div>
       <div className="flex flex-col justify-center h-full">
         <Typography className="font-medium leading-5">

@@ -5,34 +5,29 @@ import { compareChanges, notifyAboutRestrictRole } from "./actions.model";
 import { withAssign, withReset } from "@reatom/framework";
 import { withUndo } from '@reatom/undo'
 import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model";
+import { isEmptyArray } from "@/shared/lib/helpers";
 
 export type DictionariesItem = {
   value: string;
-  created_at: Date;
+  created_at: string;
   id: number;
   key: string;
 }
 
-export const dictionariesListAction = reatomAsync(async (ctx) => {
-  return await ctx.schedule(() =>
-    client<DictionariesItem[]>("privated/dictionaries/list").exec()
-  )
-}).pipe(withDataAtom(), withStatusesAtom(), withCache({ swr: false }))
-
 export const dictState = atom(null, "dictState").pipe(
-  withAssign(() => ({
-    editId: atom<Nullable<number>>(null, "dictionariesEditId").pipe(withReset()),
-    editKey: atom<Nullable<string>>(null, "dictionariesEditKey").pipe(withReset(), withUndo({ length: 200 })),
-    editValue: atom<Nullable<string>>(null, "dictionariesEditValue").pipe(withReset(), withUndo({ length: 200 })),
-    createKey: atom<string>("", "dictionariesCreateKey").pipe(withReset()),
-    createValue: atom<string>("", "dictionariesCreateValue").pipe(withReset())
+  withAssign((_, name) => ({
+    editId: atom<Nullable<number>>(null, `${name}.editId`).pipe(withReset()),
+    editKey: atom<Nullable<string>>(null, `${name}.editKey`).pipe(withReset(), withUndo({ length: 200 })),
+    editValue: atom<Nullable<string>>(null, `${name}.editValue`).pipe(withReset(), withUndo({ length: 200 })),
+    createKey: atom<string>("", `${name}.createKey`).pipe(withReset()),
+    createValue: atom<string>("", `${name}.createValue`).pipe(withReset())
   }))
 )
 
 export const dictionariesEdit = atom(null, "dictionariesEdit").pipe(
-  withAssign(() => ({
+  withAssign((_, name) => ({
     start: action((ctx, id: number) => {
-      const target = ctx.get(dictionariesListAction.dataAtom)?.find(d => d.id === id)
+      const target = ctx.get(dict.fetchList.dataAtom)?.find(d => d.id === id)
       if (!target) throw new Error("Target is not defined")
 
       dictState.editId(ctx, target.id);
@@ -44,7 +39,7 @@ export const dictionariesEdit = atom(null, "dictionariesEdit").pipe(
       dictState.editKey.reset(ctx)
       dictState.editValue.reset(ctx);
     }),
-    getIsEdit: (id: number) => atom((ctx) => ctx.spy(dictState.editId) === id,),
+    getIsEdit: (id: number) => atom((ctx) => ctx.spy(dictState.editId) === id),
     isValid: atom((ctx) => {
       const payload = {
         key: ctx.spy(dictState.editKey),
@@ -62,7 +57,18 @@ export const dictionariesEdit = atom(null, "dictionariesEdit").pipe(
 )
 
 export const dict = atom(null, "dict").pipe(
-  withAssign(() => ({
+  withAssign((_, name) => ({
+    fetchList: reatomAsync(async (ctx) => {
+      return await ctx.schedule(() =>
+        client<ExtractApiData<"getPrivatedDictionariesList">["data"]>("privated/dictionaries/list", { signal: ctx.controller.signal }).exec()
+      )
+    }, {
+      name: `${name}.fetchList`
+    }).pipe(
+      withDataAtom(null, (_, data) => isEmptyArray(data) ? null : data),
+      withStatusesAtom(),
+      withCache({ swr: false }),
+    ),
     create: reatomAsync(async (ctx) => {
       const json = {
         key: ctx.get(dictState.createKey),
@@ -70,19 +76,21 @@ export const dict = atom(null, "dict").pipe(
       }
 
       return await client
-        .post<DictionariesItem>("privated/dictionaries/create")
+        .post<ExtractApiData<"postPrivatedDictionariesCreate">["data"]>("privated/dictionaries/create")
         .pipe(withJsonBody(json))
         .exec()
     }, {
-      name: "dictionariesCreateAction",
+      name: `${name}.create`,
       onFulfill: (ctx, res) => {
         dictState.createKey.reset(ctx)
         dictState.createValue.reset(ctx);
 
-        dictionariesListAction.dataAtom(ctx, (state) => state ? [...state, res] : [res]);
+        dict.fetchList.dataAtom(ctx, (state) => state ? [...state, res] : [res]);
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
-    }).pipe(withStatusesAtom()),
+    }).pipe(
+      withStatusesAtom()
+    ),
     edit: reatomAsync(async (ctx, id: number) => {
       const json = {
         key: ctx.get(dictState.editKey),
@@ -90,28 +98,36 @@ export const dict = atom(null, "dict").pipe(
       }
 
       return await client
-        .post<DictionariesItem>(`privated/dictionaries/${id}/edit`)
+        .post<ExtractApiData<"postPrivatedDictionariesByIdEdit">["data"]>(`privated/dictionaries/${id}/edit`)
         .pipe(withJsonBody(json))
         .exec()
     }, {
-      name: "dictionariesEditAction",
+      name: `${name}.edit`,
       onFulfill: (ctx, res) => {
         dictionariesEdit.resetFull(ctx)
-        dictionariesListAction.dataAtom(ctx, (state) => state ? state.filter(s => s.id !== res.id) : [])
+        dict.fetchList.dataAtom(ctx, (state) => state ? state.filter(s => s.id !== res.id) : [])
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
-    }).pipe(withStatusesAtom()),
+    }).pipe(
+      withStatusesAtom()
+    ),
     delete: reatomAsync(async (ctx, id: number) => {
-      return await client
-        .delete<{ id: number }>(`privated/dictionaries/${id}/remove`)
+      const result = await client
+        .delete<ExtractApiData<"deletePrivatedDictionariesByIdRemove">['data']>(`privated/dictionaries/${id}/remove`)
         .exec()
+
+      return { result, id };
     }, {
-      name: "dictionariesCreateAction",
-      onFulfill: (ctx, res) => {
-        dictionariesListAction.dataAtom(ctx, (state) => state ? state.filter(s => s.id !== res.id) : [])
+      name: `${name}.delete`,
+      onFulfill: (ctx, { result, id }) => {
+        if (result === 'OK') {
+          dict.fetchList.dataAtom(ctx, (state) => state ? state.filter(s => s.id !== id) : [])
+        }
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
-    }).pipe(withStatusesAtom()),
+    }).pipe(
+      withStatusesAtom()
+    ),
     deleteBefore: action((ctx, item: { id: number, title: string }) => {
       itemToRemoveAtom(ctx, item)
 
@@ -122,7 +138,7 @@ export const dict = atom(null, "dict").pipe(
         cancelAction: action((ctx) => itemToRemoveAtom.reset(ctx)),
         autoClose: true
       });
-    }, "deleteDictionariesBeforeAction")
+    }, `${name}.deleteBefore`)
   }))
 )
 

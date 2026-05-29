@@ -1,7 +1,7 @@
 import { reatomComponent } from "@reatom/npm-react"
 import { login, type AuthLoginQRStatus, loginState, type AuthLoginVariant, authLoginVariantAtom, authSubmitIsDisabledAtom } from "../models/login.model"
 import { type ReactNode, useRef } from "react"
-import { IconCheck, IconHandStop, IconRefresh } from "@tabler/icons-react"
+import { Icon } from "@/shared/ui/icon"
 // import { Copy } from "@/shared/ui/copy"
 import { Button } from "@/shared/ui/button"
 import { spawn } from "@reatom/framework"
@@ -88,7 +88,7 @@ const LoginQRRetry = reatomComponent(({ ctx }) => {
         className="group cursor-pointer active:scale-[0.98] duration-150"
       >
         <div ref={iconRef}>
-          <IconRefresh size={42} className="text-neutral-200" />
+          <Icon name='sprite:refresh' className="size-[42px] text-neutral-200" />
         </div>
       </button>
     </div>
@@ -118,12 +118,12 @@ const LoginQRConnected = reatomComponent(({ ctx }) => {
 
 const LoginQRDeclined = () => (
   <div className="flex flex-col w-full items-center justify-center gap-4">
-    <IconHandStop size={32} className="text-red-600" />
+    <Icon name="sprite:hand-stop" className="size-[32px] text-red-600" />
   </div>
 )
 const LoginVerified = () => (
   <div className="flex flex-col w-full items-center justify-center gap-4">
-    <IconCheck size={32} className="text-green-600" />
+    <Icon name="sprite:check" className="size-[32px] text-green-600" />
   </div>
 )
 

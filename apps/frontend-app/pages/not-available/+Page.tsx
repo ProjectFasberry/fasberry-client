@@ -3,7 +3,7 @@ import { env } from "@/shared/env";
 import { getStaticImage } from "@/shared/lib/volume-helpers";
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";
-import { IconArrowRight } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 
 const Back = () => {
   return (
@@ -12,7 +12,7 @@ const Back = () => {
         <Typography className='text-center font-semibold'>
           В безопасное место
         </Typography>
-        <IconArrowRight size={18} />
+        <Icon name="sprite:arrow-up" className="size-4" />
       </Button>
     </Link>
   )

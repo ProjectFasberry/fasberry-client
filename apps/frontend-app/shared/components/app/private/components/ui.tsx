@@ -1,10 +1,11 @@
 import { Link } from "@/shared/components/config/link"
 import { Button } from "@/shared/ui/button"
-import { type Icon, IconArrowRight, IconPencil, IconPlus, type IconProps, IconX } from "@tabler/icons-react"
-import { type ButtonHTMLAttributes, type ReactNode } from "react"
+import { type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react"
 import { tv, type VariantProps } from "tailwind-variants"
 import { Typography } from "@/shared/ui/typography"
-import { cn } from "@/shared/lib/cn"
+import type { IconName } from "@/shared/ui/icon"
+import { Icon } from "@/shared/ui/icon"
+import clsx from "clsx"
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
 
@@ -16,24 +17,22 @@ export const DeleteButton = (props: ButtonProps) => {
   return (
     <Button
       {...props}
-      className={cn(baseVariant(), props.className)}
+      className={clsx(baseVariant(), props.className)}
     >
-      <IconX size={18} />
+      <Icon name="sprite:x" className="size-[18px]" />
     </Button>
   )
 }
-
 export const EditButton = (props: ButtonProps) => {
   return (
     <Button
       {...props}
-      className={cn(baseVariant(), props.className)}
+      className={clsx(baseVariant(), props.className)}
     >
-      <IconPencil size={18} />
+      <Icon name="sprite:pencil" className="size-[18px]" />
     </Button>
   )
 }
-
 export const ToLink = ({ link }: { link: string }) => {
   return (
     <Link
@@ -41,18 +40,17 @@ export const ToLink = ({ link }: { link: string }) => {
       target="_blank"
       className="flex items-center justify-center rounded-sm h-6 w-6 aspect-square p-0 bg-neutral-800"
     >
-      <IconArrowRight size={18} className="-rotate-45" />
+      <Icon name="sprite:arrow-right" className="size-[18px] -rotate-45" />
     </Link>
   )
 }
-
 export const AddButton = (props: ButtonProps) => {
   return (
     <Button
       {...props}
       className={baseVariant({ className: props.className })}
     >
-      <IconPlus size={18} />
+      <Icon name="sprite:plus" className="size-[18px]" />
     </Button >
   )
 }
@@ -68,10 +66,10 @@ const actionButtonVariant = tv({
 })
 
 type ActionButtonProps = ButtonProps & VariantProps<typeof actionButtonVariant> & {
-  icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<Icon>>
+  icon: IconName
 }
 
-export const ActionButton = ({ variant, children, icon: Icon, ...props }: ActionButtonProps) => {
+export const ActionButton = ({ variant, children, icon: iconName, ...props }: ActionButtonProps) => {
   return (
     <Button
       {...props}
@@ -82,7 +80,7 @@ export const ActionButton = ({ variant, children, icon: Icon, ...props }: Action
           {children}
         </div>
       )}
-      <Icon size={18} />
+      <Icon name={iconName} className="size-[18px]" />
     </Button>
   )
 }
@@ -100,17 +98,27 @@ export const itemVariant = tv({
   }
 })
 
-export const ActionsHeader = (
+export const WithHeader = (
   { title, children }: { title: string, children?: ReactNode }
 ) => {
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center gap-2 h-8">
-        <Typography className="text-xl font-semibold">
+        <Typography className="text-lg font-semibold">
           {title}
         </Typography>
       </div>
       {children}
     </div>
+  )
+}
+
+const sectionWrapperVariant = tv({
+  base: `p-2 bg-neutral-900 rounded-xl lg:p-3`
+})
+
+export const SectionWrapper = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={clsx(sectionWrapperVariant(), className)} {...props} />
   )
 }

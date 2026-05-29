@@ -4,14 +4,12 @@ import {
   dictionariesEdit,
   dictState,
   type DictionariesItem,
-  dictionariesListAction
 } from "../models/dictionaries.model";
 import { Typography } from "@/shared/ui/typography"
 import { ActionButton, DeleteButton, EditButton } from "./ui";
 import { Input } from "@/shared/ui/input";
-import { IconArrowBackUp, IconCheck } from "@tabler/icons-react";
 import { type ReactNode } from "react";
-import { actionsTypeAtom, type ActionType, getSelectedParentAtom } from "../models/actions.model";
+import { actionsState, type ActionType, getSelectedParentAtom } from "../models/actions.model";
 import { ButtonXSubmit, ToActionButtonX } from "./global";
 
 type DictionariesListItemProps = Omit<DictionariesItem, "key"> & {
@@ -53,14 +51,14 @@ const DictionariesListItem = reatomComponent<DictionariesListItemProps>(({ ctx, 
         {isEdit ? (
           <>
             <ActionButton
-              icon={IconArrowBackUp}
+              icon="sprite:arrow-back-up"
               disabled={editIsLoading}
               onClick={() => dictionariesEdit.resetFull(ctx)}
             />
             <ActionButton
               variant="selected"
               onClick={() => dict.edit(ctx, id)}
-              icon={IconCheck}
+              icon="sprite:check"
               disabled={!ctx.spy(dictionariesEdit.isValid) || editIsLoading}
             />
           </>
@@ -82,11 +80,11 @@ const DictionariesListItem = reatomComponent<DictionariesListItemProps>(({ ctx, 
 }, "DictionariesListItem")
 
 const DictionariesList = reatomComponent(({ ctx }) => {
-  useUpdate(dictionariesListAction, [])
+  useUpdate(dict.fetchList, [])
 
-  const data = ctx.spy(dictionariesListAction.dataAtom)
+  const data = ctx.spy(dict.fetchList.dataAtom)
 
-  if (ctx.spy(dictionariesListAction.statusesAtom).isPending) {
+  if (ctx.spy(dict.fetchList.statusesAtom).isPending) {
     return null;
   }
 
@@ -143,7 +141,7 @@ const VARIANTS: Record<ActionType, ReactNode> = {
 
 export const DictionariesWrapper = reatomComponent(({ ctx }) => {
   if (!ctx.spy(getSelectedParentAtom("dictionaries"))) return VARIANTS["view"]
-  return VARIANTS[ctx.spy(actionsTypeAtom)]
+  return VARIANTS[ctx.spy(actionsState.type)]
 }, "DictionariesWrapper")
 
 export const ViewDictionaries = () => <ToActionButtonX title="Создать" type="create" parent="dictionaries" />

@@ -7,6 +7,7 @@ import { app } from '@/shared/models/app/index.model';
 import { ErrorBoundaryProvider } from './error-boundary';
 import { Global } from './global';
 import { useCreateCtx } from '@/shared/lib/reatom/helpers';
+import { ENVIRONMENT } from '@/shared/consts';
 
 const Sync = () => {
   const pageCtx = usePageContext()
@@ -29,20 +30,25 @@ const AppProvider = ({ children }: PropsWithChildren) => {
 
 const ReatomProvider = ({ children }: PropsWithChildren) => {
   const pageCtx = usePageContext();
-  const ctx = useCreateCtx((ctx) => app.preInit(ctx, pageCtx))
-  
-  return <reatomContext.Provider value={ctx}>{children}</reatomContext.Provider>
+  const reatomCtx = useCreateCtx((ctx) => {
+    if (import.meta.env.DEV && ENVIRONMENT === 'client') {
+      app.initReatomLogger(ctx)
+    }
+
+    app.preInit(ctx, pageCtx.snapshot)
+  })
+  return <reatomContext.Provider value={reatomCtx}>{children}</reatomContext.Provider>
 }
 
 export const WrapperChild = ({ children }: PropsWithChildren) => {
   return (
-    <ErrorBoundaryProvider>
-      <ReatomProvider>
+    <ReatomProvider>
+      <ErrorBoundaryProvider>
         <Sync />
         <AppProvider>
           {children}
         </AppProvider>
-      </ReatomProvider>
-    </ErrorBoundaryProvider>
+      </ErrorBoundaryProvider>
+    </ReatomProvider>
   )
 }

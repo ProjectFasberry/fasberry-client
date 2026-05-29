@@ -20,12 +20,12 @@ export const banners = atom(null, "banners").pipe(
   }))
 )
 
-export const createBannerState = atom(null).pipe(
+export const createBannerState = atom(null, "createBannerState").pipe(
   withAssign((_, name) => ({
-    title: atom("").pipe(withReset()),
-    desc: atom("").pipe(withReset()),
-    hrefTitle: atom("").pipe(withReset()),
-    hrefValue:  atom("").pipe(withReset())
+    title: atom("", `${name}.title  `).pipe(withReset()),
+    desc: atom("", `${name}.desc`).pipe(withReset()),
+    hrefTitle: atom("", `${name}.hrefTitle`).pipe(withReset()),
+    hrefValue:  atom("", `${name}.hrefValue`).pipe(withReset())
   }))
 )
 export const createBanner = atom(null, "createBanner").pipe(

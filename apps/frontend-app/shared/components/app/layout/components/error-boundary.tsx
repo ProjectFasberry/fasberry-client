@@ -1,13 +1,17 @@
 import { Button } from "@/shared/ui/button";
-import { IconMoodWrrrFilled } from "@tabler/icons-react";
 import { type PropsWithChildren } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { errorBoundary } from "../models/error.model";
+import { Icon } from "@/shared/ui/icon"
+import { spyOptionAtom } from "@/shared/models/app/utils";
+import { reatomComponent } from "@reatom/npm-react";
 
-const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+const ErrorFallback = reatomComponent<FallbackProps>(({ ctx, error, resetErrorBoundary }) => {
+  const stage = spyOptionAtom(ctx, "state", "stage", "prod")
+
   return (
     <div className="flex flex-col gap-4 h-dvh responsive mx-auto w-full items-center justify-center">
-      <IconMoodWrrrFilled className="w-24 h-24" />
+      <Icon name="sprite:mood-wrrr" className="w-24 h-24" />
       <div className="flex flex-col w-full gap-2 items-center justify-center">
         <p className="text-lg sm:text-xl text-center leading-5 font-semibold">
           Произошла ошибка в работе приложения
@@ -23,7 +27,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
       >
         Обновить
       </Button>
-      {import.meta.env.DEV && (
+      {stage === 'staging' && (
         <div className="flex flex-col mt-2 gap-1 w-full">
           <p className="text-sm leading-4 text-neutral-400">Debug:</p>
           <pre className='text-red p-2 text-sm truncate text-wrap'>
@@ -33,7 +37,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
       )}
     </div>
   );
-}
+}, "ErrorFallback")
 
 export const ErrorBoundaryProvider = ({ children }: PropsWithChildren) => {
   return (

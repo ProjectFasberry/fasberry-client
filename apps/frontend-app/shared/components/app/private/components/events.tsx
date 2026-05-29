@@ -5,7 +5,7 @@ import { type AtomState } from "@reatom/framework"
 import { type ReactNode } from "react"
 import { Typography } from "@/shared/ui/typography"
 import { DeleteButton } from "./ui"
-import { actionsTypeAtom, getSelectedParentAtom } from "../models/actions.model"
+import { actionsState, getSelectedParentAtom } from "../models/actions.model"
 import { ButtonXSubmit, ToActionButtonX } from "./global"
 
 const CreateEventTitle = reatomComponent(({ ctx }) => {
@@ -68,7 +68,7 @@ const EventsList = reatomComponent(({ ctx }) => {
   useUpdate(events.fetch, [])
 
   if (ctx.spy(events.fetch.statusesAtom).isPending) return null;
-  
+
   const data = ctx.spy(events.fetch.dataAtom)
   if (!data) return null;
 
@@ -99,7 +99,7 @@ const EventsList = reatomComponent(({ ctx }) => {
   )
 }, "EventsList")
 
-const VARIANTS: Record<AtomState<typeof actionsTypeAtom>, ReactNode> = {
+const VARIANTS: Record<AtomState<typeof actionsState.type>, ReactNode> = {
   "create": <CreateEventForm />,
   "edit": null,
   "view": <EventsList />
@@ -110,7 +110,7 @@ export const EventsWrapper = reatomComponent(({ ctx }) => {
     return VARIANTS["view"]
   }
 
-  return VARIANTS[ctx.spy(actionsTypeAtom)]
+  return VARIANTS[ctx.spy(actionsState.type)]
 }, "EventsWrapper")
 
 export const ViewEvent = () => <ToActionButtonX title="Создать" parent="event" type="create" />;

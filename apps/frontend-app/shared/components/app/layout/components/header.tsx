@@ -1,4 +1,4 @@
-import { IconBuildingStore, IconMenu, IconX } from "@tabler/icons-react";
+import { Icon, type IconName } from "@/shared/ui/icon"
 import { createLink, Link } from '@/shared/components/config/link';
 import { reatomComponent } from "@reatom/npm-react";
 import { currentUserState } from "@/shared/models/current-user/index.model";
@@ -155,9 +155,9 @@ const CartTrigger = reatomComponent(({ ctx }) => {
       "
       ref={syncCartTrigger(ctx)}
     >
-      <IconBuildingStore
-        size={24}
-        className="group-data-[trigger=true]:text-green-500 group-data-[trigger=false]:text-neutral-400"
+      <Icon
+        name="sprite:building-store"
+        className="size-[24px] group-data-[trigger=true]:text-green-500 group-data-[trigger=false]:text-neutral-400"
       />
       {cartItemsLength > 0 && (
         <div
@@ -182,7 +182,9 @@ const syncState = action((ctx) => (el: Nullable<HTMLDivElement>) => {
   });
 })
 
-const USER_MENU_TRIGGER_ICONS = [{ icon: IconX, value: true }, { icon: IconMenu, value: false }];
+const USER_MENU_TRIGGER_ICONS: { icon: IconName, value: boolean }[] = [
+  { icon: "sprite:x", value: true }, { icon: "sprite:menu-2", value: false }
+];
 
 const UserMenuTrigger = reatomComponent(({ ctx }) => {
   const initial = ctx.get(headerUserMenuIsOpenAtom);
@@ -196,12 +198,12 @@ const UserMenuTrigger = reatomComponent(({ ctx }) => {
       "
       ref={syncState(ctx)}
     >
-      {USER_MENU_TRIGGER_ICONS.map(({ icon: Icon, value }, idx) => (
+      {USER_MENU_TRIGGER_ICONS.map(({ icon: iconName, value }, idx) => (
         <Icon
+          name={iconName}
           key={idx}
           data-sound={true}
-          size={20}
-          className={`absolute duration-300 opacity-0 ${value
+          className={`size-5 absolute duration-300 opacity-0 ${value
             ? "group-data-[active=true]:opacity-100" : "group-data-[active=false]:opacity-100"
             }`}
         />

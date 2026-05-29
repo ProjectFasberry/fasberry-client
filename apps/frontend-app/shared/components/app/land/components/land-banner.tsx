@@ -3,7 +3,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 import { landBannerAtom } from "../models/land.model";
 import { useRef } from "react";
 import { landChangesAtom, landMode, newBannerUrl } from "../models/edit-land.model";
-import { IconColorPicker } from "@tabler/icons-react";
+import { Icon } from "@/shared/ui/icon"
 
 const imageBannerVariant = tv({
   base: `select-none w-full h-full object-cover max-w-[144px]`
@@ -75,7 +75,7 @@ export const LandBanner = reatomComponent(({ ctx }) => {
     >
       {editIsAllow ? (
         <div className="flex items-center justify-center z-1 absolute h-full w-full bg-black/60">
-          <IconColorPicker size={26} />
+          <Icon name="sprite:color-picker" className="size-[26px]" />
         </div>
       ) : (
         currentBanner ? (

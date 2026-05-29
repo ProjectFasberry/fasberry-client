@@ -86,7 +86,7 @@ web_modules/
 .vscode-test
 
 # Neodx/svg generated
-/shared/sprite.gen.ts
+/shared/types/gen/icon/sprite.gen.ts
 
 # Visualizer file
 /stats.html

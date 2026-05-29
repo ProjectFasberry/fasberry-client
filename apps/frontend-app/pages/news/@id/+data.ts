@@ -7,14 +7,10 @@ import { render } from "vike/abort";
 import { type PageContextServer } from "vike/types";
 import { createCtx } from "@reatom/framework";
 import { snapshots } from "@/shared/models/ssr";
-import { newsState } from "@/shared/components/app/news/models/news.model";
+import { newsSingleState } from "@/shared/components/app/news/models/news-single.model";
 
 export type Data = Awaited<ReturnType<typeof data>>;
 export type News = ExtractApiData<"getSharedNewsById">["data"]
-
-async function getNewsById(id: string, init: RequestInit) {
-  return client<News>(`shared/news/${id}`, init).exec()
-}
 
 function metadata(
   news: News
@@ -36,7 +32,7 @@ export async function data(pageCtx: PageContextServer) {
 
   const id = pageCtx.routeParams.id
 
-  const news = await getNewsById(id, { headers }).catch(e => {
+  const news = await client<News>(`shared/news/${id}`, { headers }).exec().catch(e => {
     console.error("News error", e)
     return null;
   })
@@ -46,7 +42,7 @@ export async function data(pageCtx: PageContextServer) {
   config(metadata(news))
 
   const ctx = createCtx()
-  newsState.item(ctx, news)
-  
+  newsSingleState.data(ctx, news)
+
   pageCtx.snapshot = snapshots.merge(ctx, pageCtx)
 }
