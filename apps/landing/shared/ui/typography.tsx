@@ -22,13 +22,10 @@ export const typographyVariants = tv({
   },
 });
 
-type TypographyProps = VariantProps<typeof typographyVariants> & {
-  class?: string;
-} & JSX.HTMLAttributes<HTMLParagraphElement>;
+type TypographyProps = VariantProps<typeof typographyVariants> & JSX.HTMLAttributes<HTMLParagraphElement>;
 
 export const Typography = (props: TypographyProps) => {
   const merged = mergeProps({ variant: undefined, shadow: undefined, color: undefined }, props);
-
   const [local, rest] = splitProps(merged, ["variant", "shadow", "color", "class"]);
 
   return (

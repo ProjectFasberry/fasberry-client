@@ -7,7 +7,7 @@ import { useTranslate } from "@/shared/locales/helpers";
 import { useAtom } from "@reatom/npm-solid-js";
 import { For, lazy } from "solid-js";
 import { SpawnCarousel } from "./(components)/spawn-carousel";
-import { IdeaMainNavigation, IdeaPreviewCard, IdeasList } from "./(components)/gameplay";
+import { IdeaPreviewCard, IdeasList } from "./(components)/gameplay";
 import { getStaticObject } from "@/shared/lib/helpers";
 import { ClientOnly } from "vike-solid/ClientOnly";
 import { layoutSettingsState } from "@/shared/components/settings.model";
@@ -62,7 +62,7 @@ export default function Page() {
               </h3>
             </div>
             <Link href="/start" class={sectionVariantChild().action()}>
-              <Button variant="minecraft" class="w-full py-1 sm:py-1" >
+              <Button class="w-full py-1 sm:py-1" >
                 <Typography color="white" class="text-nowrap text-sm sm:text-base text-shadow-xl">
                   {translate("welcome.actionText")}!
                 </Typography>
@@ -77,7 +77,6 @@ export default function Page() {
             {translate("features.title")}
           </Typography>
           <div class="flex items-center justify-center w-full gap-1 sm:gap-6 md:gap-4">
-            <IdeaMainNavigation type="prev" />
             <div
               class="flex rounded-md overflow-x-auto items-center justify-start w-fit
 								scrollbar scrollbar-thumb-rounded-xl scrollbar-h-0 scrollbar-thumb-neutral-900
@@ -85,7 +84,6 @@ export default function Page() {
             >
               <IdeasList />
             </div>
-            <IdeaMainNavigation type="next" />
           </div>
           <IdeaPreviewCard />
         </div>
@@ -97,7 +95,7 @@ export default function Page() {
               <SpawnCarousel />
             </div>
             <div
-              class="flex flex-col bg-neutral-700/60 backdrop-blur-sm p-4 rounded-xl w-full gap-2 z-[21] lg:w-[60%] xl:w-[70%]"
+              class="flex flex-col backdrop-blur-sm p-4 transparent-achievement-panel w-full gap-2 z-[21] lg:w-[60%] xl:w-[70%]"
             >
               <Typography class="text-base sm:text-lg leading-6 text-center">
                 Спавн сервера
@@ -125,7 +123,7 @@ export default function Page() {
             <For each={CONTACTS_LIST}>
               {(item) =>
                 <a href={item.href} target="_blank" rel="noreferrer">
-                  <Button variant="minecraft" class="w-full py-0.5">
+                  <Button class="w-full py-0.5">
                     <Typography class="text-lg">
                       {translate("contacts.itemTitle")} {item.name}
                     </Typography>

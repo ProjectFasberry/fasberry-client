@@ -4,70 +4,78 @@ import { dayjs } from '@/shared/lib/create-dayjs';
 import { Dialog } from '@ark-ui/solid/dialog';
 import { Button } from '@/shared/ui/button';
 import { useAtom, useCtx } from '@reatom/npm-solid-js';
-import { For, Index, onMount, Show } from 'solid-js';
-import { type Modpack, modpacksModel } from '../(models)/modpack.model';
+import { ErrorBoundary, For, Index, Show } from 'solid-js';
+import { modpacks, modpacksState, type Modpack, type Modpacks } from '../(models)/modpack.model';
 import { Portal } from 'solid-js/web';
-import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant } from '@/shared/ui/dialog';
-
-const { modpacks, modpacksState } = modpacksModel()
+import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant } from '@/shared/ui/dialog';
 
 const SelectedModpack = () => {
   const [modpackAtom] = useAtom(modpacksState.item)
 
-  const modpack = modpackAtom();
-  if (!modpack) return null;
-
-  const { mods, shaders } = modpack
-
-  const created_at = dayjs(modpack.created_at).format('YYYY-MM-DD HH:mm:ss')
-
   return (
-    <div class="flex flex-col gap-y-4">
-      <div class="flex flex-col gap-2">
-        <Typography class="text-xl">Моды</Typography>
-        <Show
-          when={mods}
-          fallback={<Typography color="gray" class="text-lg">пусто</Typography>}
-        >
-          {(items) =>
-            <div class="flex items-center gap-2 flex-wrap">
-              <For each={items()}>
-                {(item) =>
-                  <div class="flex bg-neutral-600/80 px-4 py-1 rounded-sm">
-                    <Typography class="text-lg text-white">{item}</Typography>
-                  </div>
-                }
-              </For>
+    <Show when={modpackAtom()}>
+      {(data) => {
+        const { mods, imageUrl, downloadLink, shaders, name } = data()
+
+        const created_at = dayjs(data().created_at.toString()).format('DD MMM YYYY')
+
+        return (
+          <div class="flex flex-col gap-6 w-full">
+            <div>
+              <img
+                src={imageUrl}
+                alt={name}
+                class="object-cover bg-neutral-800 h-40 w-full"
+              />
             </div>
-          }
-        </Show>
-      </div>
-      <div class="flex flex-col gap-2">
-        <Typography class='text-xl'>
-          Шейдеры
-        </Typography>
-        <Show
-          when={shaders}
-          fallback={<Typography color="gray" class="text-lg">пусто</Typography>}
-        >
-          {(items) =>
-            <For each={items()}>
-              {(item) => <div class="flex bg-neutral-600/80 px-4 py-1 rounded-sm">
-                <Typography color="white" class="text-lg">
-                  {item}
+            <div class="flex flex-col gap-4 w-full">
+              <div class="flex flex-col">
+                <Typography class="text-lg">Моды</Typography>
+                <Show
+                  when={mods}
+                  fallback={<Typography color="gray" class="text-base">пусто</Typography>}
+                >
+                  {(data) =>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <div class="flex bg-neutral-600/80 px-2 py-1 rounded-sm">
+                        <Typography class="text-base">{data()}</Typography>
+                      </div>
+                    </div>
+                  }
+                </Show>
+              </div>
+              <div class="flex flex-col w-full">
+                <Typography class='text-lg'>Шейдеры</Typography>
+                <Show
+                  when={shaders}
+                  fallback={<Typography color="gray" class="text-base">пусто</Typography>}
+                >
+                  {(data) =>
+                    <div class="flex bg-neutral-600/80 px-4 py-1 rounded-sm">
+                      <Typography class="text-lg">
+                        {data()}
+                      </Typography>
+                    </div>
+                  }
+                </Show>
+              </div>
+              <div class="self-end">
+                <Typography color="gray" class='text-sm'>
+                  Создан {created_at}
                 </Typography>
               </div>
-              }
-            </For>
-          }
-        </Show>
-      </div>
-      <div class="self-end">
-        <Typography color="gray" class='text-md'>
-          Создан {created_at}
-        </Typography>
-      </div>
-    </div>
+            </div>
+            <div class="flex items-center justify-center w-full">
+              <Button class='w-full text-sm'>
+                <a href={downloadLink} target="_blank" rel="noopener noreferrer" class='w-full'>
+                  Скачать
+                </a>
+              </Button>
+            </div>
+          </div>
+        )
+      }}
+    </Show>
   )
 }
 
@@ -82,9 +90,8 @@ const ModpackItemDialog = () => {
       <Portal>
         <Dialog.Backdrop class={dialogBackdropVariant()} />
         <Dialog.Positioner class={dialogPositionerVariant()}>
-          <Dialog.Content class={dialogContentVariant()}>
+          <Dialog.Content class={dialogContentVariant({ class: "sm:w-1/4" })}>
             <SelectedModpack />
-            <DialogClose />
           </Dialog.Content>
         </Dialog.Positioner>
       </Portal>
@@ -101,114 +108,66 @@ const ModpackItem = (props: Modpack) => {
   };
 
   return (
-    <div class="flex flex-col rounded-xl gap-4 justify-between h-full bg-neutral-950 p-4 relative">
+    <div class="flex flex-col transparent-achievement-panel gap-4 justify-between h-full p-4 relative">
       <div class="flex flex-col gap-2 justify-between grow">
-        <Typography class="text-xl lg:text-2xl text-project-color">
+        <Typography class="text-lg lg:text-xl sm:text-2xl text-project-color">
           {m().name}
         </Typography>
-        <div class="flex items-center gap-2">
-          <Typography color="white" class='text-lg'>
+        <div class="flex items-center gap-2 text-base sm:text-lg">
+          <Typography>
             Клиент: {m().client}
           </Typography>
-          <Typography color="gray" class="text-lg">
+          <Typography color="gray">
             ({m().version})
           </Typography>
         </div>
-        <div class="flex flex-col md:flex-row items-center justify-center w-full gap-2">
-          <a href={m().downloadLink} target="_blank" rel="noreferrer" class='w-full md:w-1/2'>
-            <Button variant="minecraft" class="py-0.5 w-full">
-              <Typography color="white" class="text-xl">
+        <div class="flex items-center justify-center w-full gap-1">
+          <a
+            href={m().downloadLink}
+            target="_blank"
+            rel="noreferrer"
+            class='w-full md:w-1/2'
+          >
+            <Button class="py-0.5 text-sm sm:text-base w-full">
+              <Typography>
                 Скачать
               </Typography>
             </Button>
           </a>
           <Button
-            variant="minecraft"
             onClick={() => modpacks.open(ctx, m().id)}
-            class="w-full py-0.5 md:w-1/2"
+            class="w-full py-0.5 md:w-1/2  text-sm sm:text-base "
           >
-            <Typography color="white" class="text-xl">
+            <Typography>
               Подробнее
             </Typography>
           </Button>
         </div>
       </div>
       <div
-        class="h-[200px] group bg-cover relative overflow-hidden rounded-xl cursor-pointer"
-        style={{ "background-image": `url("${m().imageUrl}")` }}
+        class="h-[140px] sm:h-[200px] group bg-neutral-800 relative overflow-hidden"
       >
-        <div
-          class="flex flex-col gap-4 px-4 py-12 translate-y-64 focus:translate-y-0 group-hover:translate-y-0
-            absolute bottom-0 right-0 left-0 bg-black/70 backdrop-blur-2xl"
-        >
-          <div class="flex flex-col gap-y-1">
-            <Typography class='text-lg'>Моды</Typography>
-            <Show
-              when={m().mods}
-              fallback={<Typography color="gray" class="text-sm">пусто</Typography>}
-            >
-              {(items) =>
-                <div class="flex items-center gap-1 flex-wrap">
-                  <For each={items().slice(0, 3)}>
-                    {(item) =>
-                      <div class="flex bg-neutral-600/80 px-2 py-0.5 rounded-sm">
-                        <Typography color="white" class="text-md">
-                          {item}
-                        </Typography>
-                      </div>
-                    }
-                  </For>
-                  <Show when={items().length >= 3}>
-                    <div class="flex bg-neutral-600/80 px-2 py-0.5 rounded-sm">
-                      <Typography color="white" class="text-md">
-                        +{m().mods.length - 3}
-                      </Typography>
-                    </div>
-                  </Show>
-                </div>
-              }
-            </Show>
-          </div>
-          <div class="flex flex-col gap-y-1">
-            <Typography class='text-lg'>
-              Шейдеры
-            </Typography>
-            <Show
-              when={m().shaders.length >= 1}
-              fallback={<Typography color="gray" class="text-sm">пусто</Typography>}
-            >
-              {(items) =>
-                <div class="flex items-center gap-1 flex-wrap">
-                  <For each={m().shaders.slice(0, 3)}>
-                    {(item) =>
-                      <div class="flex bg-neutral-600/80 px-2 py-0.5 rounded-sm">
-                        <Typography color="white" class="text-md">
-                          {item}
-                        </Typography>
-                      </div>
-                    }
-                  </For>
-                  <Show when={m().shaders.length >= 3}>
-                    <div class="flex bg-neutral-600/80 px-2 py-0.5 rounded-sm">
-                      <Typography color="white" class="text-md">
-                        +{m().shaders.length - 3}
-                      </Typography>
-                    </div>
-                  </Show>
-                </div>
-              }
-            </Show>
-          </div>
-        </div>
+        <img src={m().imageUrl} alt={m().name} class="w-full h-full object-cover" />
       </div>
     </div>
   );
 }
 
-const ModpackListEmpty = () => {
+const ModpackError = () => {
   return (
-    <Typography class="text-neutral-400 text-2xl">Модпаков еще нет</Typography>
+    <div class="flex flex-col gap-2 w-full items-center justify-cenetr">
+      <Typography class="text-red text-2xl">
+        Ошибка загрузки модпаков
+      </Typography>
+      <span class="truncate text-sm text-neutral-400">
+        Повторите попытку позже
+      </span>
+    </div>
   )
+}
+
+const ModpackListEmpty = () => {
+  return <Typography class="text-neutral-400 text-2xl">Модпаков еще нет</Typography>
 };
 
 const ModpackListSkeleton = () => {
@@ -221,33 +180,19 @@ const ModpackListSkeleton = () => {
   );
 };
 
-export const ModpackList = () => {
-  const ctx = useCtx();
-
-  onMount(() => {
-    modpacks.fetch(ctx)
-  })
-
-  const [dataAtom] = useAtom(modpacks.fetch.dataAtom);
-  const [statusesAtom] = useAtom(modpacks.fetch.statusesAtom)
-
+export const ModpackList = (props: { data?: Modpacks }) => {
   return (
-    <Show when={!statusesAtom().isPending} fallback={<ModpackListSkeleton />}>
-      <Show
-        when={!statusesAtom().isRejected || dataAtom()}
-        fallback={<ModpackListEmpty />}
-      >
-        <Show when={dataAtom()} fallback={<ModpackListEmpty />}>
-          {(data) => (
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full xl:grid-cols-4 gap-4 grid-rows-2">
-              <ModpackItemDialog />
-              <For each={data()}>
-                {(modpack) => <ModpackItem {...modpack} />}
-              </For>
-            </div>
-          )}
-        </Show>
+    <ErrorBoundary fallback={<ModpackError />}>
+      <Show when={props.data} fallback={<ModpackListEmpty />}>
+        {(data) => (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full xl:grid-cols-4 gap-4 grid-rows-2">
+            <ModpackItemDialog />
+            <For each={data()}>
+              {(modpack) => <ModpackItem {...modpack} />}
+            </For>
+          </div>
+        )}
       </Show>
-    </Show>
+    </ErrorBoundary>
   );
 }

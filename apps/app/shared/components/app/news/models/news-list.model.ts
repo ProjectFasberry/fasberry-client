@@ -7,7 +7,7 @@ import { getNews } from "./news.model"
 import { createViewerModel } from "@/shared/models/shared.model"
 import { DEFAULT_SOFT_DELAY } from "@/shared/consts"
 
-type NewsPayload = ExtractApiData<"getSharedNewsList">["data"]
+type NewsPayload = ExtractApiData<"getNewsList">["data"]
 
 export const { Component: NewsViewer, inViewAtom: newsStateInView } = createViewerModel({
   name: "news-filter"

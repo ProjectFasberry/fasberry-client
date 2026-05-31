@@ -6,8 +6,9 @@ import { bannerIsExistsAtom, banner } from "../models/banner.model";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { tv } from "tailwind-variants";
+import type { BannerList } from "../../private/models/banner.model";
 
-type BannerPayload = ExtractApiData<"getSharedBannerList">["data"]["data"][number]
+type BannerPayload = BannerList["data"][number]
 
 const BannerView = reatomComponent<{ id: number }>(({ ctx, id }) => {
   return (

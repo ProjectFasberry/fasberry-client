@@ -1,6 +1,5 @@
 import { Link } from "@/shared/components/link";
 import { getStaticObject } from "@/shared/lib/helpers";
-import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";
 import { usePageContext } from "vike-solid/usePageContext";
 
@@ -13,11 +12,11 @@ const NotFound = () => {
         Не удалось найти нужный ресурс.
       </Typography>
       <Link href="/">
-        <Button
+        <button
           class="md:w-max mt-6 raised-slot-button text-center text-neutral-800 text-base md:text-xl py-1 px-4 md:px-6"
         >
           Вернуться в безопасное место
-        </Button>
+        </button>
       </Link>
     </>
   )
@@ -26,11 +25,11 @@ const NotFound = () => {
 const Error = () => {
   return (
     <Link href="/">
-      <Button
+      <button
         class="bg-neutral-600 md:w-max mt-6 raised-slot-button text-center text-base md:text-xl py-1 px-4 md:px-6"
       >
         Вернуться в безопасное место
-      </Button>
+      </button>
     </Link>
   )
 }

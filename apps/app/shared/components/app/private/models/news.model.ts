@@ -11,7 +11,7 @@ import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialo
 import { navigate } from "vike/client/router";
 import { editorExtensions } from "@/shared/components/config/editor/editor.model";
 
-type NewsPayload = ExtractApiData<"getSharedNewsList">["data"]
+export type NewsPayload = ExtractApiData<"getNewsList">["data"]
 type News = NewsPayload["data"][number];
 
 export const newsList = {

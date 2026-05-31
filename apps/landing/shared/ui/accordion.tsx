@@ -7,10 +7,7 @@ const accordionRootVariant = tv({
   `
 })
 const accordionItemVariant = tv({
-  base: `
-    data-[orientation=vertical]:block
-    data-[orientation=horizontal]:flex
-  `
+  base: `data-[orientation=vertical]:block data-[orientation=horizontal]:flex`
 })
 const accordionItemTriggerVariant = tv({
   base: `
@@ -19,14 +16,10 @@ const accordionItemTriggerVariant = tv({
   `
 })
 const accordionItemIndicatorVariant = tv({
-  base: `
-
-  `
+  base: ``
 })
 const accordionItemContentVariant = tv({
-  base: `
-  accordion-item-content
-  `
+  base: `accordion-item-content`
 })
 
 export {

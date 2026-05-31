@@ -11,21 +11,17 @@ const skeleton = tv({
   }
 });
 
-const { child, rel } = skeleton();
-
-type SkeletonProps = JSX.HTMLAttributes<HTMLDivElement> & {
-  className?: string;
-};;
+type SkeletonProps = JSX.HTMLAttributes<HTMLDivElement>
 
 export function Skeleton(props: SkeletonProps) {
-  const [local, rest] = splitProps(props, ['class', 'className']);
+  const [local, rest] = splitProps(props, ['class']);
 
   return (
     <div
-      class={rel({ className: local.class || local.className })}
+      class={skeleton().rel({ className: local.class })}
       {...rest}
     >
-      <div class={child()} />
+      <div class={skeleton().child()} />
     </div>
   );
 }

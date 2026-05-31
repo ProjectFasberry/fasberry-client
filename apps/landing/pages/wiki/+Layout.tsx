@@ -13,7 +13,7 @@ export default function Layout(props: { children: JSXElement }) {
 
   return (
     <MainWrapperPage>
-      <div class="flex flex-col lg:flex-row items-start justify-between bg-transparent w-full gap-x-4">
+      <div class="flex flex-col lg:flex-row items-start justify-between w-full gap-x-4">
         <WikiNavigation />
         {props.children}
       </div>

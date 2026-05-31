@@ -164,7 +164,7 @@ const LayoutSettingsDialog = () => {
       <Portal>
         <Dialog.Backdrop class={dialogBackdropVariant()} />
         <Dialog.Positioner class={dialogPositionerVariant()}>
-          <Dialog.Content class={dialogContentVariant()}>
+          <Dialog.Content class={dialogContentVariant({ class: "sm:w-1/3" })}>
             <Dialog.Title class={dialogTitleVariant()}>Настройки</Dialog.Title>
             <LayoutSettingsContent />
             <DialogClose />

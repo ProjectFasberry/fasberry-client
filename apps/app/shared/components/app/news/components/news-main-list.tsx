@@ -7,11 +7,11 @@ import { newsState } from "../models/news.model"
 import { isEmptyArray } from "@/shared/lib/helpers"
 import { translate } from "@/shared/locales/helpers"
 
-type NewsPayload = ExtractApiData<"getSharedNewsList">["data"]
+type NewsPayload = ExtractApiData<"getNewsList">["data"]
 
 const newsItemVariant = tv({
   base: `
-    flex flex-col flex-shrink-0 md:flex-[0_0_calc((100%/2)-0.5rem)] w-full lg:flex-1 
+    flex flex-col flex-shrink-0 md:flex-[0_0_calc((100%/2)-0.5rem)] w-full lg:flex-1
     h-57 sm:h-72 bg-neutral-900 rounded-xl overflow-hidden
   `,
   slots: {

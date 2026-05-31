@@ -24,6 +24,10 @@ const NumericItem = ({ index }: { index: number }) => {
   )
 }
 
+const tooltipContentVariant = tv({
+  base: "panel-dark p-2"
+})
+
 const ServerIp = () => {
   const ctx = useCtx();
 
@@ -38,7 +42,7 @@ const ServerIp = () => {
     <Tooltip.Root openDelay={1} closeDelay={1}>
       <Tooltip.Trigger>
         <div class="flex items-center justify-start bg-black w-full py-2 px-2 border-2 border-neutral-500">
-          <Typography onClick={() => serverIp.copyIp(ctx)} color="white" class="text-base text-left">
+          <Typography onClick={() => serverIp.copyIp(ctx)} class="text-left">
             <Show
               when={!statusesAtom().isPending}
               fallback={"загрузка..."}
@@ -52,8 +56,8 @@ const ServerIp = () => {
       </Tooltip.Trigger>
       <Portal>
         <Tooltip.Positioner>
-          <Tooltip.Content class="bg-neutral-900">
-            <Typography color="gray" class="text-lg">Скопировать IP</Typography>
+          <Tooltip.Content class={tooltipContentVariant()}>
+            <Typography color="gray">Скопировать IP</Typography>
           </Tooltip.Content>
         </Tooltip.Positioner>
       </Portal>
@@ -66,34 +70,34 @@ const HowToConnectOnServer = () => {
     <div class="flex justify-center items-center px-4 py-8 relative h-full w-full">
       <div class="flex flex-col gap-6 justify-between md:w-96 w-full">
         <div class="flex flex-col gap-2 w-full">
-          <Typography color="gray" class="text-base">Название сервера</Typography>
+          <Typography color="gray">Название сервера</Typography>
           <div class="bg-black py-2 px-2 border-2 border-neutral-500 w-full">
-            <Typography color="white" class="text-left text-base">Сервер Minecraft</Typography>
+            <Typography class="text-left">Сервер Minecraft</Typography>
           </div>
-          <Typography color="gray" class="text-base">Адрес сервера</Typography>
+          <Typography color="gray">Адрес сервера</Typography>
           <ServerIp />
         </div>
         <div class="flex flex-col gap-y-2">
           <Tooltip.Root closeDelay={1} openDelay={1}>
             <Tooltip.Trigger>
               <div class="flex items-center justify-start bg-black w-full py-2 px-2 border-2 border-neutral-500">
-                <Typography color="white" class="text-center text-base">
+                <Typography class="text-center">
                   Наборы ресурсов: Включены
                 </Typography>
               </div>
             </Tooltip.Trigger>
             <Portal>
               <Tooltip.Positioner>
-                <Tooltip.Content class="bg-neutral-900">
-                  <Typography color="gray" class="text-lg">
+                <Tooltip.Content class={tooltipContentVariant()}>
+                  <Typography color="gray">
                     На сервере используется ресурспак. Эту нужно оставить включенным!
                   </Typography>
                 </Tooltip.Content>
               </Tooltip.Positioner>
             </Portal>
           </Tooltip.Root>
-          <Button variant="minecraft" class="flex items-center justify-center w-full px-2 py-1">
-            <Typography color="white" class="text-center text-base">
+          <Button class="flex items-center justify-center w-full px-2 py-1">
+            <Typography class="text-center">
               Готово
             </Typography>
           </Button>

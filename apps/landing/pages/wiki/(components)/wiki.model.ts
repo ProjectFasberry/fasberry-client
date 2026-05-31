@@ -32,7 +32,7 @@ export const wikiCategories = atom(null, "wikiCategories").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
-        wrapClient<RulesCategoriesPayload>(() => client("shared/wiki/categories", { signal: ctx.controller.signal }))
+        wrapClient<RulesCategoriesPayload>(() => client("wiki/categories", { signal: ctx.controller.signal }))
       )
     }, {
       name: `${name}.fetch`,

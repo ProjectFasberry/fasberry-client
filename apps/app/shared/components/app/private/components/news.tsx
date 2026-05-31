@@ -6,7 +6,7 @@ import { Typography } from "@/shared/ui/typography"
 import { type ReactNode } from "react";
 import { actionsState, type ActionType, actions, getSelectedParentAtom } from "../models/actions.model";
 import { ToActionButtonX, ButtonXSubmit } from "./global";
-import { createNews, createNewsState, editNews, editNewsState, deleteNews, newsList } from "../models/news.model"
+import { createNews, createNewsState, editNews, editNewsState, deleteNews, newsList, type NewsPayload } from "../models/news.model"
 import { Input } from "@/shared/ui/input"
 import { type Atom, type AtomMut, type Ctx } from "@reatom/framework"
 import { DeleteButton, EditButton, ToLink, ActionButton } from "./ui"
@@ -15,7 +15,7 @@ import { Editor, EditorContent, generateJSON, type JSONContent, useEditor, useEd
 import { CharacterCount, Placeholder } from "@tiptap/extensions"
 import { editorExtensions } from "@/shared/components/config/editor/editor.model";
 
-type News = ExtractApiData<"getSharedNewsList">["data"]["data"][number]
+type News = NewsPayload["data"][number]
 
 const NewsContentApply = reatomComponent<{
   tempContentAtom: Atom<string>,

@@ -3,14 +3,14 @@ import { atom } from "@reatom/framework";
 import { withSsr } from "@/shared/models/ssr";
 import { withAssign } from "@reatom/framework";
 
-type NewsPayload = ExtractApiData<"getSharedNewsList">["data"]
+type NewsPayload = ExtractApiData<"getNewsList">["data"]
 
 export const getNews = async (
   params: Partial<{ content?: boolean, limit: number, asc: boolean }>,
   init?: RequestInit
 ) => {
   return client
-    .get<NewsPayload>("shared/news/list", {
+    .get<NewsPayload>("news/list", {
       ...init,
       throwHttpErrors: false,
     })

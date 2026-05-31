@@ -14,20 +14,17 @@ const layoutVars = tv({
   }
 });
 
-type LayoutVariantsProps = JSX.HTMLAttributes<HTMLDivElement> & VariantProps<typeof layoutVars> & {
-  className?: string
-}
+type LayoutVariantsProps = JSX.HTMLAttributes<HTMLDivElement> & VariantProps<typeof layoutVars>
 
 export const MainWrapperPage = (props: LayoutVariantsProps) => {
   const merged = mergeProps({ variant: 'default' }, props);
-
-  const [local, rest] = splitProps(merged, ['variant', 'class', 'className']);
+  const [local, rest] = splitProps(merged, ['variant', 'class']);
 
   return (
     <div
       class={layoutVars({
         variant: local.variant as LayoutVariantsProps["variant"],
-        className: local.class || local.className
+        className: local.class
       })}
       {...rest}
     />

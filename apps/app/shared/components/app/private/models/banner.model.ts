@@ -6,11 +6,13 @@ import { toast } from "sonner"
 import { notifyAboutRestrictRole } from "./actions.model"
 import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model"
 
+export type BannerList = ExtractApiData<"getBannerList">["data"];
+
 export const banners = atom(null, "banners").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
-        client<ExtractApiData<"getSharedBannerList">["data"]>(`shared/banner/list`).exec()
+        client<BannerList>(`banner/list`).exec()
       )
     }, `${name}.fetch`).pipe(
       withDataAtom(null),

@@ -25,6 +25,7 @@
     ],
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "outDir": "dist",
     "paths": {
       "@/*": ["./*"]
     }

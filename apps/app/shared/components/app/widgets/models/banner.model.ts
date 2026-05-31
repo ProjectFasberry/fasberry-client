@@ -5,7 +5,7 @@ import { reatomAsync, withCache, withDataAtom, withStatusesAtom, type AtomState 
 import { action, atom } from "@reatom/framework";
 import { withAssign } from "@reatom/framework";
 
-type BannerPayload = ExtractApiData<"getSharedBannerLatest">["data"]
+type BannerPayload = ExtractApiData<"getBannerLatest">["data"]
 
 export const bannerIsExistsAtom = atom((ctx) => ctx.spy(appState.options)?.flags?.isBanner, "bannerIsExists")
 bannerIsExistsAtom.onChange((ctx, state) => state && banner.fetch(ctx))
@@ -18,7 +18,7 @@ export const banner = atom(null, "banner").pipe(
     }),
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
-        client<BannerPayload | null>("shared/banner/latest").exec()
+        client<BannerPayload | null>("banner/latest").exec()
       )
     }, `${name}.fetch`).pipe(
       withDataAtom(null),
@@ -27,7 +27,7 @@ export const banner = atom(null, "banner").pipe(
     ),
     createView: reatomAsync(async (ctx, id: number) => {
       return await ctx.schedule(() =>
-        client.post<ExtractApiData<"postSharedBannerViewById">["data"]>(`shared/banner/view/${id}`).exec()
+        client.post<ExtractApiData<"postBannerViewById">["data"]>(`banner/view/${id}`).exec()
       )
     }, {
       name: `${name}.createView`,

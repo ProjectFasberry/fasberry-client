@@ -46,7 +46,7 @@ export default function GalleryPage() {
               </Typography>
             </div>
             <Link href="#commuinity" class={sectionVariantChild().action()}>
-              <Button variant="minecraft" class="w-full px-6 py-0.5 gap-2">
+              <Button class="w-full px-6 py-0.5 gap-2">
                 <Typography color="white" class="text-lg">
                   К месту событий
                 </Typography>

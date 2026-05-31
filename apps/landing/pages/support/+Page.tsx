@@ -19,7 +19,7 @@ const steveImage = getStaticObject("support", "steve.webp");
 const Card = (props: { children: JSXElement }) => {
   return (
     <div
-      class="card-wrapper flex flex-col xl:flex-row overflow-hidden md:items-center justify-center md:justify-start items-center w-full"
+      class="transparent-achievement-panel lg:gap-4 p-2 lg:p-4 flex flex-col xl:flex-row overflow-hidden md:items-center justify-center md:justify-start items-center w-full"
     >
       {props.children}
     </div>
@@ -45,7 +45,7 @@ export default function Page() {
               </Typography>
             </div>
             <Link href="#support-list" class={sectionVariantChild().action()}>
-              <Button variant="minecraft" class="w-full px-6 py-0.5 gap-2">
+              <Button class="w-full px-6 py-0.5 gap-2">
                 <Typography class="text-lg">
                   Как поддержать?
                 </Typography>
@@ -78,7 +78,7 @@ export default function Page() {
                 src={steveImage}
               />
               <div class="flex flex-col items-center xl:items-start gap-1 md:gap-2 w-full">
-                <h2 class="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
+                <h2 class="text-xl lg:text-2xl xl:text-3xl">
                   Мониторинг
                 </h2>
                 <div class="flex flex-col mt-2 w-full">
@@ -88,18 +88,8 @@ export default function Page() {
                     rel="noreferrer"
                     class="flex justify-center w-full xl:w-fit items-center button px-4 py-1"
                   >
-                    <Typography class="text-nowrap text-base lg:text-xl">
-                      Проголосовать #1
-                    </Typography>
-                  </a>
-                  <a
-                    target="_blank"
-                    href="https://mcrating.org/minecraft-server-2159"
-                    rel="noreferrer"
-                    class="flex justify-center w-full xl:w-fit items-center button px-4 py-1"
-                  >
-                    <Typography class="text-nowrap text-base lg:text-xl">
-                      Проголосовать #2
+                    <Typography class="text-nowrap">
+                      Проголосовать
                     </Typography>
                   </a>
                 </div>
@@ -115,7 +105,7 @@ export default function Page() {
                 alt="Share"
               />
               <div class="flex flex-col items-center xl:items-start gap-2 w-full">
-                <h2 class='text-shadow-md text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl'>
+                <h2 class='text-shadow-md text-xl lg:text-2xl xl:text-3xl'>
                   Поделиться
                 </h2>
                 <div
@@ -129,19 +119,7 @@ export default function Page() {
                     target="_blank"
                     class="button"
                   >
-                    <Typography color="white" class="text-nowrap text-base lg:text-xl">
-                      Поделиться в телеграмме
-                    </Typography>
-                  </a>
-                  <a
-                    href={`https://vk.com/share.php?url=https%3A%2F%2F${LANDING_ENDPOINT}&title=`}
-                    rel="noreferrer"
-                    target="_blank"
-                    class="button"
-                  >
-                    <Typography color="white" class="text-base lg:text-xl">
-                      Поделиться в вк
-                    </Typography>
+                    <Typography class="text-nowrap">Поделиться в телеграмме</Typography>
                   </a>
                 </div>
               </div>

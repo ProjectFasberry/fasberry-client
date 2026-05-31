@@ -15,8 +15,7 @@
 		"**/*.css"
 	],
 	"dependencies": {
-		"@tabler/icons-react": "3.34.0",
-		"radix-ui": "1.4.2",
+		"@radix-ui/react-separator": "1.1.8",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"tailwind-variants": "3.1.1"
@@ -26,10 +25,9 @@
 		"@repo/config-typescript": "workspace:*",
 		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",
-		"typescript": "~5.8.3",
-		"tailwindcss": "4.1.8",
 		"clsx": "2.1.1",
-		"tw-animate-css": "1.3.4",
-		"tailwind-merge": "3.5.0"
+		"tailwind-merge": "3.5.0",
+		"tailwindcss": "4.1.8",
+		"typescript": "~5.8.3"
 	}
 }

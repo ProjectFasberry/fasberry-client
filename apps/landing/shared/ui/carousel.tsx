@@ -8,17 +8,17 @@ const carouselRootVariant = tv({
 })
 const carouselViewportVariant = tv({
   base: `
-    overflow-hidden rounded-[8px]
+    overflow-hidden
   `
 })
 const carouselItemGroupVariant = tv({
   base: `
-    flex flex-1 min-w-fit overflow-hidden rounded-[8px] scrollbar scrollbar-w-0 scrollbar-none
+    flex flex-1 min-w-fit overflow-hidden scrollbar scrollbar-w-0 scrollbar-none
   `
 })
 const carouselItemVariant = tv({
   base: `
-    flex flex-[0_0_100%] min-w-0 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_img]:rounded-[8px] [&_img]:bg-neutral-800
+    flex flex-[0_0_100%]  transparent-achievement-panel min-w-0 [&_img]:w-full [&_img]:h-full [&_img]:object-cover [&_img]:bg-neutral-800
   `
 })
 const carouselSlideVariant = tv({
@@ -39,12 +39,12 @@ const carouselTriggerVariant = tv({
 })
 const carouselIndicatorGroupVariant = tv({
   base: `
-    flex justify-center gap-2 data-[orientation=vertical]:flex-col  bg-neutral-50/10 px-4 py-2 rounded-full w-fit backdrop-blur-xl
+    flex justify-center gap-2 data-[orientation=vertical]:flex-col  bg-neutral-50/10 px-4 py-2 w-fit backdrop-blur-xl
   `
 })
 const carouselIndicatorVariant = tv({
   base: `
-    cursor-pointer w-[0.625rem] h-[0.625rem] bg-neutral-400/80 backdrop-blur-md rounded-full border-none p-0
+    cursor-pointer w-[0.625rem] h-[0.625rem] bg-neutral-400/80 backdrop-blur-md border-none p-0
     focus-visible:outline focus-visible:outline-neutral-50 focus-visible:outline-2
     data-[current]:bg-green
   `

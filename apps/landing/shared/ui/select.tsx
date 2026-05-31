@@ -7,7 +7,7 @@ const selectControlVariant = tv({
 })
 const selectTriggerVariant = tv({
   base: `
-    flex items-center justify-between w-full gap-2 bg-neutral-800 rounded-xl h-10
+    flex items-center justify-between w-full gap-2 bg-neutral-800 h-10
     text-sm sm:text-base px-4 py-2 text-neutral-400
     select-none border-none outline-none focus-visible:shadow-lg focus-visible:shadow-black/20
   `
@@ -31,14 +31,14 @@ const selectIndicatorVariant = tv({
 })
 const selectContentVariant = tv({
   base: `
-    flex flex-col rounded-xl bg-neutral-900 z-62 min-w-full
+    flex flex-col bg-neutral-900 z-62 min-w-full
     data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in
     duration-300 ease-out overflow-y-auto outline-none
   `
 })
 const selectItemVariant = tv({
   base: `
-    flex hover:bg-neutral-800 rounded-lg items-center justify-between w-full px-4 py-2 select-none
+    flex hover:bg-neutral-800 items-center justify-between w-full px-4 py-2 select-none
   `
 })
 const selectItemGroupVariant = tv({

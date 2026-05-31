@@ -3,6 +3,7 @@ import type { PersistRecord } from "@reatom/persist";
 import type { Locale } from "./shared/locales";
 import type { JSXElement } from "solid-js";
 import 'solid-js';
+import type { operations } from "./shared/types/gen";
 
 declare global {
   namespace Vike {
@@ -24,6 +25,11 @@ declare global {
 
   type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][]
   type Maybe<T> = T | undefined
+
+  type ExtractApiData<T extends keyof operations> =
+    operations[T]["responses"] extends { 200: { content: { "application/json": infer Data } } }
+    ? Data
+    : never;
 }
 
 declare module 'solid-js' {

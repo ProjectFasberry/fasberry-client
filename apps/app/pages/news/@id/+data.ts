@@ -10,7 +10,7 @@ import { snapshots } from "@/shared/models/ssr";
 import { newsSingleState } from "@/shared/components/app/news/models/news-single.model";
 
 export type Data = Awaited<ReturnType<typeof data>>;
-export type News = ExtractApiData<"getSharedNewsById">["data"]
+export type News = ExtractApiData<"getNewsById">["data"]
 
 function metadata(
   news: News
@@ -32,7 +32,7 @@ export async function data(pageCtx: PageContextServer) {
 
   const id = pageCtx.routeParams.id
 
-  const news = await client<News>(`shared/news/${id}`, { headers }).exec().catch(e => {
+  const news = await client<News>(`news/${id}`, { headers }).exec().catch(e => {
     console.error("News error", e)
     return null;
   })

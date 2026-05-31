@@ -13,7 +13,7 @@ export async function data(pageCtx: PageContextServer) {
   const config = useConfig();
 
   const categoryResult = await wrapClient<Wiki | null>(
-    () => client(`shared/wiki/category/${pageCtx.routeParams.category}`, { headers: pageCtx.headers ?? undefined })
+    () => client(`wiki/category/${pageCtx.routeParams.category}`, { headers: pageCtx.headers ?? undefined })
   )
 
   if (!categoryResult) {

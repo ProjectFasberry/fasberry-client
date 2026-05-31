@@ -51,7 +51,7 @@ const DrawerContent = <T extends ValidComponent = "div">(
       <DrawerPrimitive.Content
         class={cn(
           `
-            fixed inset-x-0 bottom-0 z-50 mt-24 p-2 flex h-auto flex-col rounded-t-xl border-none bg-neutral-900
+            fixed inset-x-0 bottom-0 z-50 mt-24 p-2 flex h-auto flex-col rounded-t-none border-none bg-neutral-900
             after:absolute after:inset-x-0 after:top-full after:h-1/2 after:bg-inherit data-[transitioning]:transition-transform
             data-[transitioning]:duration-150 md:select-none
           `,

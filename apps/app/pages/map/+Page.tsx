@@ -13,13 +13,13 @@ import { Icon } from "@/shared/ui/icon"
 
 const mapImage = getStaticImage("arts/6.jpg")
 
-type AvailableServersPayload = ExtractApiData<"getSharedServers-with-map">["data"]
+type AvailableServersPayload = ExtractApiData<"getServers-with-map">["data"]
 
 const availableServers = atom(null, "availableServers").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
-        client<AvailableServersPayload>("shared/servers-with-map", { signal: ctx.controller.signal }).exec()
+        client<AvailableServersPayload>("servers-with-map", { signal: ctx.controller.signal }).exec()
       )
     }, {
       name: `${name}.fetch`

@@ -7,7 +7,7 @@ import { type ReactNode } from "react"
 import { actionsState, getSelectedParentAtom } from "../models/actions.model"
 import { ToActionButtonX } from "./global"
 import { ActionButton, DeleteButton } from "./ui"
-import { banners, deleteBanner, createBanner, createBannerState } from "../models/banner.model"
+import { banners, deleteBanner, createBanner, createBannerState, type BannerList } from "../models/banner.model"
 import { Input } from "@/shared/ui/input"
 import { ButtonXSubmit } from "./global"
 import { Dialog } from "@ark-ui/react/dialog"
@@ -15,7 +15,7 @@ import { Portal } from "@ark-ui/react/portal"
 import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog"
 import { Tooltip } from "@ark-ui/react/tooltip"
 
-type BannerPayload = ExtractApiData<"getSharedBannerList">["data"]["data"][number]
+type BannerPayload = BannerList["data"][number]
 
 const CREATE_BANNER_FIELDS = [
   { placeholder: "Заголовок", value: createBannerState.title },

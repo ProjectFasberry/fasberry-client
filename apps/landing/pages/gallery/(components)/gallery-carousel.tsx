@@ -62,7 +62,7 @@ const CarouselGallery = () => {
 export const GalleryItemDialog = (props: { image: string }) => {
   return (
     <Dialog.Root>
-      <Dialog.Trigger class='flex flex-col rounded-xl overflow-hidden hover:brightness-50'>
+      <Dialog.Trigger class='flex flex-col overflow-hidden hover:brightness-50'>
         <img
           src={props.image} loading="lazy" width={1280} alt="" height={720} class="w-auto object-cover"
         />
@@ -72,7 +72,7 @@ export const GalleryItemDialog = (props: { image: string }) => {
         <Dialog.Positioner class={dialogPositionerVariant()}>
           <Dialog.Content
             class={dialogContentVariant({
-              className: `p-0! max-h-[720px] max-w-[1280px] bg-transparent!`
+              className: `p-0! max-h-[720px] max-w-[1280px] panel-reset`
             })}
           >
             <CarouselGallery />

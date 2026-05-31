@@ -1,3 +1,56 @@
+:root {
+  --block-size: 48px;
+  --zoom: 1;
+
+  --1\/16--block: calc(var(--block-size) / 16);
+  --1\/8-block: calc(var(--block-size) / 8);
+  --1\/4-block: calc(var(--block-size) / 4);
+  --1\/2-block: calc(var(--block-size) / 2);
+  --1-block: calc(var(--block-size) * 1);
+  --2-block: calc(var(--block-size) * 2);
+  --3-block: calc(var(--block-size) * 3);
+  --4-block: calc(var(--block-size) * 4);
+  --5-block: calc(var(--block-size) * 5);
+  --6-block: calc(var(--block-size) * 6);
+  --7-block: calc(var(--block-size) * 7);
+  --8-block: calc(var(--block-size) * 8);
+  --9-block: calc(var(--block-size) * 9);
+  --10-block: calc(var(--block-size) * 10);
+  --11-block: calc(var(--block-size) * 11);
+  --12-block: calc(var(--block-size) * 12);
+  --13-block: calc(var(--block-size) * 13);
+  --14-block: calc(var(--block-size) * 14);
+  --15-block: calc(var(--block-size) * 15);
+  --16-block: calc(var(--block-size) * 16);
+  --17-block: calc(var(--block-size) * 17);
+  --18-block: calc(var(--block-size) * 18);
+  --19-block: calc(var(--block-size) * 19);
+  --20-block: calc(var(--block-size) * 20);
+  --21-block: calc(var(--block-size) * 21);
+  --22-block: calc(var(--block-size) * 22);
+  --23-block: calc(var(--block-size) * 23);
+  --24-block: calc(var(--block-size) * 24);
+  --25-block: calc(var(--block-size) * 25);
+  --26-block: calc(var(--block-size) * 26);
+  --27-block: calc(var(--block-size) * 27);
+  --28-block: calc(var(--block-size) * 28);
+  --29-block: calc(var(--block-size) * 29);
+  --30-block: calc(var(--block-size) * 30);
+  --31-block: calc(var(--block-size) * 31);
+  --32-block: calc(var(--block-size) * 32);
+
+  --fluid-0: clamp(0.72rem, calc(0.67rem + 0.24vw), 0.87rem);
+  --fluid-1: clamp(0.91rem, calc(0.87rem + 0.22vw), 1.04rem);
+  --fluid-2: clamp(1.09rem, calc(1.04rem + 0.26vw), 1.25rem);
+  --fluid-3: clamp(1.31rem, calc(1.25rem + 0.31vw), 1.50rem);
+  --fluid-4: clamp(1.58rem, calc(1.50rem + 0.38vw), 1.80rem);
+  --fluid-5: clamp(1.89rem, calc(1.80rem + 0.45vw), 2.16rem);
+  --fluid-6: clamp(2.27rem, calc(2.16rem + 0.54vw), 2.59rem);
+  --fluid-7: clamp(2.72rem, calc(2.59rem + 0.65vw), 3.11rem);
+  --fluid-8: clamp(3.27rem, calc(3.11rem + 0.78vw), 3.73rem);
+  --fluid-9: clamp(3.73rem, calc(3.48rem + 1.24vw), 4.48rem);
+}
+
 .button {
   --zoom: 10;
   user-select: none;
@@ -22,7 +75,6 @@
   border-image-slice: 10% 3%;
   border-image-repeat: stretch;
 }
-
 .button:active {
   background-size: cover;
   background-image: url('_VOLUME_URL/static/minecraft/ui/button-inside-active.png');
@@ -32,7 +84,6 @@
   border-image-slice: 10% 3%;
   border-image-repeat: contain;
 }
-
 .raised-slot,
 .raised-slot-button,
 .scrollbar::-webkit-scrollbar-corner {
@@ -43,7 +94,6 @@
   border-image-slice: 33.5% 33.5% fill;
   border-image-repeat: stretch;
 }
-
 .raised-slot-hover,
 .raised-slot-button:hover {
   --zoom: 24;
@@ -53,7 +103,6 @@
   border-image-slice: 33.5% 33.5% fill;
   border-image-repeat: stretch;
 }
-
 .raised-slot-active,
 .raised-slot-button:active {
   --zoom: 24;
@@ -63,7 +112,6 @@
   border-image-slice: 33.5% 33.5% fill;
   border-image-repeat: stretch;
 }
-
 .enchanting-slot,
 .enchanting-slot-button {
   --zoom: 24;
@@ -73,7 +121,6 @@
   border-image-slice: 33.5% 33.5% fill;
   border-image-repeat: stretch;
 }
-
 .enchanting-slot-hover,
 .enchanting-slot-button:hover {
   --zoom: 24;
@@ -83,7 +130,6 @@
   border-image-slice: 33.5% 33.5% fill;
   border-image-repeat: stretch;
 }
-
 .enchanting-slot-active,
 .enchanting-slot-button:active {
   --zoom: 24;
@@ -93,7 +139,6 @@
   border-image-slice: 33.5% 33.5% fill;
   border-image-repeat: stretch;
 }
-
 .anvil-textbox {
   --zoom: 16;
   border-width: calc(var(--block-size) / var(--zoom));
@@ -102,7 +147,6 @@
   border-image-slice: 40% 40% fill;
   border-image-repeat: stretch;
 }
-
 .anvil-textbox-active,
 .anvil-textbox:active,
 .anvil-textbox:focus {
@@ -118,7 +162,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .weather:after,
 .weather:before {
   content: "";
@@ -150,32 +193,27 @@
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-
 .weather:after {
   opacity: 0.8;
   -webkit-animation-name: weather2;
   animation-name: weather2;
 }
-
 .weather.rain:after,
 .weather.rain:before {
   background-image: url(data:image/png;base64,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);
   -webkit-animation-duration: 2s;
   animation-duration: 2s;
 }
-
 .weather.rain:after {
   -webkit-animation-duration: 1.5s;
   animation-duration: 1.5s;
 }
-
 .weather.snow:after,
 .weather.snow:before {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAEACAYAAAADRnAGAAABKklEQVR42u3cQQ7CMAwEwJj//zk9VULqDSonjmc+QNNubScgxihkzjlHV/fi3QQAAACbHjtIO0gJEMH/riWyPjAiYpfFp17L7gkAUHwAQOsCADDk4SnkLN5NAAAtb6XIXPzqX4lIAAAAxSdKZ4ldZ3UJAM6ougCgLdqOSgBIq3olAQDor5VaoeHCkAEA0Gjyc13GcQkAAAAAANjKUQelWYuJ3Rd/xN9v/fI0nfsDVKz0vrKWAP0bAAwyBhkJAAC0ZwOaBAAAmLIAOKZzOKSQADME3m81A0DxMzBJAABgnjBRSgCAolllgVF98Uf80ZKIG3yQKHfc9lUCAAAAAB6cMcDrr8On4nu47NB1fmlbEFViMDBBo/fIN7wSoKIC6Eg60uInqR2Dygu87gIbXdZS4cGX7QAAAABJRU5ErkJggg==);
   -webkit-animation-duration: 12s;
   animation-duration: 12s;
 }
-
 .weather.snow:after {
   -webkit-animation-duration: 16.5s;
   animation-duration: 16.5s;
@@ -185,38 +223,94 @@
   from {
     background-position: 0 0;
   }
-
   to {
     background-position: 0 1024px;
   }
 }
-
 @keyframes weather {
   from {
     background-position: 0 0;
   }
-
   to {
     background-position: 0 1024px;
   }
 }
-
 @-webkit-keyframes weather2 {
   from {
     background-position: 64px 64px;
   }
-
+  to {
+    background-position: 64px 1088px;
+  }
+}
+@keyframes weather2 {
+  from {
+    background-position: 64px 64px;
+  }
   to {
     background-position: 64px 1088px;
   }
 }
 
-@keyframes weather2 {
-  from {
-    background-position: 64px 64px;
-  }
-
-  to {
-    background-position: 64px 1088px;
-  }
+.panel,
+.table,
+.markdown table {
+  --zoom: 10;
+  border-width: calc(var(--block-size) / var(--zoom));
+  border-image: url('/imgs/ui/panel.png');
+  border-image-width: calc(var(--block-size) / var(--zoom));
+  border-image-slice: 43% 43% fill;
+  border-image-repeat: stretch;
+}
+.transparent-panel {
+  --zoom: 10;
+  border-width: calc(var(--block-size) / var(--zoom));
+  border-image: url('/imgs/ui/transparent-panel.png');
+  border-image-width: calc(var(--block-size) / var(--zoom));
+  border-image-slice: 43% 43% fill;
+  border-image-repeat: stretch;
+}
+.panel-dark {
+  --zoom: 10;
+  border-width: calc(var(--block-size) / var(--zoom));
+  border-image: url('/imgs/ui/panel-dark.png');
+  border-image-width: calc(var(--block-size) / var(--zoom));
+  border-image-slice: 43% 43% fill;
+  border-image-repeat: stretch;
+}
+.panel-reset {
+  --zoom: initial;
+  border-width: 0;
+  border-image: none;
+  border-image-width: initial;
+  border-image-slice: initial;
+  border-image-repeat: initial;
+}
+.achievement-panel,
+.markdown hr,
+.markdown pre,
+.markdown :not(pre) code,
+.markdown blockquote {
+  --zoom: 10;
+  border-width: calc(var(--block-size) / var(--zoom));
+  border-image: url('/imgs/ui/achievement-panel.png');
+  border-image-width: calc(var(--block-size) / var(--zoom));
+  border-image-slice: 45.5% 45.5% fill;
+  border-image-repeat: stretch;
+}
+.transparent-slot {
+  --zoom: 24;
+  border-width: calc(var(--block-size) / var(--zoom));
+  border-image: url('/imgs/ui/transparent-slot.png');
+  border-image-width: calc(var(--block-size) / var(--zoom));
+  border-image-slice: 33.5% 33.5% fill;
+  border-image-repeat: stretch;
+}
+.transparent-achievement-panel {
+  --zoom: 10;
+  border-width: calc(var(--block-size) / var(--zoom));
+  border-image: url('/imgs/ui/transparent-achievement-panel.png');
+  border-image-width: calc(var(--block-size) / var(--zoom));
+  border-image-slice: 45.5% 45.5% fill;
+  border-image-repeat: stretch;
 }

@@ -3,7 +3,7 @@ import { getDataFromSnapshot } from "@/shared/models/app/utils";
 import { withSsr } from "@/shared/models/ssr";
 import { action, atom, withAssign, withReset } from "@reatom/framework";
 
-export type NewsSingle = ExtractApiData<"getSharedNewsById">["data"]
+export type NewsSingle = ExtractApiData<"getNewsById">["data"]
 
 const createEditNewsParams = action(async (ctx) => {
   const id = ctx.get(newsSingleState.data)?.id;

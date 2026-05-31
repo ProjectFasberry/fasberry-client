@@ -5,39 +5,16 @@ import { IDEAS, selectedKeyAtom } from "../(models)/gameplay.model";
 import { Typography } from "@/shared/ui/typography";
 import { Link } from "@/shared/components/link";
 import { atom } from "@reatom/framework";
-import { getStaticObject } from "@/shared/lib/helpers";
-
-const prevImg = getStaticObject("minecraft/icons", "large-arrow-left-hover.png")
-const nextImg = getStaticObject("minecraft/icons", "large-arrow-right-hover.png")
-
-export const IdeaMainNavigation = (props: { type: "next" | "prev" }) => {
-  const ctx = useCtx();
-
-  return (
-    <div
-      class="flex items-center justify-center gap-4 h-10 aspect-square w-6 cursor-pointer"
-      onClick={() => selectedKeyAtom[props.type](ctx)}
-    >
-      <img
-        src={props.type === 'prev' ? prevImg : nextImg}
-        width={20}
-        loading="lazy"
-        height={20}
-        alt=""
-      />
-    </div>
-  )
-}
 
 const navigationBadge = tv({
-  base: `tr border-2 justify-center border-neutral-900 cursor-pointer duration-300 px-4 py-2`,
+  base: `justify-center cursor-pointer duration-150 px-4 py-2`,
   variants: {
-    variant: { unselected: "text-neutral-50", selected: "", }
+    variant: { unselected: "raised-slot", selected: "raised-slot-active", }
   }
 })
 const previewCard = tv({
-  base: `flex flex-col sm:flex-row relative sm:items-center w-full gap-2 lg:w-2/3
-		overflow-hidden p-4 sm:p-6 xl:p-14 h-[320px] lg:h-[460px] lg:max-w-full justify-start rounded-xl`,
+  base: `flex flex-col  transparent-achievement-panel sm:flex-row relative sm:items-center w-full gap-2 lg:w-2/3
+		overflow-hidden p-4 sm:p-6 xl:p-14 h-[320px] lg:h-[460px] lg:max-w-full justify-start`,
   variants: {
     variant: { module: `bg-neutral-300`, full: `` }
   }
@@ -77,7 +54,7 @@ export const IdeaPreviewCard = () => {
     <div class={previewCard({ variant })}>
       {idea().type === 'full' && (
         <div class="absolute top-0 bottom-0 right-0 left-0 w-full h-full">
-          <div class="absolute left-0 h-full w-full z-[2] bg-gradient-to-r from-neutral-900/60 via-transparent to-transparent" />
+          <div class="absolute left-0 h-full w-full z-[2]" />
           <img
             src={idea().image}
             loading="lazy"
@@ -113,7 +90,7 @@ export const IdeaPreviewCard = () => {
             alt=""
             width={1000}
             height={1000}
-            class="w-full h-full object-cover rounded-xl"
+            class="w-full h-full object-cover"
           />
         </div>
       )}
@@ -131,7 +108,7 @@ const Item = (props: { idx: number, title: string }) => {
     <div
       data-state={isActive() ? "active" : "inactive"}
       onClick={() => selectedKeyAtom(ctx, props.idx)}
-      class={navigationBadge()}
+      class={navigationBadge({ variant: isActive() ? "selected" : "unselected" })}
     >
       <Typography class="truncate">{props.title}</Typography>
     </div>
@@ -141,12 +118,7 @@ const Item = (props: { idx: number, title: string }) => {
 export const IdeasList = () => {
   return (
     <For each={IDEAS}>
-      {(preview, idx) =>
-        <>
-          <Item idx={idx()} title={preview.title} />
-          {(idx() + 1) < IDEAS.length && <hr class="w-4 h-[1px] border-2 border-neutral-900" />}
-        </>
-      }
+      {(preview, idx) => <Item idx={idx()} title={preview.title} />}
     </For>
   )
 }

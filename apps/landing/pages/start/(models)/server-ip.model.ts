@@ -1,6 +1,5 @@
 import { client } from "@/shared/api/client"
 import { wrapClient } from "@/shared/lib/api"
-import { isError } from "@/shared/lib/helpers"
 import { reatomAsync, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework"
 import { action, atom, withAssign } from "@reatom/framework"
 import { toast } from "solid-sonner"
@@ -8,20 +7,10 @@ import { toast } from "solid-sonner"
 export const serverIp = atom(null, "serverIp").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() => wrapClient<{ ip: string }>(() => client("shared/server-ip", {
-        signal: ctx.controller.signal,
-        throwHttpErrors: false
-      })))
-    }, {
-      name: `${name}.fetch`,
-      onReject: (_, e) => {
-        if (isError(e)) {
-          toast.error("Произошла ошибка", {
-            description: e.message
-          })
-        }
-      }
-    }).pipe(
+      return await ctx.schedule(() =>
+        wrapClient<ExtractApiData<"getServer-ip">["data"]>(() => client("server-ip", { signal: ctx.controller.signal, }))
+      )
+    }, `${name}.fetch`).pipe(
       withDataAtom(null, (_, data) => data.ip),
       withCache({ swr: false }),
       withStatusesAtom()
@@ -30,10 +19,8 @@ export const serverIp = atom(null, "serverIp").pipe(
       const data = ctx.get(serverIp.fetch.dataAtom)
       if (!data) return;
 
-      await actionCopyboard(data)
+      await navigator.clipboard.writeText(data)
       toast.success("IP успешно скопирован!")
     })
   }))
 )
-
-export const actionCopyboard = async (ip: string) => navigator.clipboard.writeText(ip)

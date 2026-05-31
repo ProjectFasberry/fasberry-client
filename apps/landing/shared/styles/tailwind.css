@@ -57,16 +57,8 @@
     @apply w-[calc(100%-8px)] sm:w-[90%];
   }
 
-  .card {
-    @apply border-2 rounded-sm border-[#454545];
-  }
-
-  .card-wrapper {
-    @apply border-2 rounded-sm border-[#454545] lg:gap-4 p-2 lg:p-4
-  }
-
   .tr {
-    @apply flex items-center justify-start w-full py-1 px-2 hover:bg-neutral-300/20 data-[state=active]:bg-green-700 rounded-md;
+    @apply flex items-center justify-start w-full py-1 px-2 hover:bg-neutral-300/20 data-[state=active]:bg-green-700;
   }
 
   footer::before {

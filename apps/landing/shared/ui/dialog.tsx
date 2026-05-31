@@ -17,9 +17,8 @@ const dialogPositionerVariant = tv({
 })
 const dialogContentVariant = tv({
   base: `
-    relative flex flex-col items-center justify-center overflow-hidden gap-4
-    w-full max-w-[min(var(--spacing-container-lg),calc(100vw-16px))] p-2 sm:p-4
-    bg-neutral-900 border-none rounded-xl outline-none
+    relative flex flex-col panel-dark items-center justify-center overflow-hidden gap-4
+    w-full max-w-[min(var(--spacing-container-lg),calc(100vw-16px))] p-2 sm:p-4 outline-none
     shadow-md transition-transform z-[60+var(--layer-index,0))]
     translate-x-[calc(var(--scrollbar-width,0px)/2)]
     data-[has-nested]:scale-[calc(1-var(--nested-layer-count)*0.05)]
@@ -32,8 +31,8 @@ const dialogTitleVariant = tv({
 })
 const dialogCloseVariant = tv({
   base: `
-    inline-flex items-center cursor-pointer *:w-5 *:h-5 justify-center absolute right-2 top-2 w-8 h-8 p-0 border-none rounded-lg
-    hover:bg-neutral-800 text-neutral-400
+    inline-flex items-center cursor-pointer *:w-5 *:h-5 justify-center absolute right-2 top-2 w-8 h-8 p-0
+    hover:bg-neutral-50 hover:text-neutral-950 text-neutral-50
   `
 })
 
@@ -45,12 +44,7 @@ const DialogClose = () => {
   )
 }
 
-const dialogBaseStyle = {
-  transitionDuration: `300ms`
-}
-
 export {
-  dialogBaseStyle,
   dialogContentVariant,
   dialogBackdropVariant,
   dialogPositionerVariant,

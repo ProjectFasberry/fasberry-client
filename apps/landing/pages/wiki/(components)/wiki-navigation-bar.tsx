@@ -179,7 +179,7 @@ const NavigationBarSkeleton = () => {
 export const WikiNavigation = () => {
   return (
     <>
-      <div class="card hidden xl:flex flex-col p-0 min-h-[80vh] w-full xl:w-[25%] items-start sticky top-2">
+      <div class="transparent-achievement-panel hidden xl:flex flex-col p-0 min-h-[80vh] w-full xl:w-[25%] items-start sticky top-2">
         <NavigationList />
       </div>
       <div class="xl:hidden flex items-center justify-between
