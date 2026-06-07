@@ -5,11 +5,11 @@ import { type SettingsSectionItem } from "../models/settings.model"
 import { SettingsContentWrapper, SettingsSection } from "./ui"
 import { Dialog, DialogPositioner } from "@ark-ui/react/dialog"
 import { Portal } from "@ark-ui/react/portal"
-import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog"
+import { DialogClose,dialogVariant } from "@/shared/ui/dialog"
 import { currentUserState } from "@/shared/models/current-user/index.model"
 import { Avatar } from "@/shared/ui/avatar"
 import { Menu } from "@ark-ui/react/menu"
-import { dropdownMenuItemVariants, menuContentVariant, menuTriggerVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
 import { Icon } from "@/shared/ui/icon"
 import dayjs from "@/shared/lib/create-dayjs"
 import { settingsAccountModel } from "../models/settings-account.model"
@@ -57,10 +57,10 @@ const SettingsMainChangePassword = reatomComponent(({ ctx }) => {
         onOpenChange={({ open }) => changePassState.isOpen(ctx, open)}
       >
         <Portal>
-          <Dialog.Backdrop className={dialogBackdropVariant()} />
-          <DialogPositioner className={dialogPositionerVariant()}>
-            <Dialog.Content className={dialogContentVariant({ className: "w-1/4!" })}>
-              <Dialog.Title className={dialogTitleVariant()}>Изменение пароля</Dialog.Title>
+          <Dialog.Backdrop className={dialogVariant.backdrop()} />
+          <DialogPositioner className={dialogVariant.positioner()}>
+            <Dialog.Content className={dialogVariant.content({ className: "w-1/4!" })}>
+              <Dialog.Title className={dialogVariant.title()}>Изменение пароля</Dialog.Title>
               <form
                 className="flex flex-col gap-6 w-full inert:opacity-60 inert:pointer-events-none"
                 onSubmit={e => changePass.handle(ctx, e)}
@@ -126,14 +126,14 @@ const SettingsMainInfo = reatomComponent(({ ctx }) => {
         <Menu.Root
           onSelect={({ value }) => INFO_ACTIONS_LIST.find(d => d.value === value)?.action(uuid)(ctx)}
         >
-          <Menu.Trigger className={menuTriggerVariant()}>
+          <Menu.Trigger className={menuVariant.trigger()}>
             <Icon name="sprite:dots" className="size-[22px] text-neutral-400" />
           </Menu.Trigger>
           <Portal>
             <Menu.Positioner>
-              <Menu.Content className={menuContentVariant()}>
+              <Menu.Content className={menuVariant.content()}>
                 {INFO_ACTIONS_LIST.map((item) => (
-                  <Menu.Item key={item.value} value={item.value} className={dropdownMenuItemVariants()}>
+                  <Menu.Item key={item.value} value={item.value} className={menuVariant.item()}>
                     {item.label}
                   </Menu.Item>
                 ))}

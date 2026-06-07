@@ -1,5 +1,7 @@
 const DEFAULT_SOFT_DELAY = 300
 const DIALOG_DELAY = 300
+const ALERT_DIALOG_DELAY = 150
+
 const ENVIRONMENT = typeof window === 'undefined' ? "server" : "client"
 
 const DONATE_GROUPS = {
@@ -35,6 +37,7 @@ const DONATE_TITLE: Record<keyof typeof DONATE_GROUPS, string> = {
 export {
   DIALOG_DELAY,
   DEFAULT_SOFT_DELAY,
+  ALERT_DIALOG_DELAY,
   ENVIRONMENT,
   DONATE_TITLE,
   DONATE_COLORS,

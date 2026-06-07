@@ -4,15 +4,15 @@ import {
 } from "../../models/users.model";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { tv } from "tailwind-variants";
-import { currentUserState } from "@/shared/models/current-user/index.model";
-import { Link } from "@/shared/components/config/link";
+import { currentUser } from "@/shared/models/current-user/index.model";
+import { Link } from "@/shared/components/config/link/link";
 import { Avatar } from "../../../../../ui/avatar";
 import { Typography } from "@/shared/ui/typography"
 import { UserActionsChangeRoleLocal } from "./users.change-role";
 import { UserActionsWrapper } from "./users.restrict";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Menu } from '@ark-ui/react/menu'
-import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu";
+import { menuVariant } from "@/shared/ui/menu";
 import { Portal } from "@ark-ui/react/portal";
 import { atom } from "@reatom/framework";
 import { isEmptyArray } from "@/shared/lib/helpers";
@@ -67,9 +67,9 @@ export const UsersItemMenu = reatomComponent(({ ctx }) => {
               zIndex: 9999,
             }}
           >
-            <Menu.Content className={menuContentVariant({ className: "min-w-40" })}>
-              <Menu.Arrow className={menuArrowVariant()}>
-                <Menu.ArrowTip className={menuArrowTipVariant()} />
+            <Menu.Content className={menuVariant.content({ className: "min-w-40" })}>
+              <Menu.Arrow className={menuVariant.arrow()}>
+                <Menu.ArrowTip className={menuVariant.arrowTip()} />
               </Menu.Arrow>
               <UserActionsWrapper nickname={nickname} type="single" />
             </Menu.Content>
@@ -91,7 +91,7 @@ const UsersItemCheckbox = reatomComponent<{ nickname: string }>(({ ctx, nickname
 
 const UsersItem = reatomComponent<PrivatedUser>(({ ctx, player, role, avatar, nickname, uuid, premium_uuid }) => {
   const isExpanded = ctx.spy(userIsSelectedAtom(nickname));
-  const isIdentity = ctx.get(currentUserState)?.nickname === nickname;
+  const isIdentity = currentUser.getNickname(ctx) === nickname;
 
   const variant = isIdentity ? "selected" : "default"
   const state = isExpanded ? "active" : "default"

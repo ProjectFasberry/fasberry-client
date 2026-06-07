@@ -1,4 +1,4 @@
-import { createLink, Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/config/link/link"
 import { getStaticImage } from "@/shared/lib/volume-helpers"
 import { Typography } from "@/shared/ui/typography"
 import { getItemStatus, type StoreItem as StoreItemProps, storeItem } from "../../models/store-item.model"
@@ -9,6 +9,7 @@ import { tv } from "tailwind-variants"
 import { Button } from "@/shared/ui/button"
 import { translate } from "@/shared/locales/helpers"
 import { CURRENCIES } from "@/shared/consts/store"
+import { createLink } from "@/shared/components/config/link/link.model"
 
 const buyButtonVariants = tv({
   base: `group gap-2 duration-150 h-10 *:duration-150 px-6 w-full rounded-xl`,

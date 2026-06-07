@@ -15,7 +15,11 @@ export const traefikConfig = reatomAsync(async (ctx) => {
   lastSavedConfigAtom(ctx, data.yaml);
 
   return data.yaml;
-}, "traefikConfig").pipe(withStatusesAtom(), withDataAtom(), withErrorAtom());
+}, "traefikConfig").pipe(
+  withStatusesAtom(),
+  withDataAtom(),
+  withErrorAtom(),
+);
 
 export const saveConfig = reatomAsync(async (ctx) => {
   const currentCode = ctx.get(configAtom);

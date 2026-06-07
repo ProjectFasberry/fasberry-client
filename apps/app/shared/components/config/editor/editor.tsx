@@ -4,7 +4,7 @@ import { scrollableVariant } from "@/shared/consts/style-variants"
 import { reatomComponent } from "@reatom/npm-react"
 import { Icon } from "@/shared/ui/icon"
 import { Menu } from '@ark-ui/react/menu'
-import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
 import { EDITOR_DEFAULT_CONTENT, editorBar, editorBarState, editorExtensions, editorSelectors, editorState } from "./editor.model"
 
 const controlVariant = tv({
@@ -53,9 +53,9 @@ export const EditorMenuBar = reatomComponent<{ editor: Editor }>(({ ctx, editor 
               </button>
             </Menu.Trigger>
             <Menu.Positioner>
-              <Menu.Content className={menuContentVariant()}>
-                <Menu.Arrow className={menuArrowVariant()}>
-                  <Menu.ArrowTip className={menuArrowTipVariant()} />
+              <Menu.Content className={menuVariant.content()}>
+                <Menu.Arrow className={menuVariant.arrow()}>
+                  <Menu.ArrowTip className={menuVariant.arrowTip()} />
                 </Menu.Arrow>
                 <Menu.Item
                   value="clear_marks"

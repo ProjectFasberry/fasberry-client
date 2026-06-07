@@ -1,11 +1,12 @@
 {
- 	"name": "@repo/shared",
-	"version": "1.0.0",
-	"private": true,
-	"license": "MIT",
-	"type": "module",
+  "name": "@repo/shared",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "gen:types:openapi": "bun run openapi-typescript --redocly=./redocly.yml"
+    "openapi:dev": "bun run openapi-typescript --redocly=./redocly.dev.yml",
+    "openapi:prod": "bun run openapi-typescript --redocly=./redocly.prod.yml"
   },
   "devDependencies": {
     "openapi-typescript": "7.13.0"

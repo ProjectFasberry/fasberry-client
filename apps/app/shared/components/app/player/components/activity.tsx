@@ -9,14 +9,18 @@ import { playerState } from "../models/player.model";
 import { translate } from "@/shared/locales/helpers";
 import { Dialog, DialogTitle } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal";
-import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog";
+import { dialogVariant } from "@/shared/ui/dialog";
+import { ErrorBlock } from "@/shared/ui/error-block";
 
 const PlayerLocation = reatomComponent<{ nickname: string }>(({ ctx, nickname }) => {
   useUpdate((ctx) => playerActivity.location.fetch(ctx, nickname), [nickname]);
 
-  if (ctx.spy(playerActivity.location.fetch.statusesAtom).isPending) {
+  if (ctx.spy(playerActivity.location.fetch.statusesAtom).isFirstPending) {
     return <Skeleton className="h-6 w-48" />
   }
+
+  const error = ctx.spy(playerActivity.location.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
 
   const data = ctx.spy(playerActivity.location.fetch.dataAtom);
   if (!data) return null;
@@ -69,9 +73,9 @@ const PlayerServer = reatomComponent(({ ctx }) => {
           </div>
         </Dialog.Trigger>
         <Portal>
-          <Dialog.Backdrop className={dialogBackdropVariant()} />
-          <Dialog.Positioner className={dialogPositionerVariant()}>
-            <Dialog.Content className={dialogContentVariant({ className: "overflow-hidden h-2/3" })}>
+          <Dialog.Backdrop className={dialogVariant.backdrop()} />
+          <Dialog.Positioner className={dialogVariant.positioner()}>
+            <Dialog.Content className={dialogVariant.content({ className: "overflow-hidden h-2/3" })}>
               <DialogTitle>Локация игрока</DialogTitle>
               <PlayerLocation nickname={nickname} />
               <Dialog.CloseTrigger />
@@ -90,14 +94,12 @@ onConnect(playerActivity.online.fetch.dataAtom, async (ctx) => {
   }
 })
 
-const PlayerActivitySkeleton = () => {
-  return (
-    <div className="flex flex-col gap-1 items-start justify-start w-full bg-neutral-900 rounded-xl p-4">
-      <Skeleton className="h-8 w-24" />
-      <Skeleton className="h-6 w-36" />
-    </div>
-  )
-}
+const PlayerActivitySkeleton = () => (
+  <div className="flex flex-col gap-1 items-start justify-start w-full bg-neutral-900 rounded-xl p-4">
+    <Skeleton className="h-8 w-24" />
+    <Skeleton className="h-6 w-36" />
+  </div>
+)
 
 export const PlayerActivity = reatomComponent(({ ctx }) => {
   const nickname = ctx.spy(playerState.nickname);

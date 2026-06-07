@@ -8,33 +8,36 @@ import { DefaultOrder } from "@/shared/components/app/shop/components/order/comp
 import { createPageModel } from "@/shared/lib/events";
 
 export type OrderSingleDefault = {
-	unique_id: string;
-	asset: "USDT" | "TON" | "BTC" | "ETH" | "LTC" | "BNB" | "TRX" | "USDC";
-	price: string;
-	created_at: Date | string;
-	status: "canceled" | "pending" | "succeeded" | "waitingForCapture";
-	payload: string;
-	order_id: string;
-	invoice_id: number;
-	pay_url: string;
-	initiator: string;
-	comment?: string | null
+  unique_id: string;
+  asset: "USDT" | "TON" | "BTC" | "ETH" | "LTC" | "BNB" | "TRX" | "USDC";
+  price: string;
+  created_at: Date | string;
+  status: "canceled" | "pending" | "succeeded" | "waitingForCapture";
+  payload: string;
+  order_id: string;
+  invoice_id: number;
+  pay_url: string;
+  initiator: string;
+  comment?: string | null
 };
 
 const page = createPageModel({
   name: "order",
-  onSpyAction: (ctx, dataAtom, pageData) => {
-    if (!pageData) return;
+  hooks: {
+    onSpy: (ctx, dataAtom, pageData) => {
+      if (!pageData) return;
 
-    const { data } = pageData as { data: OrderSingleDefault }
-    const type = data.type
+      const { data } = pageData as { data: OrderSingleDefault }
+      // @ts-expect-error
+      const type = data.type
 
-    if (type === 'default') {
-      const routeParams = ctx.get(pageState.routeParams)
-      const uniqueId = routeParams.id;
-      orderState.data(ctx, data)
-      order.connect(ctx, uniqueId)
-    }
+      if (type === 'default') {
+        const routeParams = ctx.get(pageState.routeParams)
+        const uniqueId = routeParams.id;
+        orderState.data(ctx, data)
+        order.connect(ctx, uniqueId)
+      }
+    },
   },
   spyedAtom: pageState.data
 })

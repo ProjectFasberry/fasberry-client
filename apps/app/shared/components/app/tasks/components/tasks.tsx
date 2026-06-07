@@ -1,5 +1,5 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react"
-import { tasks, tasksFilter, type TasksFilterSortBy } from "../models/tasks.model"
+import { tasks, TASKS_FILTERS, tasksState, type TasksFilterSortBy } from "../models/tasks.model"
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button"
 import { Typography } from "@/shared/ui/typography"
@@ -11,7 +11,8 @@ import { belkoinImage, charismImage } from "@/shared/consts/images"
 import { getStaticImage } from "@/shared/lib/volume-helpers"
 import { PageLoader } from "@/shared/ui/page-loader"
 import { Menu } from '@ark-ui/react/menu'
-import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
+import { ErrorBlock } from "@/shared/ui/error-block"
 
 type TaskItemProps = ExtractApiData<"getServerTaskById">["data"];
 
@@ -128,7 +129,7 @@ const TasksFilterSearch = reatomComponent(({ ctx }) => {
         className="w-full h-10 pl-12"
         placeholder="Название"
         onChange={e => tasks.onChangeEvent(ctx, e)}
-        value={ctx.spy(tasksFilter.searchQuery)}
+        value={ctx.spy(tasksState.filters.searchQuery)}
         maxLength={1024}
       />
     </div>
@@ -138,27 +139,24 @@ const TasksFilterSearch = reatomComponent(({ ctx }) => {
 const TasksFilterType = reatomComponent(({ ctx }) => {
   return (
     <div>
-      <Menu.Root onSelect={(details) => tasksFilter.sortBy(ctx, details.value as TasksFilterSortBy)}>
+      <Menu.Root onSelect={(details) => tasksState.filters.sortBy(ctx, details.value as TasksFilterSortBy)}>
         <Menu.Trigger asChild>
           <Button
             background="default"
             className="
-            w-full min-w-0 text-sm sm:text-base font-semibold text-nowrap truncate
-          "
+              w-full min-w-0 text-sm sm:text-base font-semibold text-nowrap truncate
+            "
             disabled={ctx.spy(tasks.fetch.statusesAtom).isPending}
           >
             Сортировать по:&nbsp;<span className="text-neutral-400">Актуальности</span>
           </Button>
         </Menu.Trigger>
         <Menu.Positioner>
-          <Menu.Content className={menuContentVariant({ className: "w-full min-w-56" })}>
-            <Menu.Arrow className={menuArrowVariant()}>
-              <Menu.ArrowTip className={menuArrowTipVariant()} />
-            </Menu.Arrow>
-            {tasksFilter.FILTERS.map((filter) => (
+          <Menu.Content className={menuVariant.content({ className: "w-full min-w-56" })}>
+            {TASKS_FILTERS.map((filter) => (
               <Button
                 key={filter.value}
-                onClick={() => tasksFilter.sortBy(ctx, filter.value as TasksFilterSortBy)}
+                onClick={() => tasksState.filters.sortBy(ctx, filter.value as TasksFilterSortBy)}
                 className="font-semibold w-full text-sm sm:text-base justify-start hover:bg-neutral-800"
               >
                 {filter.title}
@@ -172,13 +170,13 @@ const TasksFilterType = reatomComponent(({ ctx }) => {
 }, "TasksFilterType")
 
 const TasksFilterAsc = reatomComponent(({ ctx }) => {
-  const asc = ctx.spy(tasksFilter.asc);
+  const asc = ctx.spy(tasksState.filters.asc);
 
   return (
     <Button
       background="default"
       className="aspect-square h-10 w-10 p-0 text-neutral-400 *:size-5"
-      onClick={() => tasksFilter.asc(ctx, (state) => !state)}
+      onClick={() => tasksState.filters.asc(ctx, (state) => !state)}
       disabled={ctx.spy(tasks.fetch.statusesAtom).isPending}
     >
       {asc ? <Icon name="sprite:arrow-up" /> : <Icon name="sprite:arrow-down" />}
@@ -201,15 +199,12 @@ export const TasksFilter = () => {
 export const Tasks = reatomComponent(({ ctx }) => {
   useUpdate(tasks.fetch, [])
 
-  if (ctx.spy(tasks.fetch.statusesAtom).isPending) return <PageLoader />
+  if (ctx.spy(tasks.fetch.statusesAtom).isFirstPending) return <PageLoader />
+
+  const error = ctx.spy(tasks.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
 
   const data = ctx.spy(tasks.fetch.dataAtom)?.data;
-  const error = ctx.spy(tasks.fetch.errorAtom)
-
-  if (error) {
-    return <span className="text-red">{error.message}</span>
-  }
-
   if (!data) return <EventsNotFound />
 
   return (

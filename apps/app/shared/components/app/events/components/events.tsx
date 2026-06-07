@@ -1,11 +1,10 @@
 import dayjs from "@/shared/lib/create-dayjs"
 import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
-import { NotFound } from "@/shared/ui/not-found";
 import { tv } from "tailwind-variants";
 import { eventsState } from "../models/events.model";
 import { isEmptyArray } from "@/shared/lib/helpers";
-import { translate } from "@/shared/locales/helpers";
+import { Noop } from "@/shared/ui/noop";
 
 type EventCardProps = ExtractApiData<"getServerEventsList">["data"][number]
 
@@ -22,7 +21,7 @@ const eventCardVariant = tv({
 
 const EventCard = ({ content, id, title }: EventCardProps) => {
   const created_at = dayjs(content.created_at.toString()).fromNow();
-  
+
   return (
     <div
       id={id}
@@ -51,10 +50,7 @@ const EventCard = ({ content, id, title }: EventCardProps) => {
 
 export const EventsList = reatomComponent(({ ctx }) => {
   const data = ctx.spy(eventsState.data);
-  
-  if (!data || isEmptyArray(data)) {
-    return <NotFound title={translate["shared.empty"]()} />
-  }
+  if (!data || isEmptyArray(data)) return <Noop />
 
   return data.map(event => <EventCard key={event.id} {...event}/>)
 }, "EventsList")

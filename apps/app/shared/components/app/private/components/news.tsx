@@ -1,21 +1,33 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Avatar } from "@/shared/ui/avatar";
-import { createLink, Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { Typography } from "@/shared/ui/typography"
-import { type ReactNode } from "react";
-import { actionsState, type ActionType, actions, getSelectedParentAtom } from "../models/actions.model";
-import { ToActionButtonX, ButtonXSubmit } from "./global";
-import { createNews, createNewsState, editNews, editNewsState, deleteNews, newsList, type NewsPayload } from "../models/news.model"
+import { actions } from "../models/actions.model";
+import { ButtonXSubmit } from "./ui";
+import {
+  createNews, createNewsState,
+  editNews, editNewsState,
+  deleteNews, newsList,
+  createNewsStateFullImageUrlAtom,
+  type NewsSingle
+} from "../models/news.model"
 import { Input } from "@/shared/ui/input"
 import { type Atom, type AtomMut, type Ctx } from "@reatom/framework"
-import { DeleteButton, EditButton, ToLink, ActionButton } from "./ui"
+import { DeleteButton, EditButton, LinkButton, ActionButton } from "./ui"
 import { EditorMenuBar } from "@/shared/components/config/editor/editor"
-import { Editor, EditorContent, generateJSON, type JSONContent, useEditor, useEditorState } from "@tiptap/react"
+import { EditorContent, generateJSON, type JSONContent, useEditor, useEditorState } from "@tiptap/react"
 import { CharacterCount, Placeholder } from "@tiptap/extensions"
 import { editorExtensions } from "@/shared/components/config/editor/editor.model";
-
-type News = NewsPayload["data"][number]
+import { createPrivatedSectionModel } from "../models/shared.model";
+import { storageModel } from "./storage";
+import { Button } from "@/shared/ui/button";
+import { Dialog } from "@ark-ui/react/dialog";
+import { Portal } from "@ark-ui/react/portal";
+import { DialogClose, dialogVariant } from "@/shared/ui/dialog";
+import { useState, type ReactNode } from "react";
+import { BackButton } from "@/shared/ui/back-button";
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const NewsContentApply = reatomComponent<{
   tempContentAtom: Atom<string>,
@@ -24,11 +36,7 @@ const NewsContentApply = reatomComponent<{
 }>(({ ctx, tempContentAtom, isValidAtom, saveAction }) => {
   const handle = () => {
     const contentStr = ctx.get(tempContentAtom)
-
-    if (!contentStr) {
-      console.warn("Content is empty")
-      return
-    }
+    if (!contentStr) return
 
     const json = generateJSON(contentStr, editorExtensions)
     saveAction(json)
@@ -47,8 +55,6 @@ const NewsContent = reatomComponent<{
 }>(({
   ctx, tempContentAtom, initValue, saveAction, isValidAtom
 }) => {
-  console.log(initValue);
-
   const editor = useEditor({
     extensions: [
       ...editorExtensions,
@@ -104,7 +110,12 @@ const NewsContent = reatomComponent<{
 const EditNewsSubmit = reatomComponent(({ ctx }) => {
   const isDisabled = !ctx.spy(editNews.isValid) || ctx.spy(editNews.submit.statusesAtom).isPending
 
-  return <ButtonXSubmit title="Редактировать" isDisabled={isDisabled} action={() => editNews.submit(ctx)} />
+  return (
+    <ButtonXSubmit
+      onClick={() => editNews.submit(ctx)}
+      disabled={isDisabled}
+    />
+  )
 }, "EditNewsSubmit")
 const EditNewsTitleInput = reatomComponent(({ ctx }) => {
   const old = ctx.get(editNewsState.title.historyAtom)[1]
@@ -150,45 +161,167 @@ const EditNewsForm = reatomComponent(({ ctx }) => {
   )
 }, "EditNewsForm")
 
-const CreateNewsTitle = reatomComponent(({ ctx }) => {
+//#region Create
+const fields = [
+  { label: "Заголовок", atom: createNewsState.title },
+  { label: "Описание", atom: createNewsState.desc },
+]
+const CreateNewsField = reatomComponent<typeof fields[number]>(({ ctx, label, atom }) => {
   return (
     <Input
-      placeholder="Заголовок"
-      value={ctx.spy(createNewsState.title)}
-      onChange={(e) => createNewsState.title(ctx, e.target.value)}
+      placeholder={label}
+      value={ctx.spy(atom)}
+      onChange={(e) => atom(ctx, e.target.value)}
     />
   )
-}, "CreateNewsTitle")
-const CreateNewsDesc = reatomComponent(({ ctx }) => {
-  return (
-    <Input
-      placeholder="Описание"
-      value={ctx.spy(createNewsState.desc)}
-      onChange={(e) => createNewsState.desc(ctx, e.target.value)}
-    />
+}, "CreateNewsField")
+
+const { Storage } = storageModel({
+  name: "create-news",
+  as: "menu",
+  Slot: (
+    <Button background="white" className="text-sm h-8 font-semibold">
+      Открыть хранилище
+    </Button>
+  ),
+  onSelectFile(ctx, fileName) {
+    createNewsState.imageUrl.data(ctx, fileName)
+    createNewsState.imageUrl.isError.reset(ctx)
+    createNewsState.imageUrl.isLoading.reset(ctx)
+    createNewsState.imageUrl.isOpen.reset(ctx)
+  }
+})
+
+type Variant = "input-url" | "null";
+
+const VARIANTS: Record<Variant, ({ ctx, setVariant }: { ctx: Ctx, setVariant: (state: Variant) => void }) => ReactNode> = {
+  "input-url": ({ ctx, setVariant }) => (
+    <div className="flex items-center justify-center gap-1 w-full">
+      <BackButton onClick={() => setVariant("null")} event="custom" />
+      <form
+        className="flex items-center gap-1"
+        onSubmit={(e) => createNews.imageUrl.submit(ctx, e)}
+      >
+        <Input
+          ref={el => createNews.imageUrl.setupRef(ctx, el)}
+          required
+          placeholder="Ссылка на изображение"
+          className="w-full bg-neutral-700! placeholder:text-sm h-8"
+        />
+        <Button type="submit" background="white" className="text-sm font-semibold h-8">
+          Применить
+        </Button>
+      </form>
+    </div>
+  ),
+  "null": ({ setVariant }) => (
+    <div className="flex items-center w-full justify-center gap-2">
+      <Button background="default" onClick={() => setVariant("input-url")} className="text-sm font-semibold h-8">
+        Вставить ссылку
+      </Button>
+      <Storage />
+    </div>
   )
-}, "CreateNewsDesc")
+}
+
+const CreateNewsImageVariants = reatomComponent(({ ctx }) => {
+  const [variant, setVariant] = useState<Variant>("null");
+  const Component = VARIANTS[variant];
+  return Component({ ctx, setVariant })
+}, "CreateNewsImageVariants")
+
 const CreateNewsImage = reatomComponent(({ ctx }) => {
+  const data = ctx.spy(createNewsState.imageUrl.data);
+
+  const isExist = data && data.length >= 1;
+  const isError = ctx.spy(createNewsState.imageUrl.isError)
+  const isLoading = ctx.spy(createNewsState.imageUrl.isLoading)
+
+  const onError = () => {
+    createNewsState.imageUrl.isError(ctx, true)
+    createNewsState.imageUrl.isLoading(ctx, false)
+  }
+
+  const onLoad = () => {
+    createNewsState.imageUrl.isLoading(ctx, false)
+  }
+
+  const onDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    createNewsState.imageUrl.data(ctx, "")
+    createNewsState.imageUrl.isError(ctx, false)
+    createNewsState.imageUrl.isLoading(ctx, false)
+  }
+
   return (
-    <Input
-      placeholder="Изображение"
-      value={ctx.spy(createNewsState.imageUrl)}
-      onChange={e => createNewsState.imageUrl(ctx, e.target.value)}
-    />
+    <div className="flex flex-col gap-4 w-full">
+      <div className="h-44 w-2/3 bg-neutral-800 rounded-xl">
+        {isExist ? (
+          <Dialog.Root
+            open={ctx.spy(createNewsState.imageUrl.isOpen)}
+            onOpenChange={({ open }) => createNews.imageUrl.handleOpen(ctx, open)}
+          >
+            <Dialog.Trigger className="relative flex items-center justify-center w-full h-full">
+              {isError && <span className="text-sm text-red">Ошибка загрузки</span>}
+              {isLoading && <span className="text-sm">Загрузка...</span>}
+              <img
+                src={ctx.spy(createNewsStateFullImageUrlAtom)}
+                alt=" "
+                className="h-full w-full object-cover rounded-lg hover:brightness-75 duration-150"
+                onError={onError}
+                onLoad={onLoad}
+                style={{
+                  display: (isLoading || isError) ? 'none' : 'block'
+                }}
+              />
+              <DeleteButton className="absolute top-2 right-2" onClick={onDelete} />
+            </Dialog.Trigger>
+            <Portal>
+              <Dialog.Backdrop className={dialogVariant.backdrop()} />
+              <Dialog.Positioner className={dialogVariant.positioner()}>
+                <Dialog.Content className={dialogVariant.content({ className: "p-0! max-h-[720px]" })}>
+                  <img
+                    src={ctx.spy(createNewsStateFullImageUrlAtom)}
+                    alt=""
+                    loading="lazy"
+                    className="h-auto w-auto object-contain rounded-lg"
+                  />
+                  <DialogClose />
+                </Dialog.Content>
+              </Dialog.Positioner>
+            </Portal>
+          </Dialog.Root>
+        ) : (
+          <div className="flex flex-col gap-4 overflow-hidden items-center justify-center h-full w-full">
+            <div className="flex flex-col items-center justify-center w-full">
+              <span>Не выбрано</span>
+              <span className="text-sm w-[60%] leading-4 text-center text-neutral-400">
+                Введите ссылку на изображение или выберите загруженный файл
+              </span>
+            </div>
+            <CreateNewsImageVariants />
+          </div>
+        )}
+      </div>
+    </div>
   )
 }, "CreateNewsImage")
 
 const CreateNewsSubmit = reatomComponent(({ ctx }) => {
   const isDisabled = !ctx.spy(createNews.isValid) || ctx.spy(createNews.submit.statusesAtom).isPending
 
-  return <ButtonXSubmit title="Создать" action={() => createNews.submit(ctx)} isDisabled={isDisabled} />
+  return (
+    <ButtonXSubmit
+      onClick={() => createNews.submit(ctx)}
+      disabled={isDisabled}
+    />
+  )
 }, "CreateNewsSubmit")
 
 const CreateNewsForm = () => {
   return (
     <div className="flex flex-col gap-2 w-full">
-      <CreateNewsTitle />
-      <CreateNewsDesc />
+      {fields.map((field, idx) => <CreateNewsField key={idx} label={field.label} atom={field.atom} />)}
       <CreateNewsImage />
       <div className="flex flex-col gap-2 w-full">
         <NewsContent
@@ -200,8 +333,27 @@ const CreateNewsForm = () => {
     </div>
   )
 }
+//#endregion;
 
-const NewsListItem = reatomComponent<News>(({ ctx, id, title, imageUrl, creator }) => {
+const UserBadge = ({ nickname, avatar }: { nickname: string; avatar: string }) => {
+  return (
+    <Link
+      href={createLink("player", nickname)}
+      className="flex items-center gap-1"
+    >
+      <Avatar
+        nickname={nickname}
+        url={avatar}
+        className="w-5 h-5"
+      />
+      <Typography>
+        {nickname}
+      </Typography>
+    </Link>
+  )
+}
+
+const NewsListItem = reatomComponent<NewsSingle>(({ ctx, id, title, imageUrl, creator }) => {
   return (
     <div
       className="flex h-22 border border-neutral-800 p-2
@@ -209,9 +361,8 @@ const NewsListItem = reatomComponent<News>(({ ctx, id, title, imageUrl, creator 
     >
       <div className="flex items-center gap-2">
         <img
-          src={imageUrl!}
+          src={imageUrl}
           alt={title}
-          draggable={false}
           className="h-18 w-28 rounded-lg select-none object-cover"
         />
         <div className="flex flex-col items-start gap-1">
@@ -219,33 +370,19 @@ const NewsListItem = reatomComponent<News>(({ ctx, id, title, imageUrl, creator 
             {title}
           </Typography>
           <div className="flex items-center gap-3 w-full justify-start">
-            <Link
-              href={createLink("player", creator.nickname)}
-              className="flex items-center border border-neutral-800 p-1 rounded-lg gap-1"
-            >
-              <Avatar
-                nickname={creator.nickname}
-                url={creator.avatar}
-                className="w-5 h-5"
-              />
-              <Typography>
-                {creator.nickname}
-              </Typography>
-            </Link>
-            <div className="flex items-center border border-neutral-800 p-1 rounded-lg gap-1">
-              <ToLink
-                link={createLink("news", id)}
-              />
-              <EditButton
-                onClick={() => actions.createLinkValue(ctx, { parent: "news", type: "edit", target: id.toString() })}
-              />
-              <DeleteButton
-                onClick={() => deleteNews.deleteBefore(ctx, { id, title })}
-                disabled={ctx.spy(deleteNews.submit.statusesAtom).isPending}
-              />
-            </div>
+            <UserBadge avatar={creator.avatar} nickname={creator.nickname} />
           </div>
         </div>
+      </div>
+      <div className="flex items-center gap-1">
+        <LinkButton link={createLink("news", id)} />
+        <EditButton
+          onClick={() => actions.createLinkValue(ctx, { parent: "news", type: "edit", target: id.toString() })}
+        />
+        <DeleteButton
+          onClick={() => deleteNews.deleteBefore(ctx, { id, title })}
+          disabled={ctx.spy(deleteNews.submit.statusesAtom).isPending}
+        />
       </div>
     </div>
   )
@@ -254,7 +391,16 @@ const NewsListItem = reatomComponent<News>(({ ctx, id, title, imageUrl, creator 
 const NewsList = reatomComponent(({ ctx }) => {
   useUpdate(newsList.fetch, [])
 
-  if (ctx.spy(newsList.fetch.statusesAtom).isPending) return <Skeleton className="h-16 w-full" />
+  if (ctx.spy(newsList.fetch.statusesAtom).isFirstPending) {
+    return (
+      <div className="flex flex-col w-full gap-2 h-full">
+        {Array.from({ length: 6 }).map((_, idx) => <Skeleton key={idx} className="h-16 w-full" />)}
+      </div>
+    )
+  }
+
+  const error = ctx.spy(newsList.fetch.errorAtom);
+  if (error) return <span className="text-red text-sm">{error.message}</span>
 
   const data = ctx.spy(newsList.fetch.dataAtom)?.data;
   if (!data) return null;
@@ -266,31 +412,17 @@ const NewsList = reatomComponent(({ ctx }) => {
   )
 }, "NewsList")
 
-const VARIANTS: Record<ActionType, ReactNode> = {
-  "create": <CreateNewsForm />,
-  "edit": <EditNewsForm />,
-  "view": <NewsList />
-}
-
-export const NewsWrapper = reatomComponent(({ ctx }) => {
-  if (!ctx.spy(getSelectedParentAtom("news"))) return VARIANTS["view"]
-  return VARIANTS[ctx.spy(actionsState.type)]
-}, "NewsWrapper")
-
-export const ViewNews = () => <ToActionButtonX title="Создать" parent="news" type="create" />
-export const CreateNews = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <ToActionButtonX parent="news" type="create" />
-      <CreateNewsSubmit />
-    </div>
-  )
-}
-export const EditNews = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <ToActionButtonX parent="news" type="edit" />
-      <EditNewsSubmit />
-    </div>
-  )
-}
+export const newsSection = createPrivatedSectionModel({
+  event: "news",
+  components: {
+    header: {
+      create: <CreateNewsSubmit />,
+      edit: <EditNewsSubmit />
+    },
+    content: {
+      create: <CreateNewsForm />,
+      edit: <EditNewsForm />,
+      view: <NewsList />
+    }
+  }
+})

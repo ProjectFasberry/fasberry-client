@@ -37,12 +37,12 @@ interface FormattedTextProps {
 }
 
 /**
- * &<0-9a-f> - цвет
- * &l - жирный
- * &o - курсив
- * &n - подчеркнутый
- * &m - зачеркнутый
- * &r - сброс всех стилей
+ * &<0-9a-f> - color
+ * &l - bold
+ * &o - italic
+ * &n - underline
+ * &m - strikethrough
+ * &r - reset all styles
  */
 export const FormattedText = ({
   text, as: Wrapper = 'span', className,

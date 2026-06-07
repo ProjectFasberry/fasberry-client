@@ -1,76 +1,63 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { Input } from "@/shared/ui/input"
 import { createEvent, createEventState, deleteEvent, events } from "../models/event.model"
-import { type AtomState } from "@reatom/framework"
-import { type ReactNode } from "react"
 import { Typography } from "@/shared/ui/typography"
 import { DeleteButton } from "./ui"
-import { actionsState, getSelectedParentAtom } from "../models/actions.model"
-import { ButtonXSubmit, ToActionButtonX } from "./global"
+import { ButtonXSubmit } from "./ui"
+import { createPrivatedSectionModel } from "../models/shared.model"
+import { Skeleton } from "@/shared/ui/skeleton"
+import { ErrorBlock } from "@/shared/ui/error-block"
+import { Noop } from "@/shared/ui/noop"
 
-const CreateEventTitle = reatomComponent(({ ctx }) => {
-  return (
-    <Input
-      value={ctx.spy(createEventState.title)}
-      onChange={e => createEventState.title(ctx, e.target.value)}
-      placeholder="Заголовок"
-    />
-  )
-}, "CreateEventTitle")
-const CreateEventType = reatomComponent(({ ctx }) => {
-  return (
-    <Input
-      value={ctx.spy(createEventState.type)}
-      onChange={e => createEventState.type(ctx, e.target.value)}
-      placeholder="Тип"
-    />
-  )
-}, "CreateEventType")
-const CreateEventDesc = reatomComponent(({ ctx }) => {
-  return (
-    <Input
-      value={ctx.spy(createEventState.description)}
-      onChange={e => createEventState.description(ctx, e.target.value)}
-      placeholder="Описание"
-    />
-  )
-}, "CreateEventDesc")
-const CreateEventInitiator = reatomComponent(({ ctx }) => {
-  return (
-    <Input
-      value={ctx.spy(createEventState.initiator)}
-      onChange={e => createEventState.initiator(ctx, e.target.value)}
-      placeholder="Инициатор"
-    />
-  )
-}, "CreateEventInitiator")
+const fields = [
+  { label: "Заголовок", atom: createEventState.title },
+  { label: "Тип", atom: createEventState.type, },
+  { label: "Описание", atom: createEventState.description },
+  { label: "Инициатор", atom: createEventState.initiator }
+]
+
 const CreateEventSubmit = reatomComponent(({ ctx }) => {
   return (
     <ButtonXSubmit
-      title="Создать"
-      action={() => createEvent.submit(ctx)}
-      isDisabled={ctx.spy(createEvent.submit.statusesAtom).isPending}
+      onClick={() => createEvent.submit(ctx)}
+      disabled={ctx.spy(createEvent.submit.statusesAtom).isPending}
     />
   )
 }, "CreateEventSubmit")
+
+const CreateEventField = reatomComponent<typeof fields[number]>(({ ctx, label, atom }) => {
+  return (
+    <Input
+      key={label}
+      placeholder={label}
+      onChange={e => atom(ctx, e.target.value)}
+    />
+  )
+}, "CreateEventField")
 const CreateEventForm = () => {
   return (
     <div className="flex flex-col gap-2 w-full h-full">
-      <CreateEventType />
-      <CreateEventTitle />
-      <CreateEventDesc />
-      <CreateEventInitiator />
+      {fields.map((field) => <CreateEventField key={field.label} {...field} />)}
     </div>
   )
 }
 
+const EventsListSkeleton = () => (
+  <div className="flex flex-col w-full gap-2 h-full">
+    {Array.from({ length: 6 }).map((_, idx) => <Skeleton key={idx} className="h-16 w-full" />)}
+  </div>
+)
+
 const EventsList = reatomComponent(({ ctx }) => {
   useUpdate(events.fetch, [])
 
-  if (ctx.spy(events.fetch.statusesAtom).isPending) return null;
+  if (ctx.spy(events.fetch.statusesAtom).isFirstPending) return <EventsListSkeleton />
+
+  const error = ctx.spy(events.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
 
   const data = ctx.spy(events.fetch.dataAtom)
-  if (!data) return null;
+  if (!data) return <Noop />
 
   return (
     <div className="flex flex-col w-full gap-2 h-full">
@@ -90,7 +77,7 @@ const EventsList = reatomComponent(({ ctx }) => {
           <div className="flex items-center gap-1">
             <DeleteButton
               disabled={ctx.spy(deleteEvent.submit.statusesAtom).isPending}
-              onClick={() => deleteEvent.submit(ctx)}
+              onClick={() => deleteEvent.beforeSubmit(ctx, event.id)}
             />
           </div>
         </div>
@@ -99,27 +86,17 @@ const EventsList = reatomComponent(({ ctx }) => {
   )
 }, "EventsList")
 
-const VARIANTS: Record<AtomState<typeof actionsState.type>, ReactNode> = {
-  "create": <CreateEventForm />,
-  "edit": null,
-  "view": <EventsList />
-}
-
-export const EventsWrapper = reatomComponent(({ ctx }) => {
-  if (!ctx.spy(getSelectedParentAtom("event"))) {
-    return VARIANTS["view"]
+export const eventsSection = createPrivatedSectionModel({
+  event: "event",
+  components: {
+    header: {
+      create: <CreateEventSubmit />,
+      edit: null,
+    },
+    content: {
+      create: <CreateEventForm />,
+      edit: null,
+      view: <EventsList />
+    }
   }
-
-  return VARIANTS[ctx.spy(actionsState.type)]
-}, "EventsWrapper")
-
-export const ViewEvent = () => <ToActionButtonX title="Создать" parent="event" type="create" />;
-
-export const CreateEvent = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <ToActionButtonX parent="event" type="create" />
-      <CreateEventSubmit />
-    </div>
-  )
-}
+})

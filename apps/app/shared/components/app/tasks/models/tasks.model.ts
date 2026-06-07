@@ -7,19 +7,22 @@ import { action, atom, sleep, withAssign, withConcurrency } from "@reatom/framew
 export type TasksPayload = ExtractApiData<"getServerTaskList">["data"]
 export type TasksFilterSortBy = "relevance"
 
-const FILTERS = [
+export const TASKS_FILTERS = [
   {
     title: "Актуальности", value: "relevance"
   }
 ]
 
-export const tasksFilter = atom(null, "tasksFilter").pipe(
+export const tasksState = atom(null, "tasksState").pipe(
   withAssign((_, name) => ({
-    sortBy: atom<TasksFilterSortBy>("relevance", `${name}.sortBy`),
-    searchQuery: atom<string>("", `${name}.searchQuery`),
-    endCursor: atom<Nullable<string>>(null, `${name}.endCursor`),
-    asc: atom(false, `${name}.asc`),
-    FILTERS
+    filters: atom(null, `${name}.filters`).pipe(
+      withAssign((_, name) => ({
+        sortBy: atom<TasksFilterSortBy>("relevance", `${name}.sortBy`),
+        searchQuery: atom<string>("", `${name}.searchQuery`),
+        endCursor: atom<Nullable<string>>(null, `${name}.endCursor`),
+        asc: atom(false, `${name}.asc`),
+      }))
+    ),
   }))
 )
 
@@ -27,9 +30,9 @@ export const tasks = atom(null, "tasks").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       const params = {
-        asc: ctx.get(tasksFilter.asc),
-        endCursor: ctx.get(tasksFilter.endCursor),
-        searchQuery: ctx.get(tasksFilter.searchQuery)
+        asc: ctx.get(tasksState.filters.asc),
+        endCursor: ctx.get(tasksState.filters.endCursor),
+        searchQuery: ctx.get(tasksState.filters.searchQuery)
       }
 
       return await ctx.schedule(() =>
@@ -49,7 +52,7 @@ export const tasks = atom(null, "tasks").pipe(
     ),
     onChangeEvent: action(async (ctx, e) => {
       const { value } = e.target;
-      tasksFilter.searchQuery(ctx, value)
+      tasksState.filters.searchQuery(ctx, value)
 
       await sleep(DEFAULT_SOFT_DELAY)
 
@@ -60,4 +63,4 @@ export const tasks = atom(null, "tasks").pipe(
   }))
 )
 
-tasksFilter.asc.onChange((ctx) => tasks.fetch(ctx))
+tasksState.filters.asc.onChange((ctx) => tasks.fetch(ctx))

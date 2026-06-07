@@ -1,21 +1,12 @@
 import { logError } from "@/shared/lib/log";
-import { reatomAsync, withCache, withDataAtom, withRetry, withStatusesAtom } from "@reatom/framework";
+import { reatomAsync, withCache, withDataAtom, withErrorAtom, withRetry, withStatusesAtom } from "@reatom/framework";
 import { client } from "@/shared/lib/client-wrapper";
 import { playerState } from "./player.model";
 import { atom, withAssign } from "@reatom/framework";
 
 export type PlayerActivityPayload =
-  | {
-    type: "online";
-    nickname: string;
-    server: string;
-    issued_date: Date;
-  }
-  | {
-    type: "offline";
-    nickname: string;
-    issued_date: Date | null;
-  };
+  | { type: "online"; nickname: string; server: string; issued_date: Date; }
+  | { type: "offline"; nickname: string; issued_date: Date | null };
 
 type PlayerLocation = {
   world: string,
@@ -32,12 +23,11 @@ export const playerActivity = atom(null, "playerActivity").pipe(
     online: atom(null, `${name}.online`).pipe(
       withAssign((_, name) => ({
         fetch: reatomAsync(async (ctx, nickname: string) => {
-          return await ctx.schedule(() =>
-            client
-              .get<PlayerActivityPayload>(`server/activity/now/${nickname}`, {
-                retry: 1
-              })
-              .exec()
+          return await ctx.schedule(() => client
+            .get<PlayerActivityPayload>(`server/activity/now/${nickname}`, {
+              retry: 1
+            })
+            .exec()
           )
         }, {
           name: `${name}.fetch`,
@@ -45,7 +35,8 @@ export const playerActivity = atom(null, "playerActivity").pipe(
         }).pipe(
           withDataAtom(null),
           withStatusesAtom(),
-          withRetry()
+          withRetry(),
+          withErrorAtom()
         )
       }))
     ),
@@ -57,11 +48,12 @@ export const playerActivity = atom(null, "playerActivity").pipe(
           )
         }, {
           name: `${name}.fetch`,
-          onReject: (ctx, e) => logError(e)
+          onReject: (_, e) => logError(e)
         }).pipe(
           withDataAtom(null),
           withStatusesAtom(),
-          withCache({ swr: false })
+          withCache({ swr: false }),
+          withErrorAtom()
         )
       }))
     )

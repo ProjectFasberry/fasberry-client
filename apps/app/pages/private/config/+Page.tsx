@@ -6,8 +6,10 @@ import { Config } from "@/shared/components/app/private/components/config";
 
 const page = createPageModel({
   name: "private.config",
-  onSpyAction: (ctx, dataAtom, urlParsed) => {
-    actionsState.searchParams(ctx, (state) => urlParsed?.search ?? state)
+  hooks: {
+    onSpy: (ctx, _, urlParsed) => {
+      actionsState.searchParams(ctx, (state) => urlParsed?.search ?? state)
+    },
   },
   spyedAtom: pageState.urlParsed
 })

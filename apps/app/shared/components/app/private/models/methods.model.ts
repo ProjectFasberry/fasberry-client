@@ -1,5 +1,5 @@
 import { client, withJsonBody } from "@/shared/lib/client-wrapper";
-import { action, atom, reatomAsync, reatomMap, withAssign, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework";
+import { action, atom, reatomAsync, reatomMap, withAssign, withCache, withDataAtom, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { notifyAboutRestrictRole } from "./actions.model";
 import { invariant } from "@/shared/lib/invariant";
 
@@ -21,8 +21,9 @@ const getMethodIsLoading = (id: number) => atom((ctx) =>
 const methods = atom(null, "methods").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() =>
-        client<PrivatedMethodsPayload>("privated/store/methods/list", { signal: ctx.controller.signal }).exec()
+      return await ctx.schedule(() => client
+        .get<PrivatedMethodsPayload>("privated/store/methods/list", { signal: ctx.controller.signal })
+        .exec()
       )
     }, {
       name: `${name}.fetch`,
@@ -36,7 +37,8 @@ const methods = atom(null, "methods").pipe(
     }).pipe(
       withDataAtom(),
       withStatusesAtom(),
-      withCache({ swr: false })
+      withCache({ swr: false }),
+      withErrorAtom()
     )
   }))
 )
@@ -91,7 +93,8 @@ const methodsControl = atom(null, "methodsControl").pipe(
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )

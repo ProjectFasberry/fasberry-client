@@ -62,7 +62,8 @@
     "footer": {
       "about": {
         "title": "About project",
-        "news": "News"
+        "news": "News",
+        "status": "Status"
       },
       "info": {
         "title": "Info",
@@ -71,7 +72,7 @@
       },
       "resources": {
         "title": "Resources",
-        "status": "Status",
+        "status": "Servers status",
         "faq": "FAQ"
       },
       "warning": "NOT AN OFFICIAL MINECRAFT SERVICE. NOT ENDORSED OR ASSOCIATED WITH MOJANG OR MICROSOFT."

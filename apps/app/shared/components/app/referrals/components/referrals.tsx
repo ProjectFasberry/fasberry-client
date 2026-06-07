@@ -1,33 +1,36 @@
-import { currentUserState } from "@/shared/models/current-user/index.model";
+import { currentUser } from "@/shared/models/current-user/index.model";
 import { reatomComponent } from "@reatom/npm-react";
 import { referrals } from "../models/referrals.model";
 import { Button } from "@/shared/ui/button";
 import { Icon } from "@/shared/ui/icon"
 import { toast } from "sonner";
 import { env } from "@/shared/env";
+import { action } from "@reatom/framework";
+
+const WIKI_REFERRALS_URL = `${env.VITE_LANDING_URL}/wiki/referals`;
+
+const getReferralsLink = action(async (ctx) => {
+  const link = referrals.getReferralIp(
+    currentUser.getNickname(ctx)
+  )
+
+  await navigator.clipboard.writeText(link)
+  toast.success("Ссылка скопирована");
+})
 
 export const ReferralsLink = reatomComponent(({ ctx }) => {
-  const handle = async () => {
-    const nickname = ctx.get(currentUserState)?.nickname;
-    if (!nickname) return null;
-
-    const link = referrals.getReferralIp(nickname)
-    await navigator.clipboard.writeText(link)
-    toast.success("Ссылка скопирована");
-  }
-
   return (
     <div className="flex flex-col sm:flex-row items-center gap-2 justify-start w-full">
       <Button
         background="white"
         className="gap-2 sm:w-fit w-full font-semibold truncate"
-        onClick={handle}
+        onClick={() => getReferralsLink(ctx)}
       >
         <Icon name="sprite:plus" className="size-5" />
         Пригласить игрока
       </Button>
       <a
-        href={`${env.VITE_LANDING_URL}/wiki/referals`}
+        href={WIKI_REFERRALS_URL}
         target="_blank"
         className="flex min-w-0 sm:w-fit w-full"
       >

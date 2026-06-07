@@ -1,23 +1,18 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Typography } from "@/shared/ui/typography"
-import { type AtomState } from "@reatom/framework"
-import { Icon } from "@/shared/ui/icon"
-import { type ReactNode } from "react"
-import { actionsState, getSelectedParentAtom } from "../models/actions.model"
-import { ToActionButtonX } from "./global"
 import { ActionButton, DeleteButton } from "./ui"
-import { banners, deleteBanner, createBanner, createBannerState, type BannerList } from "../models/banner.model"
+import { banners, deleteBanner, createBanner, createBannerState, type BannerSingle } from "../models/banner.model"
 import { Input } from "@/shared/ui/input"
-import { ButtonXSubmit } from "./global"
+import { ButtonXSubmit } from "./ui"
 import { Dialog } from "@ark-ui/react/dialog"
 import { Portal } from "@ark-ui/react/portal"
-import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog"
+import { DialogClose, dialogVariant } from "@/shared/ui/dialog"
 import { Tooltip } from "@ark-ui/react/tooltip"
+import { createPrivatedSectionModel } from "../models/shared.model"
+import { menuVariant } from "@/shared/ui/menu"
 
-type BannerPayload = BannerList["data"][number]
-
-const CREATE_BANNER_FIELDS = [
+const fields = [
   { placeholder: "Заголовок", value: createBannerState.title },
   { placeholder: "Описание", value: createBannerState.desc },
   { placeholder: "Заголовок ссылки", value: createBannerState.hrefTitle },
@@ -26,14 +21,13 @@ const CREATE_BANNER_FIELDS = [
 const CreateBannerSubmit = reatomComponent(({ ctx }) => {
   return (
     <ButtonXSubmit
-      title="Создать"
-      action={() => createBanner.submit(ctx)}
-      isDisabled={ctx.spy(createBanner.submit.statusesAtom).isPending}
+      onClick={() => createBanner.submit(ctx)}
+      disabled={ctx.spy(createBanner.submit.statusesAtom).isPending}
     />
   )
 }, "CreateBanner")
 
-const CreateBannerField = reatomComponent<typeof CREATE_BANNER_FIELDS[number]>(({ ctx, placeholder, value }) => {
+const CreateBannerField = reatomComponent<typeof fields[number]>(({ ctx, placeholder, value }) => {
   return (
     <Input
       placeholder={placeholder}
@@ -46,12 +40,12 @@ const CreateBannerField = reatomComponent<typeof CREATE_BANNER_FIELDS[number]>((
 const CreateBannerForm = () => {
   return (
     <div className="flex flex-col gap-2">
-      {CREATE_BANNER_FIELDS.map((item, idx) => <CreateBannerField key={idx} {...item} />)}
+      {fields.map((item, idx) => <CreateBannerField key={idx} {...item} />)}
     </div>
   )
 }
 
-const BannerListItem = reatomComponent<BannerPayload>(({ ctx, id, title, description, href }) => {
+const BannerListItem = reatomComponent<BannerSingle>(({ ctx, id, title, description, href }) => {
   return (
     <div className="flex items-center gap-2 justify-between w-full h-16 border border-neutral-800 p-2 rounded-lg overflow-hidden">
       <div className="flex w-full justify-between sm:items-start gap-1">
@@ -65,15 +59,12 @@ const BannerListItem = reatomComponent<BannerPayload>(({ ctx, id, title, descrip
             </Typography>
           </div>
           <Tooltip.Root>
-            <Tooltip.Trigger >
+            <Tooltip.Trigger className={menuVariant.trigger()}>
               <Typography color="gray">{href.title}</Typography>
             </Tooltip.Trigger>
             <Portal>
               <Tooltip.Positioner>
-                <Tooltip.Arrow>
-                  <Tooltip.ArrowTip />
-                </Tooltip.Arrow>
-                <Tooltip.Content className="bg-neutral-900 rounded-xl">
+                <Tooltip.Content className={menuVariant.content()}>
                   {href.value}
                 </Tooltip.Content>
               </Tooltip.Positioner>
@@ -86,9 +77,9 @@ const BannerListItem = reatomComponent<BannerPayload>(({ ctx, id, title, descrip
               <ActionButton icon="sprite:eye" variant="default" />
             </Dialog.Trigger>
             <Portal>
-              <Dialog.Backdrop className={dialogBackdropVariant()} />
-              <Dialog.Positioner className={dialogPositionerVariant()}>
-                <Dialog.Content className={dialogContentVariant({ className: "overflow-hidden w-1/3" })}>
+              <Dialog.Backdrop className={dialogVariant.backdrop()} />
+              <Dialog.Positioner className={dialogVariant.positioner()}>
+                <Dialog.Content className={dialogVariant.content({ className: "overflow-hidden w-1/3" })}>
                   <div className="flex flex-col justify-center w-full h-full items-center">
                     <Typography className='font-semibold'>
                       {title}
@@ -115,52 +106,40 @@ const BannerListItem = reatomComponent<BannerPayload>(({ ctx, id, title, descrip
   )
 }, "BannerListItem")
 
+const BannersListSkeleton = () => (
+  <div className="flex flex-col gap-2 w-full h-full">
+    {Array.from({ length: 3 }).map((_, idx) => <Skeleton key={idx} className="h-16 w-full" />)}
+  </div>
+)
+
 const BannersList = reatomComponent(({ ctx }) => {
   useUpdate(banners.fetch, [])
 
-  if (ctx.spy(banners.fetch.statusesAtom).isPending) {
-    return Array.from({ length: 3 }).map((_, idx) => <Skeleton key={idx} className="h-16 w-full" />)
+  if (ctx.spy(banners.fetch.statusesAtom).isFirstPending) {
+    return <BannersListSkeleton />
   }
 
   const data = ctx.spy(banners.fetch.dataAtom)?.data;
   if (!data) return null;
 
-  return data.map(b => <BannerListItem key={b.id} {...b} />)
+  return (
+    <div className="flex flex-col gap-2 w-full h-full">
+      {data.map(banner => <BannerListItem key={banner.id} {...banner} />)}
+    </div>
+  )
 }, "BannersList")
 
-const VARIANTS: Record<AtomState<typeof actionsState.type>, ReactNode> = {
-  "create": <CreateBannerForm />,
-  "edit": null,
-  "view": (
-    <div className="flex flex-col gap-2 w-full h-full">
-      <BannersList />
-    </div>
-  )
-}
-
-export const BannersWrapper = reatomComponent(({ ctx }) => {
-  if (!ctx.spy(getSelectedParentAtom("banner"))) {
-    return VARIANTS["view"]
+export const bannersSection = createPrivatedSectionModel({
+  event: "banner",
+  components: {
+    header: {
+      create: <CreateBannerSubmit />,
+      edit: null
+    },
+    content: {
+      create: <CreateBannerForm />,
+      edit: null,
+      view:  <BannersList />
+    }
   }
-
-  return VARIANTS[ctx.spy(actionsState.type)]
-}, "BannersWrapper")
-
-export const ViewBanner = () => <ToActionButtonX title="Создать" parent="banner" type="create" />
-
-export const EditBanner = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <ToActionButtonX parent="banner" type="edit" />
-    </div>
-  )
-}
-
-export const CreateBanner = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <ToActionButtonX parent="banner" type="create" />
-      <CreateBannerSubmit />
-    </div>
-  )
-}
+})

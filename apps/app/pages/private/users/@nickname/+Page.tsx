@@ -59,8 +59,10 @@ const UserInfo = reatomComponent(({ ctx }) => {
 
 const page = createPageModel({
   name: "users",
-  onSpyAction: (ctx, dataAtom, routeParams) => {
-    users.fetchSingle(ctx, routeParams?.nickname ?? "")
+  hooks: {
+    onSpy: (ctx, dataAtom, routeParams) => {
+      users.fetchSingle(ctx, routeParams?.nickname ?? "")
+    },
   },
   spyedAtom: pageState.routeParams
 })

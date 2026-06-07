@@ -3,19 +3,19 @@ import { atom } from "@reatom/framework";
 import { withAssign } from "@reatom/framework";
 import { withSsr } from "@/shared/models/ssr";
 
-type EventPayloads = ExtractApiData<"getServerEventsList">["data"]
+export type EventsList = ExtractApiData<"getServerEventsList">["data"]
+export type EventsSingle = EventsList[number]
 
-export async function getEvents(
-  params: Partial<Record<string, string | number>>,
-  init?: RequestInit
-) {
-  return client<EventPayloads>("server/events/list", init)
+type EventsParams = ExtractApiParams<"getServerEventsList">["query"]
+
+export async function getEvents(params: Partial<EventsParams>, init?: RequestInit) {
+  return client<EventsList>("server/events/list", init)
     .pipe(withQueryParams(params))
     .exec()
 }
 
 export const eventsState = atom(null, "eventsState").pipe(
   withAssign((_, name) => ({
-    data: atom<EventPayloads>([], `${name}.data`).pipe(withSsr(`${name}.data`))
+    data: atom<EventsList>([], `${name}.data`).pipe(withSsr(`${name}.data`))
   }))
 )

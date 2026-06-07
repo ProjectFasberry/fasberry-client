@@ -17,11 +17,7 @@ import { translate } from "@/shared/locales/helpers"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { Select, createListCollection } from '@ark-ui/react/select'
 import { Portal } from "@ark-ui/react/portal"
-import {
-  selectClearTriggerVariant, selectContentBaseStyle, selectContentVariant, selectControlVariant,
-  selectIndicatorsVariant, selectIndicatorVariant, selectItemGroupVariant, selectItemIndicatorVariant,
-  selectItemTextVariant, selectItemVariant, selectTriggerVariant
-} from "@/shared/ui/select"
+import { selectVariant, selectContentBaseStyle } from "@/shared/ui/select"
 import { Typography } from "@/shared/ui/typography"
 
 const FindoutReferrerInput = reatomComponent(({ ctx }) => (
@@ -74,31 +70,31 @@ const FindoutOptions = reatomComponent(({ ctx }) => {
       onValueChange={({ value }) => authState.fields.findoutType(ctx, value[0] as AuthFindoutType)}
       className="flex flex-col gap-1 w-full"
     >
-      <Select.Control className={selectControlVariant()}>
-        <Select.Trigger className={selectTriggerVariant()}>
+      <Select.Control className={selectVariant.control()}>
+        <Select.Trigger className={selectVariant.trigger()}>
           <Select.ValueText>
             {currentItem?.title ?? translate["auth.register.placeholders.findout"]()}
           </Select.ValueText>
         </Select.Trigger>
-        <div className={selectIndicatorsVariant()}>
-          <Select.ClearTrigger className={selectClearTriggerVariant()}>
+        <div className={selectVariant.indicators()}>
+          <Select.ClearTrigger className={selectVariant.clearTrigger()}>
             <Icon name="sprite:x" className="size-5" />
           </Select.ClearTrigger>
-          <Select.Indicator className={selectIndicatorVariant()}>
+          <Select.Indicator className={selectVariant.indicator()}>
             <Icon name="sprite:selector" className="size-5" />
           </Select.Indicator>
         </div>
       </Select.Control>
       <Portal>
         <Select.Positioner>
-          <Select.Content className={selectContentVariant()} style={selectContentBaseStyle}>
-            <Select.ItemGroup className={selectItemGroupVariant()}>
+          <Select.Content className={selectVariant.content()} style={selectContentBaseStyle}>
+            <Select.ItemGroup className={selectVariant.itemGroup()}>
               {FINDOUT_OPTIONS.map((item) => (
-                <Select.Item key={item.value} item={item} className={selectItemVariant()}>
-                  <Select.ItemText className={selectItemTextVariant()}>
+                <Select.Item key={item.value} item={item} className={selectVariant.item()}>
+                  <Select.ItemText className={selectVariant.itemText()}>
                     {item.title}
                   </Select.ItemText>
-                  <Select.ItemIndicator className={selectItemIndicatorVariant()}>
+                  <Select.ItemIndicator className={selectVariant.itemIndicator()}>
                     <Icon name="sprite:check" className="size-4" />
                   </Select.ItemIndicator>
                 </Select.Item>

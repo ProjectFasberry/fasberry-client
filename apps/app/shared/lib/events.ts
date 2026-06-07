@@ -5,23 +5,30 @@ import { logger } from "./logger";
 type WithReset<T> = AtomMut<T | null> & {
   reset: Action<[], T | null>;
 }
-type Page = { unsubscribe: () => void }
-type PageHandler<Args extends any[] = []> = (ctx: Ctx, atom: WithReset<Page>, ...args: Args) => Promise<void> | void;
+
+type Page = {
+  unsubscribe: () => void
+}
+
+type PageHandler<Args extends any[] = []> = (ctx: Ctx, atom: WithReset<Page>, ...args: Args) =>
+  Promise<void> | void;
 
 type PageModelConfig<TSpy> = {
   name: string;
-  onConnAction?: PageHandler<[isConnected: () => boolean]>;
-  onDisconnAction?: PageHandler;
-  onAfterDisconn?: PageHandler;
+  hooks?: Partial<{
+    onConnect: PageHandler<[isConnected: () => boolean]>;
+    onDisconnect: PageHandler;
+    onAfterDisconnect: PageHandler;
+  }>
 } & (
-    | { spyedAtom: Atom<TSpy>; onSpyAction: PageHandler<[payload: TSpy]> }
-    | { spyedAtom?: never; onSpyAction?: never }
+  | { spyedAtom: Atom<TSpy>; hooks?: { onSpy: PageHandler<[payload: TSpy]> } }
+  | { spyedAtom?: never; hooks?: { onSpy?: never } }
   )
 
 const pageLogger = logger.withTag("Page");
 
 export const createPageModel = <TSpy = unknown>({
-  name, onConnAction, onDisconnAction, onAfterDisconn, spyedAtom, onSpyAction
+  name, hooks, spyedAtom
 }: PageModelConfig<TSpy>) => {
   const dataAtom = atom<Nullable<Page>>(null, `${name}.page`).pipe(withReset());
 
@@ -30,7 +37,7 @@ export const createPageModel = <TSpy = unknown>({
       pageLogger.info(`${name}.page connected`)
     }
 
-    return onConnAction?.(ctx, dataAtom, ctx.isConnected)
+    return hooks?.onConnect?.(ctx, dataAtom, ctx.isConnected)
   });
 
   onDisconnect(dataAtom, (ctx) => {
@@ -40,16 +47,16 @@ export const createPageModel = <TSpy = unknown>({
 
     const pageData = ctx.get(dataAtom);
 
-    onDisconnAction?.(ctx, dataAtom);
+    hooks?.onAfterDisconnect?.(ctx, dataAtom);
 
     pageData?.unsubscribe?.()
     dataAtom.reset(ctx)
 
-    onAfterDisconn?.(ctx, dataAtom)
+    hooks?.onAfterDisconnect?.(ctx, dataAtom)
   })
 
-  if (spyedAtom && onSpyAction) {
-    spyedAtom.onChange((ctx, payload) => onSpyAction(ctx, dataAtom, payload))
+  if (spyedAtom && hooks?.onSpy) {
+    spyedAtom.onChange((ctx, payload) => hooks.onSpy(ctx, dataAtom, payload))
   }
 
   return { dataAtom }

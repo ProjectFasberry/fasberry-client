@@ -1,8 +1,10 @@
-import { DeleteButton, EditButton, SectionWrapper, ToLink } from "@/shared/components/app/private/components/ui"
-import { itemToEditAtom, editStoreItem, deleteStoreItem, storeState, storeItems, createStoreItem } from "@/shared/components/app/private/models/store.model"
+import { DeleteButton, EditButton, SectionWrapper, LinkButton } from "@/shared/components/app/private/components/ui"
+import {
+  itemToEditAtom, editStoreItem, deleteStoreItem,
+  storeState, storeItems, createStoreItem, createStoreItemState
+} from "@/shared/components/app/private/models/store.model"
 import { EditorMenuBar } from "@/shared/components/config/editor/editor"
-import { createLink } from "@/shared/components/config/link"
-import { atom, type AtomState } from "@reatom/framework"
+import { atom, type AtomState, type Ctx } from "@reatom/framework"
 import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { Button } from "@/shared/ui/button"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -13,9 +15,180 @@ import { navigate } from "vike/client/router"
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react"
 import { belkoinImage, charismImage } from "@/shared/consts/images"
 import { getFromDictionary } from "@/shared/models/app/utils"
-import { CreateItem } from "./store.create"
 import { type StoreItem as StoreItemProps } from "../../shop/models/store-item.model"
 import { editorExtensions } from "@/shared/components/config/editor/editor.model"
+import { ErrorBlock } from "@/shared/ui/error-block"
+import { Input } from "@/shared/ui/input";
+import { Portal } from '@ark-ui/react/portal'
+import { Select, createListCollection } from '@ark-ui/react/select'
+import { selectContentBaseStyle, selectVariant } from "@/shared/ui/select"
+import { createLink } from "@/shared/components/config/link/link.model"
+
+const currencyValues = ["CHARISM", "BELKOIN"];
+const getCurrencyTitle = (ctx: Ctx, value: string) => getFromDictionary(ctx, value)
+
+const CURRENCY_ITEMS = (ctx: Ctx) => currencyValues.map((value) => ({
+  value,
+  title: getCurrencyTitle(ctx, value)!,
+}));
+
+const TYPE_ITEMS = [
+  { title: "Ивент", value: "event" },
+  { title: "Донат", value: "donate" }
+]
+
+export const CreateItem = reatomComponent(({ ctx }) => {
+  const editor = useEditor({
+    extensions: editorExtensions,
+    onUpdate: ({ editor }) => {
+      createStoreItemState.content(ctx, editor.getJSON())
+    }
+  })
+
+  const items = CURRENCY_ITEMS(ctx)
+
+  const collectionf = createListCollection({
+    items: items,
+  })
+
+  const collectionss = createListCollection({
+    items: TYPE_ITEMS,
+  })
+
+  return (
+    <div className="flex flex-col gap-2 w-full h-full">
+      <Input
+        value={ctx.spy(createStoreItemState.title)}
+        onChange={e => createStoreItemState.title(ctx, e.target.value)}
+        placeholder="Заголовок"
+      />
+      <Input
+        value={ctx.spy(createStoreItemState.value) ?? ""}
+        onChange={e => createStoreItemState.value(ctx, e.target.value)}
+        placeholder="Значение"
+      />
+      <Input
+        value={ctx.spy(createStoreItemState.command) ?? ""}
+        onChange={e => createStoreItemState.command(ctx, e.target.value)}
+        placeholder="Команда для выдачи"
+      />
+      <Input
+        type="file"
+        onChange={e => {
+          if (!e.target.files) return;
+          const file = e.target.files[0]
+
+          createStoreItemState.imgUrl(ctx, URL.createObjectURL(file))
+        }}
+      />
+      <div className="flex items-center gap-2 w-full">
+        <Input
+          value={ctx.spy(createStoreItemState.price) ?? ""}
+          onChange={e => createStoreItemState.price(ctx, e.target.value)}
+          placeholder="Цена"
+          type="number"
+          className="bg-transparent border border-neutral-800 text-sm h-8 w-fit"
+        />
+        <Select.Root
+          collection={collectionf}
+          onValueChange={({ value }) => createStoreItemState.currency(ctx, value[0] as AtomState<typeof createStoreItemState.currency>)}
+          className="flex flex-col gap-1 w-full"
+        >
+          <Select.Control className={selectVariant.control()}>
+            <Select.Trigger className={selectVariant.trigger()}>
+              <Select.ValueText className="border border-neutral-800 h-8 px-4">
+                {getCurrencyTitle(ctx, ctx.spy(createStoreItemState.currency))}
+              </Select.ValueText>
+            </Select.Trigger>
+            <div className={selectVariant.indicators()}>
+              <Select.ClearTrigger className={selectVariant.clearTrigger()}>
+                <Icon name="sprite:x" className="size-5" />
+              </Select.ClearTrigger>
+              <Select.Indicator className={selectVariant.indicator()}>
+                <Icon name="sprite:selector" className="size-5" />
+              </Select.Indicator>
+            </div>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content className={selectVariant.content()} style={selectContentBaseStyle}>
+                <Select.ItemGroup className={selectVariant.itemGroup()}>
+                  {items.map((item) => (
+                    <Select.Item key={item.value} item={item} className={selectVariant.item()}>
+                      <Select.ItemText className={selectVariant.itemText()}>
+                        {item.title}
+                      </Select.ItemText>
+                      <Select.ItemIndicator className={selectVariant.itemIndicator()}>
+                        <Icon name="sprite:check" className="size-4"/>
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
+                </Select.ItemGroup>
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+          <Select.HiddenSelect />
+        </Select.Root>
+        <Select.Root
+          collection={collectionss}
+          onValueChange={({ value }) => createStoreItemState.type(ctx, value[0] as AtomState<typeof createStoreItemState.type>)}
+          className="flex flex-col gap-1 w-full"
+        >
+          <Select.Control className={selectVariant.control()}>
+            <Select.Trigger className={selectVariant.trigger()}>
+              <Select.ValueText className="border border-neutral-800 h-8 px-4">
+                {getCurrencyTitle(ctx, ctx.spy(createStoreItemState.currency))}
+              </Select.ValueText>
+            </Select.Trigger>
+            <div className={selectVariant.indicators()}>
+              <Select.ClearTrigger className={selectVariant.clearTrigger()}>
+                <Icon name="sprite:x" className="size-5" />
+              </Select.ClearTrigger>
+              <Select.Indicator className={selectVariant.indicator()}>
+                <Icon name="sprite:selector" className="size-5" />
+              </Select.Indicator>
+            </div>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content className={selectVariant.content()} style={selectContentBaseStyle}>
+                <Select.ItemGroup className={selectVariant.itemGroup()}>
+                  {TYPE_ITEMS.map((item) => (
+                    <Select.Item key={item.value} item={item} className={selectVariant.item()}>
+                      <Select.ItemText className={selectVariant.itemText()}>
+                        {item.title}
+                      </Select.ItemText>
+                      <Select.ItemIndicator className={selectVariant.itemIndicator()}>
+                        <Icon name="sprite:check" className="size-4"/>
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
+                </Select.ItemGroup>
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+          <Select.HiddenSelect />
+        </Select.Root>
+      </div>
+      <div className="flex flex-col">
+        <EditorMenuBar editor={editor} />
+        <EditorContent editor={editor} />
+      </div>
+      <div className="flex items-center justify-end w-full">
+        <Button
+          className="h-10 w-fit items-center gap-2 justify-center px-4 bg-neutral-800"
+          onClick={() => createStoreItem.submit(ctx)}
+          disabled={ctx.spy(createStoreItem.submit.statusesAtom).isPending}
+        >
+          <Typography className="font-semibold text-lg text-neutral-50">
+            Создать
+          </Typography>
+          <Icon name="sprite:check" className="size-[18px]" />
+        </Button>
+      </div>
+    </div>
+  )
+}, "CreateItem")
 
 const titles: Record<AtomState<typeof storeState.searchParamTarget>, string> = {
   "create": "Создание товара",
@@ -44,7 +217,7 @@ const StoreItem = reatomComponent<StoreItemProps>(({ ctx, imageUrl, description,
       </div>
       <div className="flex items-center gap-2 h-full w-fit">
         <div className="flex items-center border border-neutral-800 p-1 rounded-lg gap-1">
-          <ToLink
+          <LinkButton
             link={createLink("store", id)}
           />
           <EditButton
@@ -78,12 +251,14 @@ const StoreItemsSkeleton = () => Array.from({ length: 12 }).map((_, idx) => <Ske
 const StoreItems = reatomComponent(({ ctx }) => {
   useUpdate(storeItems.fetch, []);
 
-  const data = ctx.spy(storeItems.fetch.dataAtom)?.data;
-
-  if (ctx.spy(storeItems.fetch.statusesAtom).isPending) {
+  if (ctx.spy(storeItems.fetch.statusesAtom).isFirstPending) {
     return <StoreItemsSkeleton />
   }
 
+  const error = ctx.spy(storeItems.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
+  const data = ctx.spy(storeItems.fetch.dataAtom)?.data;
   if (!data) return null;
 
   return (

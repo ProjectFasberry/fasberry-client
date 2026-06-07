@@ -5,14 +5,16 @@ import { getStaticImage } from "@/shared/lib/volume-helpers";
 import { logRouting } from "@/shared/lib/log";
 import { env } from "@/shared/env";
 import { getNews, newsState } from "@/shared/components/app/news/models/news.model";
-import { createCtx } from "@reatom/framework";
+import { createCtx, type Ctx } from "@reatom/framework";
 import { snapshots } from "@/shared/models/ssr";
 import { eventsState, getEvents } from "@/shared/components/app/events/models/events.model";
 
 const previewImage = getStaticImage("arts/8332de192322939.webp")
-
 const title = wrapTitle("Главная")
-const description = `Официальное приложение майнкрафт-проекта Fasberry. Жанр: RP, RPG, полу-ванила. 1.20.1+. Играть: ${`play.${env.VITE_MAIN_DOMAIN}`}.`
+const description = `
+  Официальное приложение майнкрафт-проекта Fasberry.
+  Жанр: RP, RPG, полу-ванила. 1.20.1+. Играть: ${`play.${env.VITE_MAIN_DOMAIN}`}.
+`
 
 function metadata(pageCtx: PageContextServer) {
   return {
@@ -32,16 +34,8 @@ function metadata(pageCtx: PageContextServer) {
   }
 }
 
-export async function data(pageCtx: PageContextServer) {
-  const config = useConfig()
-  const headers = pageCtx.headers
-  if (!headers) return;
-
-  logRouting(pageCtx.urlPathname, "data");
-
-  config(metadata(pageCtx))
-
-  const ctx = createCtx()
+async function init(ctx: Ctx, pageCtx: PageContextServer) {
+  const headers = pageCtx.headers ?? undefined;
 
   const [news, events] = await Promise.all([
     getNews({ limit: 3, asc: false }, { headers }),
@@ -50,6 +44,17 @@ export async function data(pageCtx: PageContextServer) {
 
   newsState.data(ctx, news.data)
   eventsState.data(ctx, events);
-  
+}
+
+export async function data(pageCtx: PageContextServer) {
+  const config = useConfig()
+
+  logRouting(pageCtx.urlPathname, "data");
+
+  config(metadata(pageCtx))
+
+  const ctx = createCtx()
+  await init(ctx, pageCtx);
+
   pageCtx.snapshot = snapshots.merge(ctx, pageCtx)
 }

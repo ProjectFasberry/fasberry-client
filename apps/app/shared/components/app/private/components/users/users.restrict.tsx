@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/button"
 import { Input } from "@/shared/ui/input"
 import type { AtomMut } from "@reatom/framework"
 import { Menu } from "@ark-ui/react/menu"
-import { dropdownMenuItemVariants, menuContentVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
 import { Portal } from "@ark-ui/react/portal"
 
 type UserActionsWrapperProps =
@@ -30,7 +30,7 @@ const ActionButton = reatomComponent<UserActionsWrapperProps & {
 
   if (isMenuItem) {
     return (
-      <Menu.Item value={eventGroup} className={dropdownMenuItemVariants()} onClick={handleClick} disabled={isPending}>
+      <Menu.Item value={eventGroup} className={menuVariant.item()} onClick={handleClick} disabled={isPending}>
         {label ?? "Применить"}
       </Menu.Item>
     )
@@ -56,12 +56,12 @@ const ActionMenuNode = reatomComponent<UserActionsWrapperProps & {
   if (item.childs) {
     return (
       <Menu.Root key={item.type}>
-        <Menu.TriggerItem className={dropdownMenuItemVariants()}>
+        <Menu.TriggerItem className={menuVariant.item()}>
           {item.label}
         </Menu.TriggerItem>
         <Portal>
           <Menu.Positioner>
-            <Menu.Content className={menuContentVariant()}>
+            <Menu.Content className={menuVariant.content()}>
               {item.childs.map((child) => <ActionMenuNode key={child.type} item={child} {...props} />)}
             </Menu.Content>
           </Menu.Positioner>
@@ -73,12 +73,12 @@ const ActionMenuNode = reatomComponent<UserActionsWrapperProps & {
   if (item.fields) {
     return (
       <Menu.Root key={item.type}>
-        <Menu.TriggerItem className={dropdownMenuItemVariants()}>
+        <Menu.TriggerItem className={menuVariant.item()}>
           {item.label}
         </Menu.TriggerItem>
         <Portal>
           <Menu.Positioner>
-            <Menu.Content className={menuContentVariant()}>
+            <Menu.Content className={menuVariant.content()}>
               <div className="flex flex-col gap-1 w-full">
                 {item.fields.map(({ value, label }: any) => (
                   // @ts-expect-error

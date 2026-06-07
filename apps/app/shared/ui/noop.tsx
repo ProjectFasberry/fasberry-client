@@ -1,5 +1,18 @@
-import { Typography } from "@repo/ui/typography"
+import clsx from "clsx"
+import { translate } from "../locales/helpers"
+import { Typography } from "./typography"
 
-export const Noop = ({ title }: { title: string }) => {
-  return <Typography className="text-sm leading-4" color='gray'>{title}</Typography>
+type NoopProps = {
+  title?: string,
+  className?: string
+}
+
+export const Noop = ({
+  title = translate["shared.empty"](), className
+}: NoopProps) => {
+  return (
+    <Typography className={clsx("text-sm leading-4", className)} color='gray'>
+      {title}
+    </Typography>
+  )
 }

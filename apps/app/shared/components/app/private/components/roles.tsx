@@ -23,8 +23,9 @@ import {
 import { getFromDictionary } from "@/shared/models/app/utils"
 import { scrollableVariant } from "@/shared/consts/style-variants"
 import { Menu } from '@ark-ui/react/menu'
-import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
 import { Noop } from "@/shared/ui/noop"
+import { ErrorBlock } from "@/shared/ui/error-block"
 
 type RolePayload = {
   id: number;
@@ -156,8 +157,7 @@ const RolesListItemAvailableItem = reatomComponent<RolePayload>(({ ctx, id, name
 }, "RolesListItemAvailableItem")
 
 const RolesListItemSaveChanges = reatomComponent(({ ctx }) => {
-  const isDisabled = !ctx.spy(saveChangesIsValidAtom)
-    || ctx.spy(saveChangesAction.statusesAtom).isPending
+  const isDisabled = !ctx.spy(saveChangesIsValidAtom) || ctx.spy(saveChangesAction.statusesAtom).isPending
 
   return (
     <ActionButton
@@ -181,17 +181,17 @@ const RolesListItemAddPerm = reatomComponent(({ ctx }) => {
     <Menu.Root>
       <Menu.Trigger asChild>
         <Button
-          className="gap-2 font-semibold text-lg bg-neutral-800"
+          className="gap-2 font-semibold h-8 text-sm bg-neutral-800"
           disabled={isDisabled}
         >
           Добавить
-          <Icon name="sprite:plus" className="size-[18px]" />
+          <Icon name="sprite:plus" className="size-4" />
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuContentVariant()}>
-          <Menu.Arrow className={menuArrowVariant()}>
-            <Menu.ArrowTip className={menuArrowTipVariant()} />
+        <Menu.Content className={menuVariant.content()}>
+          <Menu.Arrow className={menuVariant.arrow()}>
+            <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>
           <div className="flex flex-col gap-2 p-2 w-full h-fit">
             <Typography className="text-neutral-400 text-sm">
@@ -237,7 +237,7 @@ const RolesListItem = reatomComponent<RolePayload>(({ ctx, id, name }) => {
     <div className={rolesListItemVariant().base()}>
       <div className={rolesListItemVariant().group()}>
         <div className={rolesListItemVariant().name()}>
-          <Typography>{title}</Typography>
+          {title}
         </div>
         <div className="flex gap-1 items-center">
           {isSelected ? (
@@ -251,9 +251,7 @@ const RolesListItem = reatomComponent<RolePayload>(({ ctx, id, name }) => {
             </>
           ) : (
             <>
-              <EditButton
-                onClick={() => toggleRoleEditAction(ctx, { id, name })}
-              />
+              <EditButton onClick={() => toggleRoleEditAction(ctx, { id, name })} />
             </>
           )}
         </div>
@@ -263,25 +261,19 @@ const RolesListItem = reatomComponent<RolePayload>(({ ctx, id, name }) => {
   )
 }, "RolesListItem")
 
-const RolesListSkeleton = () => {
-  return (
-    <>
-      <RolesListItemSkeleton />
-      <RolesListItemSkeleton />
-      <RolesListItemSkeleton />
-    </>
-  )
-}
+const RolesListSkeleton = () => Array.from({ length: 3 }).map((_, idx) => <RolesListItemSkeleton key={idx} />)
 
 const RolesList = reatomComponent(({ ctx }) => {
   useUpdate(rolesList.fetch, []);
 
-  const data = ctx.spy(rolesList.fetch.dataAtom)
-
-  if (ctx.spy(rolesList.fetch.statusesAtom).isPending) {
+  if (ctx.spy(rolesList.fetch.statusesAtom).isFirstPending) {
     return <RolesListSkeleton />
   }
 
+  const error = ctx.spy(rolesList.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
+  const data = ctx.spy(rolesList.fetch.dataAtom)
   if (!data) return null;
 
   return data.map((role) => <RolesListItem key={role.id} {...role} />)

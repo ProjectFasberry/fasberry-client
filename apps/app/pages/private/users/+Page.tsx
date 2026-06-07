@@ -6,13 +6,15 @@ import { useAtom } from "@reatom/npm-react";
 
 const page = createPageModel({
   name: "users",
-  onConnAction: (ctx) => {
-    users.fetch(ctx)
-    usersRoles.fetch(ctx)
-  },
-  onDisconnAction: (ctx) => {
-    users.fetch.abort(ctx)
-    usersRoles.fetch.abort(ctx)
+  hooks: {
+    onConnect: (ctx) => {
+      users.fetch(ctx)
+      usersRoles.fetch(ctx)
+    },
+    onDisconnect: (ctx) => {
+      users.fetch.abort(ctx)
+      usersRoles.fetch.abort(ctx)
+    }
   }
 })
 

@@ -13,8 +13,7 @@ export const settingsAccountModel = () => {
           title: "Удаление аккаунта",
           confirmLabel: "Подтвердить",
           description: "Удаление аккаунта безвозвратное, все игровые данные будут удалены",
-          confirmAction: deleteAccount.submit,
-          autoClose: true
+          onConfirm: () => deleteAccount.submit(ctx),
         })
       }, `${name}.before`),
       submit: reatomAsync(async (ctx) => {

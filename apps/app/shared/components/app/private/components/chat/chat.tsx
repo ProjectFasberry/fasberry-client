@@ -8,12 +8,14 @@ import { SectionWrapper } from "../ui";
 
 const page = createPageModel({
   name: "chat",
-  onConnAction: (ctx) => {
-    chatWs.init(ctx)
-  },
-  onDisconnAction: (ctx, dataAtom) => {
-    chatWs.closeWs(ctx)
-  },
+  hooks: {
+    onConnect: (ctx) => {
+      chatWs.initWs(ctx)
+    },
+    onDisconnect: (ctx, dataAtom) => {
+      chatWs.closeWs(ctx)
+    },
+  }
 })
 
 const ChatHeader = () => {

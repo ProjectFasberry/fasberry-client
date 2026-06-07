@@ -1,3 +1,4 @@
+import { aliases } from "@/shared/components/config/link/aliases";
 import vikeReact from "vike-react/config";
 import type { Config } from "vike/types";
 
@@ -8,6 +9,6 @@ export default {
 	passToClient: ["snapshot", "locale"],
 	ssr: false,
 	redirects: {
-		"/chat": "https://discord.gg/X4x6Unj89g",
+		...aliases
 	},
 } satisfies Config;

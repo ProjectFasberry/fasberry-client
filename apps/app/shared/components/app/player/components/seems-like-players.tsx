@@ -2,15 +2,18 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { tv } from "tailwind-variants";
 import { Avatar } from "../../../../ui/avatar";
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
-import { createLink, Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { atom } from "@reatom/framework";
 import { pageState } from "@/shared/models/page-context.model";
-import { playerSLP, playerSLPState } from "../models/player-seems-like.model";
+import { playerSLP, playerSLPState, type SeemsLikePlayer } from "../models/player-seems-like.model";
 import { Icon } from "@/shared/ui/icon"
 import { scrollableVariant } from "@/shared/consts/style-variants";
 import { translate } from "@/shared/locales/helpers";
 import { Tooltip } from '@ark-ui/react/tooltip'
 import { Portal } from '@ark-ui/react/portal'
+import { createLink } from "@/shared/components/config/link/link.model";
+import { ErrorBlock } from "@/shared/ui/error-block";
+import { SummaryNumber } from "@/shared/ui/summary-number";
 
 const playerSeemsLikePlayersCountAtom = atom((ctx) => ctx.spy(playerSLP.fetch.dataAtom)?.meta.count ?? 0)
 
@@ -40,17 +43,9 @@ const PlayerSeemsLikeShowToggle = reatomComponent(({ ctx }) => {
   )
 }, "PlayerSeemsLikeShowToggle")
 
-const PlayerSeemsLikePlayersCount = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(playerSeemsLikePlayersCountAtom)
-
-  return (
-    <div className="w-8 flex items-center justify-center bg-neutral-800 h-8 rounded-full p-0.5">
-      <span className="font-semibold text-lg">
-        {data}
-      </span>
-    </div>
-  )
-}, "PlayerSeemsLikePlayersCount")
+const PlayerSeemsLikePlayersCount = reatomComponent(({ ctx }) =>
+  <SummaryNumber value={ctx.spy(playerSeemsLikePlayersCountAtom)} />, "PlayerSeemsLikePlayersCount"
+)
 
 export const PlayerSeemsLikePlayers = reatomComponent(({ ctx }) => {
   const isShow = ctx.spy(playerSLPState.settings.isShow);
@@ -92,29 +87,36 @@ const PlayerSeemsLikePlayersListSkeleton = () => {
   )
 }
 
+const PlayerSeemsLikeListItem = ({ nickname, uuid, avatar }: SeemsLikePlayer) => {
+  return (
+    <div key={uuid} className={seemsLikeGridVariant().card()}>
+      <Link
+        href={createLink("player", nickname)}
+        aria-label={nickname}
+        className={seemsLikeGridVariant().cardAvatar()}
+      >
+        <Avatar url={avatar} nickname={nickname} className="w-16 h-16" />
+      </Link>
+    </div>
+  )
+}
+
 const PlayerSeemsLikePlayersList = reatomComponent(({ ctx }) => {
-  useUpdate((ctx) => playerSLP.init(ctx), [])
+  useUpdate(playerSLP.init, [])
 
   if (!ctx.spy(pageState.isClientside) || ctx.spy(playerSLP.fetch.statusesAtom).isPending) {
     return <PlayerSeemsLikePlayersListSkeleton />
   }
+
+  const error = ctx.spy(playerSLP.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
 
   const data = ctx.spy(playerSLP.fetch.dataAtom)?.data;
   if (!data) return null;
 
   return (
     <div className={seemsLikeGridVariant().base()}>
-      {data.map((player) => (
-        <div key={player.uuid} className={seemsLikeGridVariant().card()}>
-          <Link
-            href={createLink("player", player.nickname)}
-            aria-label={player.nickname}
-            className={seemsLikeGridVariant().cardAvatar()}
-          >
-            <Avatar url={player.avatar} nickname={player.nickname} className="w-16 h-16" />
-          </Link>
-        </div>
-      ))}
+      {data.map((player) => <PlayerSeemsLikeListItem key={player.uuid} {...player} />)}
     </div>
   )
 }, "PlayerSeemsLikePlayersList")

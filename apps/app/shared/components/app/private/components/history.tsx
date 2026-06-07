@@ -1,6 +1,6 @@
 import { PageLoader } from "@/shared/ui/page-loader";
 import { reatomComponent } from "@reatom/npm-react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@repo/ui/table"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table"
 import { tv } from "tailwind-variants";
 import { getHistoryItemStatusAtom, history, type HistoryPayload } from "../models/history.model";
 import { getFromDictionary } from "@/shared/models/app/utils";

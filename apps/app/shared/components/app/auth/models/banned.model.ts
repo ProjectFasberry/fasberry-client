@@ -1,5 +1,5 @@
 import { client } from "@/shared/lib/client-wrapper"
-import { reatomAsync, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework"
+import { atom, reatomAsync, withAssign, withCache, withDataAtom, withErrorAtom, withStatusesAtom } from "@reatom/framework"
 
 type BannerPayload = {
   initiator: string,
@@ -9,10 +9,15 @@ type BannerPayload = {
   nickname: string
 }
 
-export const bannedAction = reatomAsync(async (ctx) => {
-  return await client<BannerPayload>("validate/ban").exec()
-}).pipe(
-  withDataAtom(),
-  withStatusesAtom(),
-  withCache({ swr: false })
+export const banned = atom(null, "banned").pipe(
+  withAssign((_, name) => ({
+    fetch: reatomAsync(async (ctx) => {
+      return await client<BannerPayload>("validate/ban").exec()
+    }, `${name}.fetch`).pipe(
+      withDataAtom(),
+      withStatusesAtom(),
+      withCache({ swr: false }),
+      withErrorAtom()
+    )
+  }))
 )

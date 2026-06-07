@@ -1,12 +1,8 @@
 import { Button } from "@/shared/ui/button"
-import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog"
+import { dialogVariant, DialogClose } from "@/shared/ui/dialog"
 import { ErrorBlock } from "@/shared/ui/error-block"
 import { Input } from "@/shared/ui/input"
-import {
-  selectClearTriggerVariant, selectContentBaseStyle, selectContentVariant, selectControlVariant,
-  selectIndicatorsVariant, selectIndicatorVariant, selectItemGroupVariant, selectItemIndicatorVariant, selectItemVariant,
-  selectTriggerVariant
-} from "@/shared/ui/select"
+import { selectContentBaseStyle, selectVariant } from "@/shared/ui/select"
 import { Dialog, DialogTitle } from "@ark-ui/react/dialog"
 import { Portal } from "@ark-ui/react/portal"
 import { createListCollection, Select } from "@ark-ui/react/select"
@@ -57,31 +53,31 @@ const CreateUserFormField = reatomComponent<{ field: typeof CREATE_USER_FIELDS[n
       className="w-full"
       multiple={field.multiple}
     >
-      <Select.Control className={selectControlVariant()}>
-        <Select.Trigger className={selectTriggerVariant()}>
+      <Select.Control className={selectVariant.control()}>
+        <Select.Trigger className={selectVariant.trigger()}>
           <Select.ValueText className="text-neutral-50">
             {currentValue}
           </Select.ValueText>
         </Select.Trigger>
-        <div className={selectIndicatorsVariant()}>
-          <Select.ClearTrigger className={selectClearTriggerVariant()}>
+        <div className={selectVariant.indicators()}>
+          <Select.ClearTrigger className={selectVariant.clearTrigger()}>
             <Icon name='sprite:x' className="size-5" />
           </Select.ClearTrigger>
-          <Select.Indicator className={selectIndicatorVariant()}>
+          <Select.Indicator className={selectVariant.indicator()}>
             <Icon name='sprite:selector' className="size-5" />
           </Select.Indicator>
         </div>
       </Select.Control>
       <Portal>
         <Select.Positioner>
-          <Select.Content className={selectContentVariant()} style={selectContentBaseStyle}>
-            <Select.ItemGroup className={selectItemGroupVariant()}>
+          <Select.Content className={selectVariant.content()} style={selectContentBaseStyle}>
+            <Select.ItemGroup className={selectVariant.itemGroup()}>
               {field.options.map((option, idx) => (
-                <Select.Item key={idx} item={option} className={selectItemVariant()}>
+                <Select.Item key={idx} item={option} className={selectVariant.item()}>
                   <Select.ItemText>
                     {option.label}
                   </Select.ItemText>
-                  <Select.ItemIndicator className={selectItemIndicatorVariant()}>
+                  <Select.ItemIndicator className={selectVariant.itemIndicator()}>
                     <Icon name="sprite:check" className="size-4" />
                   </Select.ItemIndicator>
                 </Select.Item>
@@ -133,10 +129,10 @@ const CreateUser = reatomComponent(({ ctx }) => {
         </Button>
       </Dialog.Trigger>
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "w-1/4" })}>
-            <DialogTitle className={dialogTitleVariant()}>Создание юзера</DialogTitle>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "w-1/4" })}>
+            <DialogTitle className={dialogVariant.title()}>Создание юзера</DialogTitle>
             <CreateUserForm />
             <DialogClose />
           </Dialog.Content>
@@ -195,10 +191,10 @@ const DeleteUser = reatomComponent(({ ctx }) => {
         </Button>
       </Dialog.Trigger>
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "w-1/4" })}>
-            <DialogTitle className={dialogTitleVariant()}>Удаление юзера</DialogTitle>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "w-1/4" })}>
+            <DialogTitle className={dialogVariant.title()}>Удаление юзера</DialogTitle>
             <DeleteUserForm />
             <DialogClose />
           </Dialog.Content>

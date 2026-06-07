@@ -8,7 +8,7 @@ import { Skeleton } from "@/shared/ui/skeleton"
 import { type Role as RoleType } from "@/shared/components/app/private/models/users.model"
 import { itemVariant } from "../ui"
 import { Menu } from '@ark-ui/react/menu'
-import { menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
 
 const UserActionsChangeRoleGlobalSubmit = reatomComponent(({ ctx }) => {
   const isDisabled = !ctx.spy(usersControlState.targetRoleId)
@@ -88,9 +88,9 @@ export const UserActionsChangeRoleGlobal = reatomComponent(({ ctx }) => {
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuContentVariant()}>
-          <Menu.Arrow className={menuArrowVariant()}>
-            <Menu.ArrowTip className={menuArrowTipVariant()} />
+        <Menu.Content className={menuVariant.content()}>
+          <Menu.Arrow className={menuVariant.arrow()}>
+            <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>
           <div className="flex flex-col gap-2 p-2 w-full h-full min-w-40">
             <Typography className="text-neutral-400">
@@ -128,9 +128,9 @@ export const UserActionsChangeRoleLocal = reatomComponent<{
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuContentVariant()}>
-          <Menu.Arrow className={menuArrowVariant()}>
-            <Menu.ArrowTip className={menuArrowTipVariant()} />
+        <Menu.Content className={menuVariant.content()}>
+          <Menu.Arrow className={menuVariant.arrow()}>
+            <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>
           <div className="flex flex-col gap-2 p-2 w-full h-full min-w-40">
             <Typography className="text-sm text-neutral-400">

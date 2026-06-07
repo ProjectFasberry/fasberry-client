@@ -1,6 +1,6 @@
 import { client } from "@/shared/lib/client-wrapper";
 import { logError } from "@/shared/lib/log";
-import { reatomAsync, withCache, withStatusesAtom } from "@reatom/framework";
+import { reatomAsync, withCache, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { action, atom, batch } from "@reatom/framework";
 import { withAssign } from "@reatom/framework";
 import { withLocalStorage } from "@reatom/persist-web-storage";
@@ -49,7 +49,8 @@ export const balance = atom(null, "balance").pipe(
       onReject: (_, e) => logError(e)
     }).pipe(
       withStatusesAtom(),
-      withCache({ swr: false })
+      withCache({ swr: false }),
+      withErrorAtom()
     )
   }))
 )

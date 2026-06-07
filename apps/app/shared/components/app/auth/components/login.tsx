@@ -10,7 +10,7 @@ import { NicknameInput, PasswordInput } from "./auth"
 import { IconLoader } from "@/shared/ui/icon-loader"
 import { translate } from "@/shared/locales/helpers"
 import { QrCode } from "@ark-ui/react/qr-code"
-import { qrCodeFrameVariant, qrCodeOverlayVariant, qrCodePatternVariant, qrCodeRootVariant } from "@/shared/ui/qr-code"
+import { qrCodeVariant } from "@/shared/ui/qr-code"
 
 const LoginVariants = reatomComponent(({ ctx }) => (
   <div className="grid grid-cols-2 auto-rows-auto gap-2 w-full [&>*:only-child]:col-span-2">
@@ -104,12 +104,12 @@ const LoginQRConnected = reatomComponent(({ ctx }) => {
     <QrCode.Root
       defaultValue={url}
       encoding={{ ecc: 'M' }}
-      className={qrCodeRootVariant({ className: "[--qr-code-size:196px]" })}
+      className={qrCodeVariant.root({ className: "[--qr-code-size:196px]" })}
     >
-      <QrCode.Frame className={qrCodeFrameVariant()}>
-        <QrCode.Pattern className={qrCodePatternVariant()} />
+      <QrCode.Frame className={qrCodeVariant.frame()}>
+        <QrCode.Pattern className={qrCodeVariant.pattern()} />
       </QrCode.Frame>
-      <QrCode.Overlay className={qrCodeOverlayVariant()}>
+      <QrCode.Overlay className={qrCodeVariant.overlay()}>
         <img src="/favicon.ico" alt="" draggable={false} />
       </QrCode.Overlay>
     </QrCode.Root>

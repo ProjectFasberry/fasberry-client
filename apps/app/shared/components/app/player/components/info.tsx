@@ -1,7 +1,8 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { Rate } from "./rate";
-import { playerState } from "../models/player.model";
+import { playerState, wrapAsClientSideAtom } from "../models/player.model";
 import { DONATE_COLORS, DONATE_TITLE } from "@/shared/consts";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 type Player = ExtractApiData<"getServerPlayerByNickname">["data"]
 
@@ -19,7 +20,7 @@ const PlayerTag = ({ group }: { group: Player["group"] }) => {
     </div>
   )
 }
-const PlayerTags = reatomComponent(({ctx}) => {
+const PlayerTags = reatomComponent(({ ctx }) => {
   const data = ctx.spy(playerState.tags)
 
   return (
@@ -30,18 +31,21 @@ const PlayerTags = reatomComponent(({ctx}) => {
 }, "PlayerTags")
 
 export const PlayerInfo = reatomComponent(({ ctx }) => {
-  const nickname = ctx.spy(playerState.nickname)
-  const rate = ctx.spy(playerState.rate)
-  if (!rate || !nickname) return null;
+  const nickname = ctx.spy(playerState.nickname);
+  const isLoading = ctx.spy(wrapAsClientSideAtom(!nickname));
 
   return (
     <div className="flex justify-between h-full items-center w-full">
       <div className='flex flex-col gap-2'>
-        <h1 className="text-4xl font-bold">{nickname}</h1>
-        <PlayerTags/>
+        {isLoading ? (
+          <Skeleton className="h-16 w-42" />
+        ) : (
+          <h1 className="text-4xl font-bold">{nickname}</h1>
+        )}
+        <PlayerTags />
       </div>
       <div className="flex items-center justify-center w-min">
-        <Rate isRated={rate.isRated} nickname={nickname} count={rate.count} />
+        <Rate />
       </div>
     </div>
   )

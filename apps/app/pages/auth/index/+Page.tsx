@@ -1,7 +1,7 @@
 import { AuthError, Verify } from "@/shared/components/app/auth/components/auth";
 import { type AuthType, auth, authIsDisabledAtom, authState, authTriggerIsDisabledAtom } from "@/shared/components/app/auth/models/auth.model";
 import { reatomComponent, useAtom } from "@reatom/npm-react";
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { createPageModel } from "@/shared/lib/events";
 import { pageState } from "@/shared/models/page-context.model";
 import { showResetPasswordAtom } from "@/shared/components/app/auth/models/login.model";
@@ -63,29 +63,31 @@ const Auth = reatomComponent(({ ctx }) => {
 
 const page = createPageModel({
   name: "auth",
-  onConnAction: async (ctx, dataAtom, isConnected) => {
-    authState.searchParams(ctx, (state) => ctx.get(pageState.urlParsed)?.search ?? state)
+  hooks: {
+    onConnect: async (ctx, dataAtom, isConnected) => {
+      authState.searchParams(ctx, (state) => ctx.get(pageState.urlParsed)?.search ?? state)
 
-    if (!isConnected()) return;
+      if (!isConnected()) return;
 
-    const devModulesInfo = getDevModulesInfo(ctx);
+      const devModulesInfo = getDevModulesInfo(ctx);
 
-    if (devModulesInfo?.isImport) {
-      const { startAuthWidget } = await import("@/shared/components/app/auth/models/dev-only.model")
-      const unsubscribe = await startAuthWidget(ctx)
+      if (devModulesInfo?.isImport) {
+        const { startAuthWidget } = await import("@/shared/components/app/auth/models/dev-only.model")
+        const unsubscribe = await startAuthWidget(ctx)
 
-      if (!isConnected()) {
-        unsubscribe()
-        return;
+        if (!isConnected()) {
+          unsubscribe()
+          return;
+        }
+
+        dataAtom(ctx, { unsubscribe })
       }
-
-      dataAtom(ctx, { unsubscribe })
-    }
-  },
-  onDisconnAction: (ctx) => {
-    auth.resetAuthState(ctx)
-    register.resetRegisterState(ctx)
-  },
+    },
+    onDisconnect: (ctx) => {
+      auth.resetAuthState(ctx)
+      register.resetRegisterState(ctx)
+    },
+  }
 })
 
 export default function Page() {

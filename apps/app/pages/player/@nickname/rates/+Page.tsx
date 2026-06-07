@@ -1,5 +1,5 @@
 import { Avatar } from "@/shared/ui/avatar";
-import { createLink, Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { isEmptyArray } from "@/shared/lib/helpers";
 import { pageState } from "@/shared/models/page-context.model";
 import { PageLoader } from "@/shared/ui/page-loader";
@@ -11,14 +11,17 @@ import { usePageContext } from "vike-react/usePageContext";
 import { BackButton } from "@/shared/ui/back-button";
 import type { PropsWithChildren } from "react";
 import { Noop } from "@/shared/ui/noop";
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const ListCard = ({ initiator, avatar }: RateUser) => {
+  const link = createLink("player", initiator);
+
   return (
     <div className="flex flex-col items-center min-w-0 w-full justify-center gap-2 bg-neutral-900 rounded-xl p-2">
-      <Link href={createLink("player", initiator)}>
+      <Link href={link}>
         <Avatar nickname={initiator} url={avatar} className="size-16" />
       </Link>
-      <Link href={createLink("player", initiator)} className="flex flex-col w-full min-w-0 overflow-hidden">
+      <Link href={link} className="flex flex-col w-full min-w-0 overflow-hidden">
         <Typography className="block font-semibold text-nowrap text-center truncate">
           {initiator}
         </Typography>
@@ -42,17 +45,6 @@ const RateList = reatomComponent(({ ctx }) => {
   )
 }, "RateList")
 
-const page = createPageModel({
-  name: "player-rates",
-  onConnAction: (ctx) => {
-    const nickname = ctx.get(pageState.routeParams).nickname;
-    player.rate.refetchAll(ctx, nickname)
-  },
-  onDisconnAction: (ctx) => {
-    player.rate.fetchList.abort(ctx)
-  },
-})
-
 const PageHeaderWrapper = ({ children, href }: PropsWithChildren & Partial<{ href: string }>) => {
   return (
     <div className="flex items-center gap-2 w-full justify-start">
@@ -61,6 +53,19 @@ const PageHeaderWrapper = ({ children, href }: PropsWithChildren & Partial<{ hre
     </div>
   )
 }
+
+const page = createPageModel({
+  name: "player-rates",
+  hooks: {
+    onConnect: (ctx) => {
+      const nickname = ctx.get(pageState.routeParams).nickname;
+      player.rate.refetchAll(ctx, nickname)
+    },
+    onDisconnect: (ctx) => {
+      player.rate.fetchList.abort(ctx)
+    },
+  }
+})
 
 export default function Page() {
   const [_] = useAtom(page.dataAtom)

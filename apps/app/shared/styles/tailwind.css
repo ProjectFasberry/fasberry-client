@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@source "../../../../packages/ui/**/*.{ts,tsx}";
-
-@import "../../../../packages/ui/styles/index.css";
-
 @plugin 'tailwind-scrollbar' {
   nocompatible: true;
 }
@@ -59,6 +55,8 @@
   --color-red: oklch(65.54% 0.207 24.3);
   --color-light-purple: oklch(88.33% 0.25 142.5);
   --color-yellow: oklch(88.33% 0.25 142.5);
+
+  --spacing-container-lg: calc(var(--breakpoint-lg) - 1rem);
 }
 
 @layer base {

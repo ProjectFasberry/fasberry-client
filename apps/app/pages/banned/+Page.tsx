@@ -4,7 +4,7 @@ import { Typography } from "@/shared/ui/typography"
 import dayjs from "@/shared/lib/create-dayjs"
 import { createPageModel } from "@/shared/lib/events"
 import { logout } from "@/shared/components/app/auth/models/logout.model"
-import { bannedAction } from "@/shared/components/app/auth/models/banned.model"
+import { banned } from "@/shared/components/app/auth/models/banned.model"
 
 type Banned = {
   reason: string
@@ -27,34 +27,25 @@ const BannedActionButton = reatomComponent(({ ctx }) => {
 }, "BannedActionButton")
 
 const Banned = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(bannedAction.dataAtom)
+  const data = ctx.spy(banned.fetch.dataAtom)
   if (!data) return null;
 
   const expires = data.expires ? dayjs(data.expires).format('DD.MM.YYYY HH:mm') : "никогда"
 
   return (
     <div className="flex flex-col gap-y-4 justify-center h-full items-center relative">
-      <Typography
-        color="gray"
-        className="text-md font-semibold"
-      >
+      <Typography color="gray" className="text-md font-semibold">
         Соединение потеряно
       </Typography>
       <div className="flex flex-col items-center gap-y-4">
-        <Typography
-          className="text-xl font-semibold text-red"
-        >
+        <Typography className="text-xl font-semibold text-red">
           Вы были заблокированы
         </Typography>
         <div className="flex flex-col items-center">
-          <Typography
-            className="text-lg font-semibold text-red"
-          >
+          <Typography className="text-lg font-semibold text-red">
             Причина: <span className="text-neutral-50">{data?.reason ?? "не указана"}</span>
           </Typography>
-          <Typography
-            className="text-lg font-semibold text-red"
-          >
+          <Typography className="text-lg font-semibold text-red">
             Разбан:{' '}
             <span className="text-neutral-50">
               {expires}
@@ -67,13 +58,15 @@ const Banned = reatomComponent(({ ctx }) => {
       </div>
     </div>
   )
-})
+}, "Banned")
 
 const page = createPageModel({
   name: "banned",
-  onConnAction: (ctx, dataAtom, pageCtx) => {
-    bannedAction(ctx)
-  },
+  hooks: {
+    onConnect: (ctx) => {
+      banned.fetch(ctx)
+    },
+  }
 })
 
 export default function Page() {

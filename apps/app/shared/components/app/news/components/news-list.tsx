@@ -1,18 +1,12 @@
-import { atom } from "@reatom/framework"
-import { news, newsAllDataArrAtom, newsState } from "../models/news-list.model"
+import { news, newsAllDataArrAtom, newsNotFoundTitleAtom } from "../models/news-list.model"
 import { NotFound } from "@/shared/ui/not-found"
 import { reatomComponent } from "@reatom/npm-react"
 import { PageLoader } from "@/shared/ui/page-loader"
 import { isEmptyArray } from "@/shared/lib/helpers"
 import { Typography } from "@/shared/ui/typography"
-import { createLink, Link } from "@/shared/components/config/link"
-
-const newsNotFoundTitleAtom = atom((ctx) => {
-  const data = ctx.get(newsState.searchQuery)
-  if (data) return `Ничего не нашлось по запросу "${data}"`
-
-  return "Пока ничего нет"
-}, "newsNotFoundTitle")
+import { Link } from "@/shared/components/config/link/link"
+import { ErrorBlock } from "@/shared/ui/error-block"
+import { createLink } from "@/shared/components/config/link/link.model"
 
 const NewsListNotFound = reatomComponent(({ ctx }) =>
   <NotFound title={ctx.spy(newsNotFoundTitleAtom)} />
@@ -21,8 +15,14 @@ const NewsListNotFound = reatomComponent(({ ctx }) =>
 export const NewsList = reatomComponent(({ ctx }) => {
   if (ctx.spy(news.fetch.statusesAtom).isPending) return <PageLoader />
 
+  const error = ctx.spy(news.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
   const data = ctx.spy(newsAllDataArrAtom);
-  if (!data || isEmptyArray(data)) return <NewsListNotFound />
+
+  if (!data || isEmptyArray(data)) {
+    return <NewsListNotFound />
+  }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 auto-rows-auto gap-2 sm:gap-4 w-full h-full">

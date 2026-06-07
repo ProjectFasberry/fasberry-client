@@ -5,20 +5,21 @@ import { errorBoundary } from "../models/error.model";
 import { Icon } from "@/shared/ui/icon"
 import { spyOptionAtom } from "@/shared/models/app/utils";
 import { reatomComponent } from "@reatom/npm-react";
+import { Typography } from "@/shared/ui/typography";
 
 const ErrorFallback = reatomComponent<FallbackProps>(({ ctx, error, resetErrorBoundary }) => {
   const stage = spyOptionAtom(ctx, "state", "stage", "prod")
 
   return (
     <div className="flex flex-col gap-4 h-dvh responsive mx-auto w-full items-center justify-center">
-      <Icon name="sprite:mood-wrrr" className="w-24 h-24" />
-      <div className="flex flex-col w-full gap-2 items-center justify-center">
-        <p className="text-lg sm:text-xl text-center leading-5 font-semibold">
+      <Icon name="sprite:mood-wrrr" className="size-24" />
+      <div className="flex flex-col text-center w-full gap-2 items-center justify-center">
+        <p className="text-lg sm:text-xl leading-5 font-semibold">
           Произошла ошибка в работе приложения
         </p>
-        <span className="text-neutral-400 text-sm sm:text-base">
+        <Typography color='gray' className="text-sm sm:text-base">
           Мы уже работаем над исправлением!
-        </span>
+        </Typography>
       </div>
       <Button
         background='white'
@@ -29,7 +30,9 @@ const ErrorFallback = reatomComponent<FallbackProps>(({ ctx, error, resetErrorBo
       </Button>
       {stage === 'staging' && (
         <div className="flex flex-col mt-2 gap-1 w-full">
-          <p className="text-sm leading-4 text-neutral-400">Debug:</p>
+          <Typography color='gray' className="text-sm leading-4">
+            Debug:
+          </Typography>
           <pre className='text-red p-2 text-sm truncate text-wrap'>
             <code>{error.message}</code>
           </pre>

@@ -13,11 +13,7 @@ import { IconLoader } from "@/shared/ui/icon-loader";
 import { ErrorBlock } from "@/shared/ui/error-block";
 import { Select, createListCollection } from '@ark-ui/react/select'
 import { Portal } from "@ark-ui/react/portal";
-import {
-  selectClearTriggerVariant, selectContentBaseStyle, selectContentVariant, selectControlVariant,
-  selectIndicatorsVariant, selectIndicatorVariant, selectItemGroupVariant, selectItemIndicatorVariant,
-  selectItemTextVariant, selectItemVariant, selectTriggerVariant
-} from "@/shared/ui/select"
+import { selectContentBaseStyle, selectVariant } from "@/shared/ui/select"
 import { TARGET_TITLE } from "@/shared/consts/store";
 
 type TopupTargetProps = {
@@ -97,29 +93,29 @@ const TopUpCurrencies = reatomComponent(({ ctx }) => {
       value={item ? [item] : []}
       onValueChange={({ value }) => topupState.method.currency(ctx, value[0])}
     >
-      <Select.Control className={selectControlVariant()}>
-        <Select.Trigger className={selectTriggerVariant()}>
+      <Select.Control className={selectVariant.control()}>
+        <Select.Trigger className={selectVariant.trigger()}>
           <Select.ValueText placeholder="Не выбрано" />
         </Select.Trigger>
-        <div className={selectIndicatorsVariant()}>
-          <Select.ClearTrigger className={selectClearTriggerVariant()}>
+        <div className={selectVariant.indicators()}>
+          <Select.ClearTrigger className={selectVariant.clearTrigger()}>
             <Icon name="sprite:x" className="size-5" />
           </Select.ClearTrigger>
-          <Select.Indicator className={selectIndicatorVariant()}>
+          <Select.Indicator className={selectVariant.indicator()}>
             <Icon name="sprite:selector" className="size-5" />
           </Select.Indicator>
         </div>
       </Select.Control>
       <Portal>
         <Select.Positioner>
-          <Select.Content className={selectContentVariant()} style={selectContentBaseStyle}>
-            <Select.ItemGroup className={selectItemGroupVariant()}>
+          <Select.Content className={selectVariant.content()} style={selectContentBaseStyle}>
+            <Select.ItemGroup className={selectVariant.itemGroup()}>
               {data?.map((item, idx) => (
-                <Select.Item key={idx} item={item} className={selectItemVariant()}>
-                  <Select.ItemText className={selectItemTextVariant()}>
+                <Select.Item key={idx} item={item} className={selectVariant.item()}>
+                  <Select.ItemText className={selectVariant.itemText()}>
                     {item}
                   </Select.ItemText>
-                  <Select.ItemIndicator className={selectItemIndicatorVariant()}>
+                  <Select.ItemIndicator className={selectVariant.itemIndicator()}>
                     <Icon name="sprite:check" className="size-4" />
                   </Select.ItemIndicator>
                 </Select.Item>
@@ -222,24 +218,24 @@ const TopupValue = reatomComponent(({ ctx }) => {
         onValueChange={({ value }) => topupState.wallet(ctx, value[0])}
         className="min-w-36"
       >
-        <Select.Control className={selectControlVariant({ className: "w-full" })}>
-          <Select.Trigger className={selectTriggerVariant()}>
+        <Select.Control className={selectVariant.control({ className: "w-full" })}>
+          <Select.Trigger className={selectVariant.trigger()}>
             <Select.ValueText className="w-fit">
               <TopUpTarget img={WALLETS_IMGS[ctx.spy(topupState.wallet)]} />
             </Select.ValueText>
           </Select.Trigger>
-          <div className={selectIndicatorsVariant()}>
-            <Select.Indicator className={selectIndicatorVariant()}>
+          <div className={selectVariant.indicators()}>
+            <Select.Indicator className={selectVariant.indicator()}>
               <Icon name="sprite:selector" className="size-5" />
             </Select.Indicator>
           </div>
         </Select.Control>
         <Portal>
           <Select.Positioner>
-            <Select.Content className={selectContentVariant()}>
-              <Select.ItemGroup className={selectItemGroupVariant()}>
+            <Select.Content className={selectVariant.content()}>
+              <Select.ItemGroup className={selectVariant.itemGroup()}>
                 {topupState.WALLETS.map((wallet) => (
-                  <Select.Item key={wallet.value} item={wallet} className={selectItemVariant()}>
+                  <Select.Item key={wallet.value} item={wallet} className={selectVariant.item()}>
                     <TopUpTarget variant="full" title={wallet.title} img={WALLETS_IMGS[wallet.value]} />
                   </Select.Item>
                 ))}

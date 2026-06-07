@@ -1,7 +1,7 @@
 import { client, withJsonBody } from "@/shared/lib/client-wrapper";
-import { reatomAsync, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework";
+import { reatomAsync, withCache, withDataAtom, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { action, atom } from "@reatom/framework";
-import { compareChanges, notifyAboutRestrictRole } from "./actions.model";
+import { actions, compareChanges, notifyAboutRestrictRole } from "./actions.model";
 import { withAssign, withReset } from "@reatom/framework";
 import { withUndo } from '@reatom/undo'
 import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model";
@@ -59,8 +59,11 @@ export const dictionariesEdit = atom(null, "dictionariesEdit").pipe(
 export const dict = atom(null, "dict").pipe(
   withAssign((_, name) => ({
     fetchList: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() =>
-        client<ExtractApiData<"getPrivatedDictionariesList">["data"]>("privated/dictionaries/list", { signal: ctx.controller.signal }).exec()
+      return await ctx.schedule(() => client
+        .get<ExtractApiData<"getPrivatedDictionariesList">["data"]>("privated/dictionaries/list", {
+          signal: ctx.controller.signal
+        })
+        .exec()
       )
     }, {
       name: `${name}.fetchList`
@@ -68,6 +71,7 @@ export const dict = atom(null, "dict").pipe(
       withDataAtom(null, (_, data) => isEmptyArray(data) ? null : data),
       withStatusesAtom(),
       withCache({ swr: false }),
+      withErrorAtom()
     ),
     create: reatomAsync(async (ctx) => {
       const json = {
@@ -86,10 +90,13 @@ export const dict = atom(null, "dict").pipe(
         dictState.createValue.reset(ctx);
 
         dict.fetchList.dataAtom(ctx, (state) => state ? [...state, res] : [res]);
+
+        actions.goBack(ctx)
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     ),
     edit: reatomAsync(async (ctx, id: number) => {
       const json = {
@@ -109,8 +116,16 @@ export const dict = atom(null, "dict").pipe(
       },
       onReject: (_, e) => notifyAboutRestrictRole(e)
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     ),
+    deleteBefore: action((ctx, item: { id: number, title: string }) => {
+      alertDialog.open(ctx, {
+        title: `Вы точно хотите удалить "${item.title}"?`,
+        onConfirm: () => dict.delete(ctx, item.id),
+        errorAtom: dict.delete.errorAtom,
+      });
+    }, `${name}.deleteBefore`),
     delete: reatomAsync(async (ctx, id: number) => {
       const result = await client
         .delete<ExtractApiData<"deletePrivatedDictionariesByIdRemove">['data']>(`privated/dictionaries/${id}/remove`)
@@ -124,22 +139,10 @@ export const dict = atom(null, "dict").pipe(
           dict.fetchList.dataAtom(ctx, (state) => state ? state.filter(s => s.id !== id) : [])
         }
       },
-      onReject: (_, e) => notifyAboutRestrictRole(e)
+      onReject: (ctx, e) => notifyAboutRestrictRole(e)
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     ),
-    deleteBefore: action((ctx, item: { id: number, title: string }) => {
-      itemToRemoveAtom(ctx, item)
-
-      alertDialog.open(ctx, {
-        title: `Вы точно хотите удалить "${item.title}"?`,
-        confirmAction: action((ctx => dict.delete(ctx, item.id))),
-        confirmLabel: "Удалить",
-        cancelAction: action((ctx) => itemToRemoveAtom.reset(ctx)),
-        autoClose: true
-      });
-    }, `${name}.deleteBefore`)
   }))
 )
-
-const itemToRemoveAtom = atom<{ id: number, title: string } | null>(null, "itemToRemove").pipe(withReset())

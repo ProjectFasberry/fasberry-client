@@ -4,13 +4,23 @@ import { Typography } from "@/shared/ui/typography"
 import { alertDialogState, alertDialog } from "./alert-dialog.model";
 import { Dialog } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal"
-import { dialogBackdropVariant, dialogBaseStyle, DialogClose, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog";
+import { dialogVariant, dialogBaseStyle, DialogClose } from "@/shared/ui/dialog";
+import { ErrorBlock } from "@/shared/ui/error-block";
 
 const AlertContent = reatomComponent(({ ctx }) => {
   const opts = ctx.spy(alertDialogState.config);
   if (!opts) return null;
 
-  const { title, withCancel = true, description, confirmLabel } = opts;
+  const { title, withCancel, errorAtom, description, confirmLabel } = opts;
+
+  const error = errorAtom ? ctx.spy(errorAtom) : null;
+
+  const withStatus = {
+    withSpinner: true, isLoading: ctx.spy(alertDialog.confirm.statusesAtom).isPending
+  } as const;
+
+  const showCancel = withCancel && !withStatus.isLoading
+  const confirmLabelWithRetry = error ? `Повторить` : confirmLabel;
 
   return (
     <div className="w-full">
@@ -24,23 +34,31 @@ const AlertContent = reatomComponent(({ ctx }) => {
           <Typography className="text-sm sm:text-base leading-6 text-neutral-400">
             {description ?? "Это действие нельзя отменить"}
           </Typography>
+          {error && (
+            <div className="mt-4 flex items-center justify-start w-full">
+              <ErrorBlock title={error.message} />
+            </div>
+          )}
         </div>
         <div className="flex items-center min-w-0 justify-end gap-2 w-full h-full">
-          {withCancel && (
+          {showCancel && (
             <Button
               background="default"
-              className="text-xs sm:text-base"
-              onClick={() => alertDialog.close(ctx)}
+              className="text-sm"
+              disabled={withStatus.isLoading}
+              onClick={() => alertDialog.cancel(ctx)}
             >
               Отмена
             </Button>
           )}
           <Button
-            onClick={() => alertDialog.confirm(ctx)}
             background="white"
-            className="text-xs sm:text-base text-nowrap truncate min-w-0"
+            className="text-sm font-semibold text-nowrap truncate min-w-0"
+            onClick={() => alertDialog.confirm(ctx)}
+            disabled={withStatus.isLoading}
+            {...withStatus}
           >
-            {confirmLabel}
+            {confirmLabelWithRetry}
           </Button>
         </div>
       </div>
@@ -52,12 +70,12 @@ export const AlertDialog = reatomComponent(({ ctx }) => {
   const opts = ctx.spy(alertDialogState.config);
 
   return (
-    <Dialog.Root open={ctx.spy(alertDialogState.isOpen)} onOpenChange={v => alertDialogState.isOpen(ctx, v.open)}>
+    <Dialog.Root open={ctx.spy(alertDialogState.isOpen)} onOpenChange={v => alertDialog.handleOpen(ctx, v.open)}>
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} style={dialogBaseStyle} />
-        <Dialog.Positioner className={dialogPositionerVariant()} style={dialogBaseStyle} >
-          <Dialog.Content className={dialogContentVariant({ className: "w-lg" })} style={dialogBaseStyle} >
-            <Dialog.Title className={dialogTitleVariant()}>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} style={dialogBaseStyle} />
+        <Dialog.Positioner className={dialogVariant.positioner()} style={dialogBaseStyle} >
+          <Dialog.Content className={dialogVariant.content({ className: "w-lg" })} style={dialogBaseStyle} >
+            <Dialog.Title className={dialogVariant.title()}>
               {opts?.dialogTitle ?? "Подтверждение действия"}
             </Dialog.Title>
             <AlertContent />

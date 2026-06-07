@@ -1,6 +1,6 @@
 import { onConnect, sleep, type AtomState } from '@reatom/framework'
 import { reatomComponent, useUpdate } from '@reatom/npm-react'
-import { Skeleton } from '@repo/ui/skeleton';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { useMemo } from 'react';
 import { formatBytesToMB, formatUptimeLong, healthFetch, healthHistory, lastHistory } from '../models/dashboard.model';
 

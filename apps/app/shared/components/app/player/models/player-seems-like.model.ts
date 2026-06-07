@@ -1,4 +1,4 @@
-import { reatomAsync, withDataAtom, withStatusesAtom } from "@reatom/framework";
+import { reatomAsync, withDataAtom, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { playerState } from "./player.model";
 import { action, atom, withAssign } from "@reatom/framework";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import { setCookie } from "@/shared/lib/cookie-utils";
 
 export const playerSeemsLikePlayersIsShowKey = "playerSLPState.isShow"
 type SeemsLikePlayersPayload = ExtractApiData<"getServerSeems-likeByNickname">["data"]
+export type SeemsLikePlayer = SeemsLikePlayersPayload["data"][number];
 
 export const playerSLPState = atom(null, "playerSLPState").pipe(
   withAssign((_, name) => ({
@@ -45,7 +46,7 @@ export const playerSLP = atom(null, "playerSLP").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx, nickname: string) => {
       playerSLP.fetch.dataAtom.reset(ctx);
-      
+
       const result = await client
         .get<SeemsLikePlayersPayload>(`server/seems-like/${nickname}`, {
           signal: ctx.controller.signal,
@@ -56,7 +57,8 @@ export const playerSLP = atom(null, "playerSLP").pipe(
       return result
     }, `${name}.fetch`).pipe(
       withDataAtom(null),
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     ),
     init: action((ctx) => {
       const nickname = ctx.get(playerState.nickname)

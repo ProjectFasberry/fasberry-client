@@ -70,7 +70,7 @@ const connectionsControl = atom(null, "connectionsControl").pipe(
         if (!warningIsConfirmed) {
           alertDialog.open(ctx, {
             title: "После нажатия вас перекинет на коннект дискорда",
-            confirmAction: action((ctx) => {
+            onConfirm: action((ctx) => {
               connectionsState.warningIsConfirmed(ctx, true);
               connectionsControl.addWrapper(ctx, social);
             }),
@@ -92,7 +92,7 @@ const connectionsControl = atom(null, "connectionsControl").pipe(
         if (!warningIsConfirmed) {
           alertDialog.open(ctx, {
             title: "Продолжить?",
-            confirmAction: action((ctx) => {
+            onConfirm: action((ctx) => {
               connectionsState.warningIsConfirmed(ctx, true);
               connectionsControl.addWrapper(ctx, social);
             }),

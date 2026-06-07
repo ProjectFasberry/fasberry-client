@@ -5,9 +5,11 @@ import { useAtom } from "@reatom/npm-react";
 
 const page = createPageModel({
   name: "news-single",
-  onDisconnAction: (ctx) => {
-    newsSingleState.data.reset(ctx)
-    newsSingleState.editParams.reset(ctx)
+  hooks: {
+    onDisconnect: (ctx) => {
+      newsSingleState.data.reset(ctx)
+      newsSingleState.editParams.reset(ctx)
+    }
   }
 })
 

@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/button"
 import { cart } from "../../models/store-cart.model"
 import { Dialog } from "@ark-ui/react/dialog"
 import { Portal } from "@ark-ui/react/portal"
-import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog"
+import { dialogVariant } from "@/shared/ui/dialog"
 import type React from "react"
 
 const ChangeRecipientField = reatomComponent(({ ctx }) => {
@@ -54,9 +54,9 @@ export const ChangeRecipientDialog = reatomComponent(({ ctx }) => {
       onOpenChange={({ open }) => changeLocalRecipientState.isOpen(ctx, open)}
     >
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "w-lg" })}>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "w-lg" })}>
             <form onSubmit={handle} className="flex flex-col gap-4 w-full h-full">
               <div className="flex flex-col gap-1 w-full">
                 <Typography className="font-semibold leading-tight">

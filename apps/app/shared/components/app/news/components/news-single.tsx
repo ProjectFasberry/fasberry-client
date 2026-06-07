@@ -1,4 +1,4 @@
-import { createLink, Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { Typography } from "@/shared/ui/typography";
 import { reatomComponent } from "@reatom/npm-react";
 import { usePageContext } from "vike-react/usePageContext";
@@ -9,6 +9,7 @@ import { renderToHTMLString } from "@tiptap/static-renderer";
 import type { JSONContent } from "@tiptap/react";
 import { editorExtensions as extensions } from "@/shared/components/config/editor/editor.model";
 import { defineNewsMeta, newsSingleState, type NewsSingle as NewsSingleType } from "../models/news-single.model";
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const NewsSingleEdit = reatomComponent(({ ctx }) => {
   const data = ctx.spy(newsSingleState.editParams)

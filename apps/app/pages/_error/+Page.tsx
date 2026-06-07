@@ -1,12 +1,10 @@
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { getStaticImage } from "@/shared/lib/volume-helpers";
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography";
 import { type ReactNode } from "react";
 import { usePageContext } from "vike-react/usePageContext";
 import { Icon } from "@/shared/ui/icon"
-import { spyOptionAtom } from "@/shared/models/app/utils";
-import { reatomComponent } from "@reatom/npm-react";
 
 const Back = () => {
   return (
@@ -33,8 +31,7 @@ const NotFoundPage = () => {
 
 const ErrorPage = () => {
   const { abortReason } = usePageContext();
-
-  const message = typeof abortReason === 'string' ? abortReason : ""
+  const msg = typeof abortReason === 'string' ? abortReason : ""
 
   return (
     <>
@@ -42,7 +39,7 @@ const ErrorPage = () => {
         Произошла ошибка
       </Typography>
       {import.meta.env.DEV && (
-        <span className="text-red">{message}</span>
+        <span className="text-red text-[12px]">{msg}</span>
       )}
     </>
   )

@@ -558,9 +558,8 @@ const deleteUser = atom(null, "deleteUser").pipe(
 
       alertDialog.open(ctx, {
         title: "Вы точно хотите удалить этого игрока?",
-        confirmAction: deleteUser.submit,
-        confirmLabel: "Подтвердить",
-        autoClose: true
+        onConfirm: () => deleteUser.submit(ctx),
+        errorAtom: deleteUser.submit.errorAtom,
       })
     }, `${name}.handle`),
     submit: reatomAsync(async (ctx) => {

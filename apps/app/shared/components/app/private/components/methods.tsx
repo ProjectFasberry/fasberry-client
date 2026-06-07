@@ -4,6 +4,7 @@ import { Typography } from "@/shared/ui/typography";
 import { tv } from "tailwind-variants";
 import { methodsModel, type PrivatedMethodsPayload } from "../models/methods.model";
 import { Switch } from "@/shared/ui/switch";
+import { ErrorBlock } from "@/shared/ui/error-block";
 
 const { methods, methodsControl, getMethodIsLoading } = methodsModel()
 
@@ -13,7 +14,7 @@ const methodVariant = tv({
     first_parent: "flex items-center min-w-0 gap-1 sm:gap-2",
     image: "h-6 w-6 rounded-lg",
     second_parent: "flex items-center gap-2 h-full",
-    title: "truncate font-semibold"
+    title: "truncate text-sm font-semibold"
   }
 })
 
@@ -69,12 +70,14 @@ const Method = reatomComponent<PrivatedMethodsPayload[number]>(({
 export const Methods = reatomComponent(({ ctx }) => {
   useUpdate(methods.fetch, []);
 
-  const data = ctx.spy(methods.fetch.dataAtom);
-
-  if (ctx.spy(methods.fetch.statusesAtom).isPending) {
+  if (ctx.spy(methods.fetch.statusesAtom).isFirstPending) {
     return Array.from({ length: 3 }).map((_, idx) => <MethodSkeleton key={idx} />)
   }
 
+  const error = ctx.spy(methods.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
+  const data = ctx.spy(methods.fetch.dataAtom);
   if (!data) return null;
 
   return data.map((method) => <Method key={method.id} {...method} />)

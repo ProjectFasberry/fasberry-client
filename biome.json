@@ -8,7 +8,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!apps/landing"]
+		"includes": ["**", "!apps/landing", "!apps/app/shared/styles/*"]
 	},
 	"formatter": {
 		"enabled": true,

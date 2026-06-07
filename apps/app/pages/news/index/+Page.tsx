@@ -7,9 +7,11 @@ import { useAtom } from "@reatom/npm-react";
 
 const page = createPageModel({
   name: "news-list",
-  onConnAction(ctx) {
-    news.fetch(ctx)
-  },
+  hooks: {
+    onConnect: (ctx) => {
+      news.fetch(ctx)
+    },
+  }
 })
 
 export default function Page() {

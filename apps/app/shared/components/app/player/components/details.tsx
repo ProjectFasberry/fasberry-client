@@ -1,6 +1,6 @@
 import { Button } from "@/shared/ui/button";
 import { Typography } from "@/shared/ui/typography"
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { translate } from "@/shared/locales/helpers";
 
 export const PurchasesHistory = () => {
@@ -15,10 +15,8 @@ export const PurchasesHistory = () => {
         </Typography>
       </div>
       <Link href="/store/cart/orders">
-        <Button background="white" className="w-fit">
-          <Typography className="font-semibold">
-            {translate["player.purchases.goTo"]()}
-          </Typography>
+        <Button background="white" className="w-fit font-semibold">
+          {translate["player.purchases.goTo"]()}
         </Button>
       </Link>
     </div>

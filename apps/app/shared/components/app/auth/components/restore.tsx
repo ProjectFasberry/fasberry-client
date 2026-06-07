@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/button";
 import { NicknameInput } from "./auth";
 import { type ReactNode } from "react";
 import { spawn } from "@reatom/framework";
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { Input } from "@/shared/ui/input";
 
 const RestoreSeedPhrase = reatomComponent(({ ctx }) => {
@@ -94,7 +94,7 @@ const RestoreContent = reatomComponent(({ ctx }) =>
 
 const RestoreBack = reatomComponent(({ ctx }) => {
   const canGoBack = ctx.spy(restoreNavigationModel.canGoBackAtom)
-  
+
   return (
     <Button
       type="button"

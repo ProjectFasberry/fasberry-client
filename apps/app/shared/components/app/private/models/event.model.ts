@@ -1,9 +1,10 @@
-import { action, atom } from "@reatom/framework"
+import { action, atom, withErrorAtom } from "@reatom/framework"
 import { reatomAsync, withAssign, withCache, withDataAtom, withReset, withStatusesAtom } from "@reatom/framework"
-import { getEvents } from "../../events/models/events.model"
+import { getEvents, type EventsSingle } from "../../events/models/events.model"
 import { client, withJsonBody } from "@/shared/lib/client-wrapper"
 import { toast } from "sonner"
-import { notifyAboutRestrictRole } from "./actions.model"
+import { actions, notifyAboutRestrictRole } from "./actions.model"
+import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model"
 
 export const events = atom(null, "events").pipe(
   withAssign((_, name) => ({
@@ -11,12 +12,11 @@ export const events = atom(null, "events").pipe(
       return await ctx.schedule(() =>
         getEvents({ limit: 12 }, { signal: ctx.controller.signal })
       )
-    }, {
-      name: `${name}.fetch`
-    }).pipe(
+    }, `${name}.fetch`).pipe(
       withDataAtom(null),
       withCache({ swr: false }),
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )
@@ -38,41 +38,62 @@ export const createEvent = atom(null, "createEvent").pipe(
       createEventState.type.reset(ctx)
     }),
     submit: reatomAsync(async (ctx) => {
-      const json = {
+      type EventType = "postPrivatedEventsCreate";
+      type Json = ExtractApiBody<EventType>["content"]["application/json"]
+
+      const json: Json = {
         title: ctx.get(createEventState.title),
         description: ctx.get(createEventState.description),
         initiator: ctx.get(createEventState.initiator),
-        type: ctx.get(createEventState.type)
+        type: ctx.get(createEventState.type) as Json["type"]
       }
 
       return await client
-        .post<ExtractApiData<"postPrivatedEventsCreate">["data"]>("privated/events/create", { throwHttpErrors: false })
+        .post<ExtractApiData<EventType>["data"]>("privated/events/create")
         .pipe(withJsonBody(json))
         .exec()
     }, {
       name: `${name}.submit`,
       onFulfill: (ctx, res) => {
-        toast.success("Ивент создан");
-
         events.fetch.cacheAtom.reset(ctx)
-        events.fetch.dataAtom(ctx, (state) => state ? [...state, res] : null)
+        events.fetch.dataAtom(ctx, (state) => state ? [...state, res] : [res])
 
         createEvent.resetFull(ctx)
+        actions.goBack(ctx);
+
+        toast.success("Ивент создан");
       },
       onReject: (_, e) => notifyAboutRestrictRole(e),
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )
 export const deleteEvent = atom(null, "deleteEvent").pipe(
   withAssign((_, name) => ({
-    submit: reatomAsync(async (ctx) => {
+    beforeSubmit: action((ctx, id: EventsSingle["id"]) => {
+      alertDialog.open(ctx, {
+        title: `Удаление события`,
+        description: `Вы уверены, что хотите удалить это событие?`,
+        onConfirm: () => deleteEvent.submit(ctx, id),
+      })
+    }),
+    submit: reatomAsync(async (_, id: EventsSingle["id"]) => {
+      const result = await client
+        .delete<ExtractApiData<"deletePrivatedEventsById">["data"]>(`privated/events/${id}`)
+        .exec()
 
+      return { result, id }
     }, {
-      name: `${name}.submit`
+      name: `${name}.submit`,
+      onFulfill: (ctx, res) => {
+        events.fetch.cacheAtom.reset(ctx)
+        events.fetch.dataAtom(ctx, (state) => state ? state.filter((e) => e.id !== res.id) : null)
+      }
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )

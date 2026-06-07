@@ -1,18 +1,20 @@
 import { client, withJsonBody } from "@/shared/lib/client-wrapper"
-import { reatomAsync, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework"
+import { reatomAsync, withCache, withDataAtom, withErrorAtom, withStatusesAtom } from "@reatom/framework"
 import { action, atom } from "@reatom/framework"
 import { withAssign, withReset } from "@reatom/framework"
 import { toast } from "sonner"
-import { notifyAboutRestrictRole } from "./actions.model"
+import { actions, notifyAboutRestrictRole } from "./actions.model"
 import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model"
 
 export type BannerList = ExtractApiData<"getBannerList">["data"];
+export type BannerSingle = BannerList["data"][number]
 
 export const banners = atom(null, "banners").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() =>
-        client<BannerList>(`banner/list`).exec()
+      return await ctx.schedule(() => client
+        .get<BannerList>(`banner/list`, { signal: ctx.controller.signal })
+        .exec()
       )
     }, `${name}.fetch`).pipe(
       withDataAtom(null),
@@ -24,10 +26,10 @@ export const banners = atom(null, "banners").pipe(
 
 export const createBannerState = atom(null, "createBannerState").pipe(
   withAssign((_, name) => ({
-    title: atom("", `${name}.title  `).pipe(withReset()),
+    title: atom("", `${name}.title`).pipe(withReset()),
     desc: atom("", `${name}.desc`).pipe(withReset()),
     hrefTitle: atom("", `${name}.hrefTitle`).pipe(withReset()),
-    hrefValue:  atom("", `${name}.hrefValue`).pipe(withReset())
+    hrefValue: atom("", `${name}.hrefValue`).pipe(withReset())
   }))
 )
 export const createBanner = atom(null, "createBanner").pipe(
@@ -39,6 +41,8 @@ export const createBanner = atom(null, "createBanner").pipe(
       createBannerState.hrefValue.reset(ctx)
     }),
     submit: reatomAsync(async (ctx) => {
+      createBanner.submit.errorAtom.reset(ctx);
+
       const json: ExtractApiBody<"postPrivatedBannersCreate">["content"]["application/json"] = {
         title: ctx.get(createBannerState.title),
         description: ctx.get(createBannerState.desc),
@@ -55,36 +59,34 @@ export const createBanner = atom(null, "createBanner").pipe(
     }, {
       name: `${name}.submit`,
       onFulfill: (ctx, res) => {
-        toast.success("Баннер создан");
-
         banners.fetch.cacheAtom.reset(ctx)
         banners.fetch.dataAtom(ctx, (state) => state ? { data: [...state.data, res], meta: state.meta } : null);
 
         createBanner.resetFull(ctx)
+        actions.goBack(ctx)
+
+        toast.success("Баннер создан");
       },
-      onReject: (_, e) => notifyAboutRestrictRole(e)
+      onReject: (_, e) => {
+        notifyAboutRestrictRole(e)
+      }
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )
 
-const itemToRemoveAtom = atom<{ id: number, title: string } | null>(null, "itemToRemove").pipe(withReset())
-
 export const deleteBanner = atom(null, "deleteBanner").pipe(
   withAssign((_, name) => ({
     deleteBefore: action((ctx, item: { id: number, title: string }) => {
-      itemToRemoveAtom(ctx, item)
-
       alertDialog.open(ctx, {
         title: `Вы точно хотите удалить "${item.title}"?`,
-        confirmAction: action((ctx => deleteBanner.submit(ctx, item.id))),
-        confirmLabel: "Удалить",
-        cancelAction: action((ctx) => itemToRemoveAtom.reset(ctx)),
-        autoClose: true
+        onConfirm: () => deleteBanner.submit(ctx, item.id),
+        errorAtom: deleteBanner.submit.errorAtom,
       });
     }, `${name}.deleteBefore`),
-    submit: reatomAsync(async (ctx, id: number) => {
+    submit: reatomAsync(async (_, id: number) => {
       const result = await client
         .delete<ExtractApiData<"deletePrivatedBannersById">["data"]>(`privated/banners/${id}`)
         .exec();
@@ -93,8 +95,6 @@ export const deleteBanner = atom(null, "deleteBanner").pipe(
     }, {
       name: `${name}.submit`,
       onFulfill: (ctx, res) => {
-        toast.success("Баннер удален");
-
         banners.fetch.dataAtom(ctx, (state) => {
           if (!state) return null;
 
@@ -104,9 +104,12 @@ export const deleteBanner = atom(null, "deleteBanner").pipe(
           }
         })
       },
-      onReject: (_, e) => notifyAboutRestrictRole(e)
+      onReject: (_, e) => {
+        notifyAboutRestrictRole(e)
+      }
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )

@@ -1,21 +1,20 @@
 import { action, type Action, type Atom, type CtxSpy } from "@reatom/framework";
-import { chatMessageModel, type ChatItem, type ChatItemViews } from "../../models/chat.model";
+import { msgState, msg, getChatItemIsEditAtom, getChatItemViews, type ChatItem, type ChatItemViews } from "../../models/chat.model";
 import { reatomComponent } from "@reatom/npm-react";
-import { currentUserState } from "@/shared/models/current-user/index.model";
-import { createLink, Link } from "@/shared/components/config/link";
+import { currentUser } from "@/shared/models/current-user/index.model";
+import { Link } from "@/shared/components/config/link/link";
 import { Avatar } from "@/shared/ui/avatar";
 import { Portal } from "@ark-ui/react/portal";
 import { Menu } from "@ark-ui/react/menu";
-import { dropdownMenuItemVariants, menuContentVariant } from "@/shared/ui/menu";
-import { Icon } from "@/shared/ui/icon"
+import { menuVariant } from "@/shared/ui/menu";
+import { Icon, type IconName } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input";
 import { Typography } from "@/shared/ui/typography";
 import { ActionButton, DeleteButton } from "../ui";
 import dayjs from "@/shared/lib/create-dayjs";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Fragment, type ReactNode } from "react";
-
-const { msgViews, msgCopyText, getChatItemIsEditAtom, getChatItemViews, msgEditState, msgEdit, msgDelete } = chatMessageModel()
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const ChatMessagesItemText = reatomComponent<Pick<ChatItem, "id" | "message">>(({ ctx, id, message }) => {
   const isEdit = ctx.spy(getChatItemIsEditAtom(id))
@@ -24,8 +23,8 @@ const ChatMessagesItemText = reatomComponent<Pick<ChatItem, "id" | "message">>((
     <div className="min-w-0 w-full">
       {isEdit ? (
         <Input
-          value={ctx.spy(msgEditState.newMsg) ?? message}
-          onChange={e => msgEditState.newMsg(ctx, e.target.value)}
+          value={ctx.spy(msgState.edit.newMsg) ?? message}
+          onChange={e => msgState.edit.newMsg(ctx, e.target.value)}
           className="focus-within:outline-none! p-0! text-base! w-full"
         />
       ) : (
@@ -39,7 +38,7 @@ const ChatMessagesItemEditActions = reatomComponent<Pick<ChatItem, "id">>(({ ctx
   const isEdit = ctx.spy(getChatItemIsEditAtom(id))
   if (!isEdit) return null;
 
-  const isDisabled = !ctx.spy(msgEdit.isValid) || ctx.spy(msgEdit.submit.statusesAtom).isPending
+  const isDisabled = !ctx.spy(msg.edit.submitIsValid) || ctx.spy(msg.edit.submit.statusesAtom).isPending
 
   return (
     <div className="flex items-center gap-1">
@@ -47,23 +46,25 @@ const ChatMessagesItemEditActions = reatomComponent<Pick<ChatItem, "id">>(({ ctx
         variant="selected"
         icon="sprite:check"
         disabled={isDisabled}
-        onClick={() => msgEdit.submit(ctx)}
+        onClick={() => msg.edit.submit(ctx)}
       />
-      <DeleteButton onClick={() => msgEdit.end(ctx)} />
+      <DeleteButton onClick={() => msg.edit.end(ctx)} />
     </div>
   )
 }, "ChatMessagesItemEditActions")
 
 const ChatMessagesItemViewsItem = ({
-  id, nickname, created_at, avatar
+  nickname, created_at, avatar
 }: ChatItemViews) => {
   return (
-    <div className="flex border border-neutral-800 gap-2 rounded-lg px-2 py-1 items-center">
+    <div className="flex h-12 gap-3 rounded-lg px-2 items-center">
       <Avatar url={avatar} className="w-8 h-8" nickname={nickname} />
-      <div className="flex flex-col">
-        {nickname}
+      <div className="flex flex-col w-full justify-center h-full">
+        <Typography className="text-sm leading-4">
+          {nickname}
+        </Typography>
         <div className="flex items-center justify-start gap-1">
-          <span className="text-sm text-neutral-400">
+          <span className="text-[12px] text-neutral-400">
             {dayjs(created_at).format("DD.MM.YYYY hh:mm")}
           </span>
         </div>
@@ -76,19 +77,17 @@ const ChatMessageViewsMenu = reatomComponent<{ id: number }>(({ ctx, id }) => {
 
   return (
     <Menu.Root>
-      <Menu.TriggerItem className={dropdownMenuItemVariants()}>
+      <Menu.TriggerItem className={menuVariant.item()}>
         <Icon name="sprite:checks" className="size-4" />
-        {ctx.spy(msgViews.fetch.statusesAtom).isPending
+        {ctx.spy(msg.views.fetch.statusesAtom).isPending
           ? <Skeleton className="h-5 w-5" /> : data.length
         }
         <span>просмотров</span>
       </Menu.TriggerItem>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content className={menuContentVariant()}>
-            {data.map((viewer) => (
-              <ChatMessagesItemViewsItem key={viewer.id} {...viewer} />
-            ))}
+          <Menu.Content className={menuVariant.content()}>
+            {data.map((viewer) => <ChatMessagesItemViewsItem key={viewer.id} {...viewer} />)}
           </Menu.Content>
         </Menu.Positioner>
       </Portal>
@@ -99,8 +98,8 @@ const ChatMessageViewsMenu = reatomComponent<{ id: number }>(({ ctx, id }) => {
 type MessageAction = {
   label: string | ((ctx: CtxSpy, dataAtom: Atom<any>) => ReactNode),
   value: string,
-  icon: any,
-  action: Action<[id: number], Promise<void> | void> | null,
+  icon: IconName,
+  action: Action<[id: number], (Promise<void> | void)> | null,
   nested?: {
     component: (id: number) => ReactNode
   },
@@ -115,16 +114,16 @@ const MESSAGE_ACTIONS_LIST: MessageAction[] = [
     label: "Редактировать",
     value: "edit",
     icon: "sprite:pencil",
-    action: msgEdit.start
+    action: msg.edit.start
   },
   {
     label: "Скопировать текст",
     value: "copy-text",
     icon: "sprite:copy",
-    action: msgCopyText
+    action: msg.utils.copyText
   },
   {
-    label: (ctx, dataAtom: Atom<string[]>) => ctx.spy(msgViews.fetch.statusesAtom).isPending
+    label: (ctx, dataAtom: Atom<string[]>) => ctx.spy(msg.views.fetch.statusesAtom).isPending
       ? <Skeleton className="h-5 w-5" /> : ctx.spy(dataAtom).length.toString(),
     value: "views",
     icon: "sprite:checks",
@@ -137,14 +136,14 @@ const MESSAGE_ACTIONS_LIST: MessageAction[] = [
     label: "Удалить",
     value: "delete",
     icon: "sprite:trash",
-    action: msgDelete.submit,
+    action: msg.delete.submit,
     onlyOwner: true,
     style: { variant: "danger" }
   },
 ]
 
 const onOpenContextMenu = action((ctx, id: number) => {
-  msgViews.fetch(ctx, id)
+  msg.views.fetch(ctx, id)
 })
 const onSelectContextMenu = action((ctx, id: number, value: string) => {
   const msgAction = MESSAGE_ACTIONS_LIST.find(d => d.value === value)
@@ -160,9 +159,9 @@ const onSelectContextMenu = action((ctx, id: number, value: string) => {
 })
 
 export const ChatMessage = reatomComponent<ChatItem>(({
-  ctx, id, nickname, avatar, created_at, message, edited, edited_at, views
+  ctx, id, nickname, avatar, created_at, message, edited, edited_at
 }) => {
-  const isOwner = nickname === ctx.get(currentUserState)?.nickname
+  const isOwner = nickname === currentUser.getNickname(ctx)
 
   return (
     <Menu.Root
@@ -201,7 +200,7 @@ export const ChatMessage = reatomComponent<ChatItem>(({
       </Menu.ContextTrigger>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content className={menuContentVariant()}>
+          <Menu.Content className={menuVariant.content()}>
             {MESSAGE_ACTIONS_LIST.map((item) => {
               if (item.onlyOwner && !isOwner) return null;
 
@@ -216,9 +215,9 @@ export const ChatMessage = reatomComponent<ChatItem>(({
                 <Menu.Item
                   key={item.value}
                   value={item.value}
-                  className={dropdownMenuItemVariants({ className: item.style?.variant === 'danger' ? "text-red" : "" })}
+                  className={menuVariant.item({ className: item.style?.variant === 'danger' ? "text-red" : "" })}
                 >
-                  <item.icon size={16} />
+                  <Icon name={item.icon} className="size-4" />
                   {typeof item.label === 'function' ? label : <span>{label}</span>}
                 </Menu.Item>
               )

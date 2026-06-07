@@ -3,10 +3,10 @@ import { ClientOnly } from "vike-react/ClientOnly"
 import { Toaster as ToasterInit } from "sonner"
 
 const icons = {
-  info: <img width={32} height={32} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />,
-  error: <img width={32} height={32} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />,
-  success: <img width={32} height={32} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />,
-  warning: <img width={32} height={32} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />
+  info: <img width={40} height={40} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />,
+  error: <img width={40} height={40} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />,
+  success: <img width={40} height={40} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />,
+  warning: <img width={40} height={40} alt="" loading="lazy" draggable={false} src={getStaticImage("icons/challenges_icon.png")} />
 }
 
 export const Toaster = () => {
@@ -17,7 +17,7 @@ export const Toaster = () => {
         toastOptions={{
           classNames: {
             success: "text-green-500!",
-            info: "text-neutral-950!",
+            info: "text-neutral-900!",
             error: "text-red!",
             warning: "text-yellow-500!",
           },

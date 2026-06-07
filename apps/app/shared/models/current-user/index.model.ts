@@ -1,9 +1,10 @@
 import { SKIP_HOOK_HEADER } from '../../api/client';
-import { atom } from "@reatom/framework";
+import { action, atom } from "@reatom/framework";
 import { withAssign, withReset } from "@reatom/framework";
 import { clientInstance } from "../../api/client";
 import { parseWrappedJson } from '../../lib/client-wrapper';
 import { withSsr } from "../ssr";
+import { invariant } from '@/shared/lib/invariant';
 
 export type MePayload = ExtractApiData<"getMe">['data'];
 
@@ -29,6 +30,15 @@ export const currentUserState = atom<MePayload | null>(null, "currentUser").pipe
   ),
   withReset(),
   withSsr(CURRENT_USER_KEY)
+)
+export const currentUser = atom(null, "currentUser").pipe(
+  withAssign(() => ({
+    getNickname: action((ctx) => {
+      const nickname = ctx.get(currentUserState)?.nickname;
+      invariant(nickname, "Current user nickname is not defined");
+      return nickname;
+    })
+  }))
 )
 
 export async function getMe(init: RequestInit) {

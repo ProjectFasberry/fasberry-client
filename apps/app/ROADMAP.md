@@ -1,2 +1,10 @@
-- [x] drop @tabler/icons-react
-- [ ] i18n (en/ru)
+# Roadmap
+
+## in progress
+- [ ] configure localization support for english (`en`) and russian (`ru`)
+
+## backlog
+- [ ] migrate from `ky` to `openapi-fetch`
+
+## done
+- [x] dropped `@tabler/icons-react` in favor of sprites

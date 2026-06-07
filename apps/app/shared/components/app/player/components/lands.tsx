@@ -1,14 +1,15 @@
 import { reatomComponent } from "@reatom/npm-react"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { Typography } from "@/shared/ui/typography"
-import { createLink, Link } from "../../../config/link"
+import { Link } from "../../../config/link/link"
 import { playerLands, playerLandsState } from "../models/player-lands.model"
 import { atom } from "@reatom/framework"
 import { translate } from "@/shared/locales/helpers"
+import { createLink } from "@/shared/components/config/link/link.model"
+import { ErrorBlock } from "@/shared/ui/error-block"
+import type { LandSimilar } from "../../lands/models/lands.model"
 
-type Land = ExtractApiData<"getServerLandsListByNickname">["data"]["data"][number]
-
-const PlayerLand = ({ ulid, title, details, name, members }: Land) => {
+const PlayerLand = ({ ulid, title, details, name, members }: LandSimilar) => {
   return (
     <Link
       href={createLink("land", ulid)}
@@ -38,6 +39,9 @@ const PlayerLand = ({ ulid, title, details, name, members }: Land) => {
 const PlayerLandsList = reatomComponent(({ ctx }) => {
   if (ctx.spy(playerLands.fetch.statusesAtom).isPending) return <Skeleton className="h-24 w-full" />
 
+  const error = ctx.spy(playerLands.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
   const data = ctx.spy(playerLandsState.data)?.data
 
   if (!data) {
@@ -51,7 +55,7 @@ const playerLandsCountAtom = atom((ctx) => ctx.spy(playerLandsState.data)?.meta.
 
 const PlayerLandsCount = reatomComponent(({ ctx }) => {
   if (ctx.spy(playerLands.fetch.statusesAtom).isPending) return <Skeleton className="h-8 aspect-square" />
-  
+
   const data = ctx.spy(playerLandsCountAtom)
 
   return (

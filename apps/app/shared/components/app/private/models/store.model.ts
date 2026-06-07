@@ -1,6 +1,6 @@
 import { storeItemCreateSchema } from '@/shared/schemas/store';
 import { logError } from "@/shared/lib/log";
-import { action, atom, type AtomState, batch } from "@reatom/framework";
+import { action, atom, type AtomState, batch, withErrorAtom } from "@reatom/framework";
 import { reatomAsync, reatomRecord, withAssign, withCache, withDataAtom, withReset, withStatusesAtom } from "@reatom/framework";
 import { getStoreItems, type StoreItemsParams } from "../../shop/models/store.model";
 import { client, withJsonBody } from "@/shared/lib/client-wrapper";
@@ -79,19 +79,14 @@ export const createStoreItem = atom(null, "createStoreItem").pipe(
   }))
 )
 
-export const itemToDeleteAtom = atom<StoreItem | null>(null).pipe(withReset())
 export const deleteStoreItem = atom(null, "deleteStoreItem").pipe(
   withAssign((_, name) => ({
     before: action((ctx, item: StoreItem) => {
       alertDialog.open(ctx, {
         title: `Вы точно хотите удалить товар "${item.title}"?`,
-        confirmAction: action((ctx => deleteStoreItem.submit(ctx, item.id))),
-        confirmLabel: "Удалить",
-        cancelAction: action((ctx) => itemToDeleteAtom.reset(ctx)),
-        autoClose: true
+        onConfirm: () => deleteStoreItem.submit(ctx, item.id),
+        errorAtom: deleteStoreItem.submit.errorAtom,
       });
-
-      itemToDeleteAtom(ctx, item)
     }),
     submit: reatomAsync(async (ctx, id: number) => {
       return await client
@@ -107,7 +102,8 @@ export const deleteStoreItem = atom(null, "deleteStoreItem").pipe(
       },
       onReject: (_, e) => logError(e, { type: "combined" })
     }).pipe(
-      withStatusesAtom()
+      withStatusesAtom(),
+      withErrorAtom()
     )
   }))
 )
@@ -160,7 +156,8 @@ export const storeItems = atom(null, "storeItems").pipe(
     }).pipe(
       withDataAtom(null),
       withStatusesAtom(),
-      withCache({ swr: false })
+      withCache({ swr: false }),
+      withErrorAtom()
     )
   }))
 )

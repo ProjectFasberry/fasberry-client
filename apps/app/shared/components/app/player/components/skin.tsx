@@ -14,7 +14,7 @@ import { ClientOnly } from "vike-react/ClientOnly"
 import { appState } from "@/shared/models/app/index.model";
 import { Dialog, DialogTitle } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal";
-import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog";
+import { dialogVariant } from "@/shared/ui/dialog";
 
 const {
   getIsSelectSkinAtom,
@@ -361,9 +361,9 @@ const SkinControlChangeSkin = reatomComponent(({ ctx }) => {
         </Button>
       </Dialog.Trigger>
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "overflow-hidden h-2/3" })}>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "overflow-hidden h-2/3" })}>
             <DialogTitle>
               Загрузка скина
             </DialogTitle>

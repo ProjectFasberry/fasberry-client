@@ -1,8 +1,9 @@
-import { isError } from "@/shared/lib/helpers"
-import { logger } from "@/shared/lib/logger"
+import { sentry } from "@/shared/sentry";
+
+await sentry.init({ variant: "browser" });
 
 window.addEventListener('error', (e) => {
-  if (isError(e)) {
-    logger.withTag("Client").error(e.message)
-  }
+  if (!import.meta.env.PROD) return
+
+  sentry.getBrowser().captureException(e);
 })

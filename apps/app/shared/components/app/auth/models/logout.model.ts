@@ -18,9 +18,8 @@ export const logout = atom(null, "logout").pipe(
 		withConfirm: action((ctx) => {
 			alertDialog.open(ctx, {
 				title: "Вы точно хотите выйти?",
-				confirmAction: logout.exec,
+				onConfirm: () => logout.exec(ctx),
 				confirmLabel: "Выйти из аккаунта",
-				autoClose: true,
 			});
 		}, `${name}.withConfirm`),
 	}))

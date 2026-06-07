@@ -1,62 +1,65 @@
-import { Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/config/link/link"
 import { Button } from "@/shared/ui/button"
-import { type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react"
+import { type HTMLAttributes, type ReactNode } from "react"
 import { tv, type VariantProps } from "tailwind-variants"
 import { Typography } from "@/shared/ui/typography"
 import type { IconName } from "@/shared/ui/icon"
 import { Icon } from "@/shared/ui/icon"
+import { reatomComponent } from "@reatom/npm-react";
+import { type ActionParent, type ActionType, actions, getIsSelectedActionAtom } from "../models/actions.model";
+import type { ComponentPropsWithoutRef } from "react";
 import clsx from "clsx"
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+type ButtonProps = ComponentPropsWithoutRef<"button">
 
 const baseVariant = tv({
-  base: `h-6 w-6 aspect-square p-0 rounded-sm bg-neutral-800`
+  base: `h-6 w-6 aspect-square p-0`,
+  variants: {
+    variant: {
+      default: "bg-neutral-800",
+      danger: "bg-neutral-800 hover:bg-red/70"
+    }
+  },
+  defaultVariants: {
+    variant: "default"
+  }
 })
 
-export const DeleteButton = (props: ButtonProps) => {
+export const DeleteButton = ({ className, ...props }: ButtonProps) => {
   return (
-    <Button
-      {...props}
-      className={clsx(baseVariant(), props.className)}
-    >
-      <Icon name="sprite:x" className="size-[18px]" />
+    <Button className={baseVariant({ variant: "danger", className })} {...props}>
+      <Icon name="sprite:trash" className="size-4" />
     </Button>
   )
 }
-export const EditButton = (props: ButtonProps) => {
+export const EditButton = ({ className, ...props }: ButtonProps) => {
   return (
-    <Button
-      {...props}
-      className={clsx(baseVariant(), props.className)}
-    >
-      <Icon name="sprite:pencil" className="size-[18px]" />
+    <Button className={baseVariant({ className })} {...props}>
+      <Icon name="sprite:pencil" className="size-4" />
     </Button>
   )
 }
-export const ToLink = ({ link }: { link: string }) => {
+export const LinkButton = ({ link }: { link: string }) => {
   return (
     <Link
       href={link}
       target="_blank"
-      className="flex items-center justify-center rounded-sm h-6 w-6 aspect-square p-0 bg-neutral-800"
+      className={baseVariant({ className: "flex items-center justify-center rounded-xl" })}
     >
-      <Icon name="sprite:arrow-right" className="size-[18px] -rotate-45" />
+      <Icon name="sprite:arrow-right" className="size-4 -rotate-45" />
     </Link>
   )
 }
-export const AddButton = (props: ButtonProps) => {
+export const AddButton = ({ className, ...props }: ButtonProps) => {
   return (
-    <Button
-      {...props}
-      className={baseVariant({ className: props.className })}
-    >
-      <Icon name="sprite:plus" className="size-[18px]" />
+    <Button className={baseVariant({ className })} {...props}>
+      <Icon name="sprite:plus" className="size-4" />
     </Button >
   )
 }
 
 const actionButtonVariant = tv({
-  base: `p-0 h-6 min-w-6 rounded-sm`,
+  base: `p-0 h-6 min-w-6`,
   variants: {
     variant: {
       default: "bg-neutral-800 text-neutral-50",
@@ -69,18 +72,15 @@ type ActionButtonProps = ButtonProps & VariantProps<typeof actionButtonVariant> 
   icon: IconName
 }
 
-export const ActionButton = ({ variant, children, icon: iconName, ...props }: ActionButtonProps) => {
+export const ActionButton = ({ variant, className, children, icon: iconName, ...props }: ActionButtonProps) => {
   return (
-    <Button
-      {...props}
-      className={actionButtonVariant({ variant })}
-    >
+    <Button className={actionButtonVariant({ variant, className })} {...props}>
       {children && (
         <div className="px-2">
           {children}
         </div>
       )}
-      <Icon name={iconName} className="size-[18px]" />
+      <Icon name={iconName} className="size-4" />
     </Button>
   )
 }
@@ -98,13 +98,11 @@ export const itemVariant = tv({
   }
 })
 
-export const WithHeader = (
-  { title, children }: { title: string, children?: ReactNode }
-) => {
+export const WithHeader = ({ title, children }: Pick<ButtonProps, "title" | "children">) => {
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center gap-2 h-8">
-        <Typography className="text-lg font-semibold">
+        <Typography className="text-base font-semibold">
           {title}
         </Typography>
       </div>
@@ -113,12 +111,51 @@ export const WithHeader = (
   )
 }
 
-const sectionWrapperVariant = tv({
-  base: `p-2 bg-neutral-900 rounded-xl lg:p-3`
-})
-
 export const SectionWrapper = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
+  return <div className={clsx(`p-2 bg-neutral-900 rounded-xl sm:p-3`, className)} {...props} />
+}
+
+export const ToActionButtonX = reatomComponent<{
+  parent: string, type: string, title?: string
+}>(({
+  ctx, parent, type, title
+}) => {
+  const isSelected = ctx.spy(getIsSelectedActionAtom(parent as ActionParent, type as ActionType));
+
+  const handle = () => {
+    if (isSelected) {
+      actions.goBack(ctx)
+    } else {
+      actions.createLink(ctx, { parent: parent as ActionParent, type: type as ActionType })
+    }
+  }
+
   return (
-    <div className={clsx(sectionWrapperVariant(), className)} {...props} />
+    <Button
+      onClick={handle}
+      data-state={isSelected ? "selected" : "default"}
+      className="
+        h-6 min-w-6 gap-2
+        data-[state=selected]:text-neutral-950 data-[state=selected]:bg-neutral-50 data-[state=selected]:p-0
+        data-[state=default]:text-neutral-50 data-[state=default]:bg-neutral-800 data-[state=default]:px-3
+      "
+    >
+      {isSelected ? null : (
+        <Typography className="text-sm font-semibold">
+          {title}
+        </Typography>
+      )}
+      <Icon name={isSelected ? "sprite:x" : "sprite:plus"} className="size-4" />
+    </Button>
+  )
+}, "ToActionButtonX")
+
+export const ButtonXSubmit = ({
+  className, ...props
+}: Pick<ComponentPropsWithoutRef<"button">, "className" | "onClick" | "disabled">) => {
+  return (
+    <Button background="white" className={clsx("gap-2 h-6 w-6 p-0", className)} {...props}>
+      <Icon name="sprite:check" className="size-4" />
+    </Button>
   )
 }

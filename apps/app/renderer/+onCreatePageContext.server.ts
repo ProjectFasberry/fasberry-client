@@ -10,6 +10,7 @@ import { snapshotAtom } from "@/shared/models/ssr";
 import { client } from '@/shared/lib/client-wrapper';
 import { initCookie } from '@/shared/models/shared.model';
 import { pageState } from '@/shared/models/page-context.model';
+import { isError } from '@/shared/lib/helpers';
 
 function getTopCountry(acceptLanguage?: string): string | null {
   if (!acceptLanguage) return null
@@ -36,8 +37,6 @@ async function getAppOptions(init: RequestInit) {
 async function getAppDictionaries(init: RequestInit) {
   return client<AppDictionaries>("app/dictionaries", init).exec();
 }
-
-type MePayload = ExtractApiData<"getMe">["data"]
 
 const CB_BY_PAYLOAD: Record<"BANNED", (pageCtx: PageContextServer) => void> = {
   "BANNED": ({ urlParsed }) => {
@@ -69,7 +68,7 @@ export async function onCreatePageContext(pageCtx: PageContextServer) {
     pageCtx.snapshot = ctx.get(snapshotAtom)
   };
 
-  function setupApp(originalOpts: AppOptionsPayload, headers: NonNullable<PageContextServer["headers"]>, dict: AppDictionaries) {
+  function setupApp(originalOpts: AppOptionsPayload, headers: NonNullable<PageContextServer["headers"]>, dict: Nullable<AppDictionaries>) {
     const country = getTopCountry(headers["accept-language"])
 
     const optionsExtended: AppOptionsPayloadExtend = {
@@ -91,8 +90,7 @@ export async function onCreatePageContext(pageCtx: PageContextServer) {
   };
 
   if (isBotRequest(headers, urlPathname)) {
-    updateSnapshot()
-    return;
+    return updateSnapshot();
   }
 
   const url = new URL(urlPathname, `http://${headers["host"]}`);
@@ -100,38 +98,47 @@ export async function onCreatePageContext(pageCtx: PageContextServer) {
 
   const options = await getAppOptions({ headers })
     .then(r => r)
-    .catch((e) => {
-      console.warn("Options is not defined", e)
-      throw e
+    .catch(e => {
+      if (import.meta.env.DEV) {
+        console.error("OPTIONS", e)
+      }
+      throw redirect("/not-available")
     })
 
   const dictionaries = await getAppDictionaries({ headers })
     .then(r => r)
-    .catch((e) => {
-      console.warn("Dictionaries is not defined", e)
-      return {}
+    .catch(e => {
+      if (import.meta.env.DEV) {
+        console.error("DICTIONARIES", e)
+      }
+      throw redirect("/not-available")
     })
 
   setupApp(options, headers, dictionaries)
 
   if (!options.flags.isAuthed) {
-    updateSnapshot()
-    return
+    return updateSnapshot();
   }
 
-  const me: MePayload | null = await getMe({ headers })
-    .then(r => r)
-    .catch((e) => {
-      if (e instanceof Error) {
-        const exec = CB_BY_PAYLOAD[e.message as keyof typeof CB_BY_PAYLOAD];
-        exec?.(pageCtx)
-        return null
+  await getMe({ headers })
+    .then(r => {
+      currentUserState(ctx, r);
+    })
+    .catch(e => {
+      if (import.meta.env.DEV) {
+        console.error("CURRENT_USER", e)
+      }
+
+      if (isError(e)) {
+        const cb = CB_BY_PAYLOAD[e.message as keyof typeof CB_BY_PAYLOAD];
+
+        if (cb) {
+          cb(pageCtx)
+        }
       }
 
       return null;
     })
-
-  if (me) currentUserState(ctx, me);
 
   updateSnapshot();
 };

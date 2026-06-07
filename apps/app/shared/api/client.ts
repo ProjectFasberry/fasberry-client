@@ -3,9 +3,9 @@ import { env } from "../env";
 
 const baseConfig: Options = {
 	credentials: "include",
-	timeout: 4000,
-	headers: import.meta.env.DEV 
-		? { "x-forwarded-for": env.VITE_FORWARDED_FOR } 
+	timeout: 5000,
+	headers: import.meta.env.DEV
+		? { "x-forwarded-for": env.VITE_FORWARDED_FOR }
 		: {},
 };
 
@@ -75,6 +75,6 @@ export const clientInstance = ky.create({
 
 export const panelClientInstance = ky.create({
 	...baseConfig,
-	baseUrl: env.VITE_PANEL_API_PREFIX_URL,
+	baseUrl: env.VITE_PANEL_API_URL,
 	...hooksConfig,
 });

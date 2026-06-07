@@ -24,7 +24,7 @@ export default function Page() {
             Сборки модов
           </h1>
         </div>
-        <div class="flex items-center min-h-[80vh] justify-center w-full">
+        <div class="flex items-center justify-center w-full">
           <ModpackList data={data} />
         </div>
       </div>

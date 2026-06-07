@@ -1,5 +1,5 @@
 import { Icon } from "@/shared/ui/icon"
-import { Link } from "../../../config/link"
+import { Link } from "../../../config/link/link"
 import { Typography } from "@/shared/ui/typography"
 import { CONTACTS } from "../../../../consts/contacts"
 import { env } from "@/shared/env"
@@ -50,6 +50,9 @@ export const Footer = () => {
                 <Link href="/news">
                   {translate["shared.footer.about.news"]()}
                 </Link>
+                <a href="https://status.fasberry.fun">
+                  {translate["shared.footer.about.status"]()}
+                </a>
               </div>
             </div>
             <div className="flex flex-col min-w-0 gap-1 *:w-fit">

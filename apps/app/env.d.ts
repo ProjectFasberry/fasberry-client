@@ -15,7 +15,6 @@ declare global {
     readonly VITE_CAP_URL: string;
     readonly VITE_CAP_SITE_KEY: string;
     readonly VITE_APAY_TAG: string;
-    readonly VITE_POF_IS_ACTIVE: string;
     readonly VITE_API_HOST: string
   }
 

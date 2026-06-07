@@ -36,13 +36,14 @@ const PlayerPublic = () => {
 
 const page = createPageModel({
   name: "player",
-  onDisconnAction: (ctx, dataAtom) => {
-    playerState.nickname.reset(ctx);
-    playerState.data.reset(ctx);
-  },
-  onSpyAction: (ctx, dataAtom, routeParams) => {
-    const nickname = routeParams.nickname;
-    playerState.nickname(ctx, nickname);
+  hooks: {
+    onDisconnect: (ctx) => {
+      playerState.nickname.reset(ctx);
+      playerState.data.reset(ctx);
+    },
+    onSpy: (ctx, _, routeParams) => {
+      playerState.nickname(ctx, routeParams.nickname);
+    },
   },
   spyedAtom: pageState.routeParams
 })
@@ -53,7 +54,7 @@ export default function Page() {
   return (
     <div className="flex flex-col lg:flex-row relative w-full h-full items-start gap-8">
       <div
-        className="flex flex-col justify-center items-center w-full gap-12 lg:w-[calc(30%-16px)] 
+        className="flex flex-col justify-center items-center w-full gap-12 lg:w-[calc(30%-16px)]
           lg:min-w-[calc(30%-16px)] lg:sticky pt-2 lg:top-0"
       >
         <PlayerSkin />

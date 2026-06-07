@@ -1,0 +1,16 @@
+apis:
+  main:
+    root: http://127.0.0.1:4104/openapi/json
+    x-openapi-ts:
+      output: ./types/gen/main/schema.ts
+  panel:
+    root: http://127.0.0.1:4105/openapi/json
+    x-openapi-ts:
+      output: ./types/gen/panel/schema.ts
+
+resolve:
+  http:
+    headers:
+      - matches: http://127.0.0.1:4105/openapi/json/**
+        name: Authorization
+        envVariable: API_PANEL_AUTHORIZATION_KEY

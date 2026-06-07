@@ -1,9 +1,14 @@
+import { DEFAULT_SOFT_DELAY } from "@/shared/consts";
 import { env } from "@/shared/env";
 import { client } from "@/shared/lib/client-wrapper";
+import { isError } from "@/shared/lib/helpers";
+import { invariant } from "@/shared/lib/invariant";
 import { logError } from "@/shared/lib/log";
-import { reatomAsync, withCache, withErrorAtom, withStatusesAtom } from "@reatom/framework";
+import { createWsUrl } from "@/shared/lib/utils";
+import { reatomAsync, sleep, withCache, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { action, atom, batch, type Ctx } from "@reatom/framework";
 import { reatomMap, withAssign, withReset } from "@reatom/framework";
+import { toast } from "sonner";
 import * as z from "zod";
 
 type ChatEventVariant = 'create' | 'edit' | 'delete'
@@ -24,39 +29,74 @@ type ChatEvent<T = unknown> = {
   data: T
 }
 
-const chatDataMapAtom = reatomMap<number, ChatItem>();
-const chatWsAtom = atom<WebSocket | null>(null).pipe(withReset());
+const chatState = atom(null).pipe(
+  withAssign((_, name) => ({
+    ws: atom<WebSocket | null>(null, `${name}.ws`).pipe(withReset()),
+    data: reatomMap<number, ChatItem>(new Map(), `${name}.data`)
+  }))
+)
+
+const url = createWsUrl({
+  path: "/privated/chat/subscribe",
+  host: env.VITE_API_HOST,
+  isSecure: import.meta.env.PROD
+});
 
 export const chatWs = atom(null, "chatWs").pipe(
   withAssign(() => ({
-    init: action((ctx) => {
+    initWs: action((ctx) => {
       chatWs.closeWs(ctx)
-      const socket = new WebSocket(`${env.VITE_API_URL!.replace(/^http/, 'ws') + '/privated/chat/subscribe'}`)
-      chatWsAtom(ctx, socket)
+      chatState.ws(ctx, new WebSocket(url))
     }),
     closeWs: action((ctx) => {
-      const current = ctx.get(chatWsAtom)
+      const current = ctx.get(chatState.ws)
       if (!current) return;
 
       current.close()
-      chatWsAtom.reset(ctx)
+      chatState.ws.reset(ctx)
     }),
-    getSocket: action((ctx) => {
-      const socket = ctx.get(chatWsAtom)
-      if (!socket) throw new Error('Socket is not defined')
+    getWsInstance: action(async (ctx, { withValidation = true } = {}): Promise<WebSocket> => {
+      const socket = ctx.get(chatState.ws)
+      invariant(socket, 'Socket is not defined')
+
+      if (!withValidation) return socket;
+
+      if (socket.readyState === WebSocket.CLOSING || socket.readyState === WebSocket.CLOSED) {
+        throw new Error("SOCKET_DEAD");
+      }
+
+      if (socket.readyState === WebSocket.CONNECTING) {
+        try {
+          await Promise.race([
+            new Promise((resolve) => {
+              return socket.addEventListener('open', resolve, { once: true })
+            }),
+            sleep(DEFAULT_SOFT_DELAY).then(() => {
+              throw new Error("TIMEOUT");
+            })
+          ]);
+        } catch {
+          throw new Error("SOCKET_NOT_READY");
+        }
+      }
+
+      if (socket.readyState !== WebSocket.OPEN) {
+        throw new Error("SOCKET_NOT_READY");
+      }
+
       return socket;
     }),
     deleteItem: action((ctx, data: unknown) => {
       const di = data as { id: number }
-      chatDataMapAtom.delete(ctx, di.id)
+      chatState.data.delete(ctx, di.id)
     }),
     addItem: action((ctx, data: unknown) => {
       const ci = data as ChatItem
-      chatDataMapAtom.set(ctx, ci.id, ci)
+      chatState.data.set(ctx, ci.id, ci)
     }),
     editItem: action((ctx, data: unknown) => {
       const ei = data as ChatItem
-      chatDataMapAtom.set(ctx, ei.id, ei)
+      chatState.data.set(ctx, ei.id, ei)
     })
   }))
 )
@@ -67,19 +107,34 @@ const EVENTS: Record<ChatEventVariant, (ctx: Ctx, data: unknown) => void> = {
   "edit": (ctx, data) => chatWs.editItem(ctx, data)
 }
 
-chatWsAtom.onChange((ctx, state) => {
+chatState.ws.onChange((ctx, state) => {
   if (!state) return;
 
-  state.onopen = () => { }
-  state.onclose = () => { }
+  const handleMessage = (event: MessageEvent) => {
+    try {
+      const msg = JSON.parse(event.data) as ChatEvent;
+      const cb = EVENTS[msg.event];
 
-  state.onmessage = (event: MessageEvent<any>) => {
-    const msg = JSON.parse(event.data) as ChatEvent
-    const data = msg.data;
+      if (cb) {
+        cb(ctx, msg.data);
+      }
+    } catch (e) {
+      console.error("Parse error", e);
+    }
+  };
 
-    const cb = EVENTS[msg.event]
-    cb(ctx, data)
-  }
+  const handleClose = () => { console.log('Socket closed') };
+  const handleOpen = () => { console.log('Socket opened') };
+
+  state.addEventListener('message', handleMessage);
+  state.addEventListener('close', handleClose);
+  state.addEventListener('open', handleOpen);
+
+  return () => {
+    state.removeEventListener('message', handleMessage);
+    state.removeEventListener('close', handleClose);
+    state.removeEventListener('open', handleOpen);
+  };
 })
 
 export type ChatItemViews = {
@@ -92,7 +147,7 @@ export type ChatItemViews = {
 
 export const chatHistoryState = atom(null, "chatHistoryState").pipe(
   withAssign((_, name) => ({
-    data: atom<ChatItem[] | null>((ctx) => Array.from(ctx.spy(chatDataMapAtom).values()), `${name}.data`),
+    data: atom<ChatItem[] | null>((ctx) => Array.from(ctx.spy(chatState.data).values()), `${name}.data`),
     meta: atom<PaginatedMeta | null>(null, `${name}.meta`)
   }))
 )
@@ -106,35 +161,17 @@ export const chatHistory = atom(null, "chatHistory").pipe(
       name: `${name}.fetch`,
       onFulfill: (ctx, res) => {
         batch(ctx, () => {
-          chatDataMapAtom(ctx, new Map(res.data.map((e) => [e.id, e])))
+          chatState.data(ctx, new Map(res.data.map((e) => [e.id, e])))
           chatHistoryState.meta(ctx, res.meta)
         })
       },
-      onReject: (_, e) => logError(e)
-    }).pipe(
-      withStatusesAtom(),
-      withErrorAtom()
-    )
-  }))
-)
+      onReject: (_, e) => {
+        logError(e)
 
-export const chatCreateMessageAtom = atom<string>("").pipe(withReset())
-
-export const chatCreate = atom(null, "chatCraete").pipe(
-  withAssign((_, name) => ({
-    submit: reatomAsync(async (ctx) => {
-      const payload: ChatEvent<{ message: string }> = {
-        event: "create",
-        data: { message: ctx.get(chatCreateMessageAtom) }
+        if (isError(e)) {
+          toast.error("Что-то пошло не так", { description: e.message })
+        }
       }
-
-      const payloadStr = JSON.stringify(payload)
-      const socket = chatWs.getSocket(ctx)
-      socket.send(payloadStr)
-    }, {
-      name: `${name}.submit`,
-      onFulfill: (ctx) => msgDelete.atomsReset(ctx),
-      onReject: (_, e) => logError(e)
     }).pipe(
       withStatusesAtom(),
       withErrorAtom()
@@ -142,138 +179,203 @@ export const chatCreate = atom(null, "chatCraete").pipe(
   }))
 )
 
-const msgDelete = atom(null, "msgDelete").pipe(
+export const msgState = atom(null, "msgState").pipe(
   withAssign((_, name) => ({
-    atomsReset: action((ctx) => {
-      chatCreateMessageAtom.reset(ctx)
-    }, `${name}.atomsReset`),
-    submit: reatomAsync(async (ctx, id: number) => {
-      const payload: ChatEvent<{ id: number }> = {
-        event: "delete",
-        data: { id }
-      }
-
-      const socket = chatWs.getSocket(ctx)
-      const payloadStr = JSON.stringify(payload)
-      socket.send(payloadStr)
-    }, {
-      name: `${name}.submit`
-    }).pipe(
-      withStatusesAtom(),
-      withErrorAtom()
+    create: atom(null, `${name}.create`).pipe(
+      withAssign((_, name) => ({
+        msg: atom<string>("", `${name}.msg`).pipe(withReset())
+      }))
+    ),
+    edit: atom(null, `${name}.edit`).pipe(
+      withAssign((_, name) => ({
+        msgId: atom<Nullable<number>>(null, `${name}.msgId`).pipe(withReset()),
+        newMsg: atom<Nullable<string>>(null, `${name}.newMsg`).pipe(withReset()),
+        oldMsg: atom<string>("", `${name}.oldMsg`).pipe(withReset())
+      }))
     )
   }))
 )
 
-const msgEditState = atom(null, "msgEditState").pipe(
-  withAssign((_, name) => ({
-    msgId: atom<Nullable<number>>(null, `${name}.msgId`).pipe(withReset()),
-    newMsg: atom<Nullable<string>>(null, `${name}.newMsg`).pipe(withReset()),
-    oldMsg: atom<string>("", `${name}.oldMsg`).pipe(withReset())
-  }))
-)
-
-const getChatItemIsEditAtom = (id: number) => atom((ctx) => ctx.spy(msgEditState.msgId) === id);
+export const getChatItemIsEditAtom = (id: number) => atom((ctx) => ctx.spy(msgState.edit.msgId) === id);
 
 const equalSchema = z.object({ oldMsg: z.string(), newMsg: z.string() })
 
-const msgEdit = atom(null, "msgEdit").pipe(
-  withAssign((_, name) => ({
-    start: action((ctx, id) => {
-      const currentMessage = ctx.get(chatHistoryState.data)?.find(d => d.id === id)?.message
-      if (!currentMessage) throw new Error("current message is not defined")
-
-      msgEditState.msgId(ctx, id)
-      msgEditState.oldMsg(ctx, currentMessage)
-    }),
-    end: action((ctx) => {
-      msgEditState.msgId.reset(ctx)
-      msgEditState.newMsg.reset(ctx)
-      msgEditState.oldMsg.reset(ctx)
-    }),
-    messageIsValid: atom<boolean>((ctx) => {
-      const { success } = equalSchema.safeParse({ oldMsg: ctx.spy(msgEditState.oldMsg), newMsg: ctx.spy(msgEditState.newMsg) })
-      return success;
-    }),
-    isValid: atom((ctx) => {
-      const isIdentity = ctx.spy(msgEdit.messageIsValid)
-
-      if (!isIdentity) {
-        return z.safeParse(z.string().min(1), ctx.get(msgEditState.newMsg)).success
-      }
-
-      return false
-    }),
-    atomsReset: action((ctx) => {
-      msgEditState.msgId.reset(ctx)
-      msgEditState.newMsg.reset(ctx)
-      msgEditState.oldMsg.reset(ctx)
-    }),
-    submit: reatomAsync(async (ctx) => {
-      const id = ctx.get(msgEditState.msgId);
-      if (!id) throw new Error("Id is not defined");
-
-      const message = ctx.get(msgEditState.newMsg)
-      if (!message) throw new Error("message is not defined");
-
-      const payload: ChatEvent<{ id: number, message: string }> = {
-        event: "edit",
-        data: { id, message }
-      }
-
-      const payloadStr = JSON.stringify(payload)
-      const socket = chatWs.getSocket(ctx)
-      socket.send(payloadStr)
-    }, {
-      name: `${name}.submit`,
-      onFulfill: (ctx) => msgEdit.atomsReset(ctx),
-      onReject: (_, e) => logError(e)
-    }).pipe(
-      withStatusesAtom(),
-      withErrorAtom()
-    )
-  }))
-)
-
 const chatItemViewsAtom = reatomMap<number, ChatItemViews[]>()
-const getChatItemViews = (id: number) => atom((ctx) => ctx.spy(chatItemViewsAtom).get(id) ?? [])
+export const getChatItemViews = (id: number) => atom((ctx) => ctx.spy(chatItemViewsAtom).get(id) ?? [])
 
-const msgViews = atom(null, "msgViews").pipe(
+export const msg = atom(null, "msg").pipe(
   withAssign((_, name) => ({
-    fetch: reatomAsync(async (ctx, id: number) => {
-      return await ctx.schedule(() =>
-        client<{ data: ChatItemViews[], meta: PaginatedMeta }>(`privated/chat/${id}/views`).exec()
-      )
-    }, {
-      name: `${name}.fetch`,
-      onFulfill: (ctx, res) => chatItemViewsAtom(ctx, new Map(res.data.map(e => [e.message_id, res.data]))),
-      onReject: (_, e) => logError(e)
-    }).pipe(
-      withStatusesAtom(),
-      withErrorAtom(),
-      withCache({ swr: false })
+    views: atom(null, `${name}.views`).pipe(
+      withAssign((_, name) => ({
+        fetch: reatomAsync(async (ctx, id: number) => {
+          return await ctx.schedule(() =>
+            client<{ data: ChatItemViews[], meta: PaginatedMeta }>(`privated/chat/${id}/views`).exec()
+          )
+        }, {
+          name: `${name}.fetch`,
+          onFulfill: (ctx, res) => {
+            chatItemViewsAtom(ctx, new Map(res.data.map(e => [e.message_id, res.data])))
+          },
+          onReject: (_, e) => {
+            logError(e);
+
+            if (isError(e)) {
+              toast.error("Что-то пошло не так", { description: e.message })
+            }
+          }
+        }).pipe(
+          withStatusesAtom(),
+          withErrorAtom(),
+          withCache({ swr: false })
+        )
+      }))
+    ),
+    utils: atom(null, `${name}.utils`).pipe(
+      withAssign((_, name) => ({
+        copyText: action(async (ctx, id: number) => {
+          const history = ctx.get(chatHistoryState.data)
+          if (!history) {
+            console.warn("Chat history not found")
+            return;
+          }
+
+          const msg = history.find(m => m.id === id);
+          if (!msg) {
+            console.warn("Message not found")
+            return;
+          }
+
+          await navigator.clipboard.writeText(msg.message);
+          toast.success("Сообщение скопировано")
+        }, `${name}.copyText`)
+      }))
+    ),
+    create: atom(null, `${name}.create`).pipe(
+      withAssign((_, name) => ({
+        submit: reatomAsync(async (ctx) => {
+          const socket = await chatWs.getWsInstance(ctx);
+
+          const payload: ChatEvent<{ message: string }> = {
+            event: "create",
+            data: { message: ctx.get(msgState.create.msg) }
+          }
+
+          const payloadStr = JSON.stringify(payload)
+          socket.send(payloadStr)
+        }, {
+          name: `${name}.submit`,
+          onFulfill: (ctx) => {
+            msg.delete.atomsReset(ctx)
+          },
+          onReject: (_, e) => {
+            logError(e);
+
+            if (isError(e)) {
+              toast.error("Сообщение не отправлено", { description: e.message })
+            }
+          }
+        }).pipe(
+          withStatusesAtom(),
+          withErrorAtom()
+        )
+      }))
+    ),
+    edit: atom(null, `${name}.edit`).pipe(
+      withAssign((_, name) => ({
+        start: action((ctx, id) => {
+          const currentMessage = ctx.get(chatHistoryState.data)?.find(d => d.id === id)?.message
+          invariant(currentMessage, "Current message is not defined")
+
+          msgState.edit.msgId(ctx, id)
+          msgState.edit.oldMsg(ctx, currentMessage)
+        }),
+        end: action((ctx) => {
+          msgState.edit.msgId.reset(ctx)
+          msgState.edit.newMsg.reset(ctx)
+          msgState.edit.oldMsg.reset(ctx)
+        }),
+        msgIsValid: atom<boolean>((ctx) =>
+          equalSchema.safeParse({
+            oldMsg: ctx.spy(msgState.edit.oldMsg),
+            newMsg: ctx.spy(msgState.edit.newMsg)
+          }).success
+        ),
+        submitIsValid: atom((ctx): boolean => {
+          const isIdentity = ctx.spy(msg.edit.msgIsValid)
+
+          if (!isIdentity) {
+            const newMsg = ctx.get(msgState.edit.newMsg);
+            return z.string().min(1).safeParse(newMsg).success
+          }
+
+          return false
+        }),
+        atomsReset: action((ctx) => {
+          msgState.edit.msgId.reset(ctx)
+          msgState.edit.newMsg.reset(ctx)
+          msgState.edit.oldMsg.reset(ctx)
+        }),
+        submit: reatomAsync(async (ctx) => {
+          const id = ctx.get(msgState.edit.msgId);
+          if (!id) throw new Error("Id is not defined");
+
+          const message = ctx.get(msgState.edit.newMsg)
+          if (!message) throw new Error("message is not defined");
+
+          const socket = await chatWs.getWsInstance(ctx)
+
+          const payload: ChatEvent<{ id: number, message: string }> = {
+            event: "edit",
+            data: { id, message }
+          }
+
+          const payloadStr = JSON.stringify(payload)
+          socket.send(payloadStr)
+        }, {
+          name: `${name}.submit`,
+          onFulfill: (ctx) => {
+            msg.edit.atomsReset(ctx)
+          },
+          onReject: (_, e) => {
+            logError(e);
+
+            if (isError(e)) {
+              toast.error("Сообщение не отправлено", { description: e.message })
+            }
+          }
+        }).pipe(
+          withStatusesAtom(),
+          withErrorAtom()
+        )
+      }))
+    ),
+    delete: atom(null, `${name}.delete`).pipe(
+      withAssign((_, name) => ({
+        atomsReset: action((ctx) => {
+          msgState.create.msg.reset(ctx)
+        }, `${name}.atomsReset`),
+        submit: reatomAsync(async (ctx, id: number) => {
+          const socket = await chatWs.getWsInstance(ctx)
+
+          const payload: ChatEvent<{ id: number }> = {
+            event: "delete",
+            data: { id }
+          }
+
+          const payloadStr = JSON.stringify(payload)
+          socket.send(payloadStr)
+        }, {
+          name: `${name}.submit`,
+          onReject: (_, e) => {
+            if (isError(e)) {
+              toast.error("Сообщение не удалено", { description: e.message })
+            }
+          }
+        }).pipe(
+          withStatusesAtom(),
+          withErrorAtom()
+        )
+      }))
     )
   }))
 )
-
-const msgCopyText = action(async (ctx, id: number) => {
-  const history = ctx.get(chatHistoryState.data)
-  if (!history) return;
-
-  const msg = history.find(m => m.id === id);
-  if (!msg) return;
-
-  await navigator.clipboard.writeText(msg.message)
-})
-
-export const chatMessageModel = () => {
-  return {
-    msgViews,
-    msgEdit,
-    msgDelete,
-    msgEditState,
-    msgCopyText,
-    getChatItemViews,
-    getChatItemIsEditAtom
-  }
-}

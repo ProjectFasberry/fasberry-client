@@ -1,6 +1,6 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { type HTMLAttributes } from "react";
-import { createLink, Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { Avatar } from "@/shared/ui/avatar";
 import { tv, type VariantProps } from "tailwind-variants";
 import { currentUserState } from "@/shared/models/current-user/index.model";
@@ -16,6 +16,7 @@ import "dayjs/locale/ru";
 import { Typography } from "@/shared/ui/typography"
 import { atom } from "@reatom/framework";
 import dayjs from "@/shared/lib/create-dayjs"
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const ratingCardVariants = tv({
   base: `grid select-none grid-rows-1 gap-2 w-full p-2 rounded-lg`,
@@ -85,9 +86,7 @@ export const RatingLandsCard = reatomComponent<RatingLands & RatingInitial>(({
   if (typeof raw === 'undefined') return null;
 
   const members = Object.keys(raw);
-
-  const nickname = members[0]
-  const isOwner = ctx.spy(isOwnerAtom(nickname))
+  const isOwner = ctx.spy(isOwnerAtom(members[0]))
 
   return (
     <RatingCard variant={isOwner ? "selected" : "default"} type="lands_chunks">

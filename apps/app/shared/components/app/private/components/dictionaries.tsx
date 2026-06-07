@@ -1,16 +1,13 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react";
-import {
-  dict,
-  dictionariesEdit,
-  dictState,
-  type DictionariesItem,
-} from "../models/dictionaries.model";
+import { dict, dictionariesEdit, dictState, type DictionariesItem } from "../models/dictionaries.model";
 import { Typography } from "@/shared/ui/typography"
 import { ActionButton, DeleteButton, EditButton } from "./ui";
 import { Input } from "@/shared/ui/input";
-import { type ReactNode } from "react";
-import { actionsState, type ActionType, getSelectedParentAtom } from "../models/actions.model";
-import { ButtonXSubmit, ToActionButtonX } from "./global";
+import { ButtonXSubmit } from "./ui";
+import { createPrivatedSectionModel } from "../models/shared.model";
+import { Skeleton } from "@/shared/ui/skeleton";
+import { ErrorBlock } from "@/shared/ui/error-block";
+import { Noop } from "@/shared/ui/noop";
 
 type DictionariesListItemProps = Omit<DictionariesItem, "key"> & {
   itemKey: string
@@ -79,16 +76,22 @@ const DictionariesListItem = reatomComponent<DictionariesListItemProps>(({ ctx, 
   )
 }, "DictionariesListItem")
 
+const DictionariesListSkeleton = () => (
+  <div className="flex flex-col gap-1 w-full h-full">
+    {Array.from({ length: 6 }).map((_, idx) => <Skeleton key={idx} className="h-12 w-full" />)}
+  </div>
+)
+
 const DictionariesList = reatomComponent(({ ctx }) => {
   useUpdate(dict.fetchList, [])
 
+  if (ctx.spy(dict.fetchList.statusesAtom).isFirstPending) return <DictionariesListSkeleton/>
+
+  const error = ctx.spy(dict.fetchList.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
   const data = ctx.spy(dict.fetchList.dataAtom)
-
-  if (ctx.spy(dict.fetchList.statusesAtom).isPending) {
-    return null;
-  }
-
-  if (!data) return null;
+  if (!data) return <Noop />
 
   return (
     <div className="flex flex-col gap-1 w-full h-full">
@@ -118,9 +121,8 @@ const CreateDictionariesValueInput = reatomComponent(({ ctx }) => {
 const CreateDictionariesSubmit = reatomComponent(({ ctx }) => {
   return (
     <ButtonXSubmit
-      title="Создать"
-      isDisabled={ctx.spy(dict.create.statusesAtom).isPending}
-      action={() => dict.create(ctx)}
+      disabled={ctx.spy(dict.create.statusesAtom).isPending}
+      onClick={() => dict.create(ctx)}
     />
   )
 }, "DictionariesCreate")
@@ -133,24 +135,17 @@ const CreateDictionariesForm = () => {
   )
 }
 
-const VARIANTS: Record<ActionType, ReactNode> = {
-  "view": <DictionariesList />,
-  "create": <CreateDictionariesForm />,
-  "edit": null
-}
-
-export const DictionariesWrapper = reatomComponent(({ ctx }) => {
-  if (!ctx.spy(getSelectedParentAtom("dictionaries"))) return VARIANTS["view"]
-  return VARIANTS[ctx.spy(actionsState.type)]
-}, "DictionariesWrapper")
-
-export const ViewDictionaries = () => <ToActionButtonX title="Создать" type="create" parent="dictionaries" />
-
-export const CreateDictionaries = () => {
-  return (
-    <div className="flex items-center gap-1">
-      <ToActionButtonX parent="dictionaries" type="create" />
-      <CreateDictionariesSubmit />
-    </div>
-  )
-}
+export const dictionariesSection = createPrivatedSectionModel({
+  event: "dictionaries",
+  components: {
+    header: {
+      create: <CreateDictionariesSubmit />,
+      edit: null
+    },
+    content: {
+      view: <DictionariesList />,
+      create: <CreateDictionariesForm />,
+      edit: null
+    }
+  }
+})

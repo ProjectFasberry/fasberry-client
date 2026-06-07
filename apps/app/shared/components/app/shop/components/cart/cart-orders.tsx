@@ -1,12 +1,12 @@
 import { reatomComponent, useUpdate } from "@reatom/npm-react"
 import { Typography } from "@/shared/ui/typography"
 import { type OrdersFilterOption, cartOrders, cartOrdersState } from "../../models/store-orders.model"
-import { Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/config/link/link"
 import { Button } from "@/shared/ui/button"
 import { PageLoader } from "@/shared/ui/page-loader"
 import { type AtomMut, type Ctx } from "@reatom/framework"
 import { Menu } from '@ark-ui/react/menu'
-import { dropdownMenuItemVariants, menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu"
+import { menuVariant } from "@/shared/ui/menu"
 
 const STATUSES: Record<string, string> = {
   "pending": "Ждёт оплаты",
@@ -51,9 +51,9 @@ const OrdersFilterDropdown = reatomComponent<OrdersFilterDropdownProps>(({ ctx, 
           </Button>
         </Menu.Trigger>
         <Menu.Positioner>
-          <Menu.Content className={menuContentVariant()}>
-            <Menu.Arrow className={menuArrowVariant()}>
-              <Menu.ArrowTip className={menuArrowTipVariant()} />
+          <Menu.Content className={menuVariant.content()}>
+            <Menu.Arrow className={menuVariant.arrow()}>
+              <Menu.ArrowTip className={menuVariant.arrowTip()} />
             </Menu.Arrow>
             <div className="flex flex-col gap-1 w-full">
               {options.map((item) => (
@@ -61,7 +61,7 @@ const OrdersFilterDropdown = reatomComponent<OrdersFilterDropdownProps>(({ ctx, 
                   key={item.value}
                   value={item.value}
                   data-state={current === item.value ? "active" : "inactive"}
-                  className={dropdownMenuItemVariants({ className: "data-[state=active]:text-green-600 data-[state=inactive]:text-neutral-50"})}
+                  className={menuVariant.item({ className: "data-[state=active]:text-green-600 data-[state=inactive]:text-neutral-50"})}
                 >
                   <Typography>
                     {item.title}

@@ -2,7 +2,7 @@ import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
 import { cartIsValidAtom, cartDataSelectedAtom, cartState, cartDataIsEmptyAtom } from "../../models/store-cart.model";
 import { CartPrice } from "./cart-price";
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { Button } from "@/shared/ui/button";
 import { spawn } from "@reatom/framework";
 import { CartItem } from "./cart-item";

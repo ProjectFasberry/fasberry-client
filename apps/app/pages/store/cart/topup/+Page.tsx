@@ -10,9 +10,11 @@ const boostsImg = getStaticImage("icons/boosts_icon.png")
 
 const page = createPageModel({
   name: "topup",
-  onSpyAction: (ctx, dataAtom, urlParsed) => {
-    topupState.search(ctx, (state) => urlParsed?.search ?? state);
-    topup.fetchExchange(ctx)
+  hooks: {
+    onSpy: (ctx, dataAtom, urlParsed) => {
+      topupState.search(ctx, (state) => urlParsed?.search ?? state);
+      topup.fetchExchange(ctx)
+    },
   },
   spyedAtom: pageState.urlParsed
 })

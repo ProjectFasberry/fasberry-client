@@ -21,9 +21,7 @@
 		"outDir": "dist",
 		"types": ["vite/client", "vike-react"],
 		"paths": {
-			"@/*": ["./*"],
-			"@repo/ui/*": ["../../packages/ui/components/*"],
-			"@ui-styles/*": ["../../packages/ui/styles/*"]
+			"@/*": ["./*"]
 		}
 	},
 	"include": [
@@ -33,10 +31,5 @@
 		"./**/*.ts",
 		"./**/*.tsx"
 	],
-	"exclude": ["dist", "node_modules"],
-	"references": [
-		{
-			"path": "../../packages/ui"
-		}
-	]
+	"exclude": ["dist", "node_modules"]
 }

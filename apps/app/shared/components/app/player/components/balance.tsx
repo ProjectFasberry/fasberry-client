@@ -13,7 +13,8 @@ import { scrollableVariant } from "@/shared/consts/style-variants";
 import NumberFlow from '@number-flow/react'
 import { translate } from "@/shared/locales/helpers";
 import { Menu } from '@ark-ui/react/menu'
-import { menuArrowVariant, menuContentVariant } from "@/shared/ui/menu";
+import { menuVariant } from "@/shared/ui/menu";
+import clsx from "clsx";
 
 const cardImage = getStaticImage("arts/steve_night.jpg")
 
@@ -47,9 +48,9 @@ const BalanceServerSelect = reatomComponent(({ ctx }) => {
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuContentVariant({ className: "min-w-[140px]" })}>
-          <Menu.Arrow className={menuArrowVariant()}>
-            <Menu.ArrowTip className={menuArrowVariant()} />
+        <Menu.Content className={menuVariant.content({ className: "min-w-[140px]" })}>
+          <Menu.Arrow className={menuVariant.arrow()}>
+            <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>
           <div className="flex flex-col gap-2 items-center justify-center w-full">
             <Typography className="text-sm" color="gray">
@@ -80,7 +81,7 @@ const BalanceServerSelect = reatomComponent(({ ctx }) => {
   )
 }, "BalanceServerSelect")
 
-const BalanceCard = reatomComponent<BalanceCardProps>(({ ctx, value, wallet, image }) => {
+const BalanceCardContent = reatomComponent<BalanceCardProps>(({ ctx, value, wallet, image }) => {
   const title = getFromDictionary(ctx, wallet)
   const isLoading = !ctx.spy(pageState.isClientside) || ctx.spy(balance.fetch.statusesAtom).isPending
 
@@ -127,15 +128,18 @@ const BalanceCard = reatomComponent<BalanceCardProps>(({ ctx, value, wallet, ima
       </div>
     </div>
   )
+}, "BalanceCardContent")
+
+const CARDS = [
+  { wallet: "BELKOIN", atom: balanceState.belkoinBalance, image: belkoinImage },
+  { wallet: "CHARISM", atom: balanceState.charismBalance, image: charismImage },
+]
+
+const BalanceCard = reatomComponent<typeof CARDS[number]>(({ ctx, wallet, atom, image }) => {
+  return (
+    <BalanceCardContent value={ctx.spy(atom)} wallet={wallet} image={image} />
+  )
 }, "BalanceCard")
-
-const BelkoinCard = reatomComponent(({ ctx }) => (
-  <BalanceCard value={ctx.spy(balanceState.belkoinBalance)} wallet="BELKOIN" image={belkoinImage} />
-), "BelkoinCard")
-
-const CharismCard = reatomComponent(({ ctx }) => (
-  <BalanceCard value={ctx.spy(balanceState.charismBalance)} wallet="CHARISM" image={charismImage} />
-), "CharismCard")
 
 export const Balance = () => {
   useUpdate(balance.fetch, [])
@@ -148,12 +152,12 @@ export const Balance = () => {
         </Typography>
       </div>
       <div
-        className={scrollableVariant({
-          className: `flex items-center h-full pb-2 justify-start scrollbar-h-2 overflow-x-auto w-full gap-2`
-        })}
+        className={clsx(
+          scrollableVariant(),
+          `flex items-center h-full pb-2 justify-start scrollbar-h-2 overflow-x-auto w-full gap-2`)
+        }
       >
-        <CharismCard />
-        <BelkoinCard />
+        {CARDS.map((card) => <BalanceCard key={card.wallet} {...card} />)}
       </div>
     </div>
   )

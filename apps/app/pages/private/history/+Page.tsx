@@ -6,26 +6,28 @@ import { HistoryList } from "@/shared/components/app/private/components/history"
 
 const page = createPageModel({
   name: "private.history",
-  onConnAction: (ctx) => {
-    history.fetch(ctx);
+  hooks: {
+    onConnect: (ctx) => {
+      history.fetch(ctx);
 
-    const es = createEs("privated/history/events", { withCredentials: true })
-    const current = ctx.get(historyState.es)
+      const es = createEs("privated/history/events", { withCredentials: true })
+      const current = ctx.get(historyState.es)
 
-    if (current) {
-      current.close()
+      if (current) {
+        current.close()
+        historyState.es(ctx, es)
+        return
+      }
+
       historyState.es(ctx, es)
-      return
+    },
+    onDisconnect: (ctx) => {
+      const source = ctx.get(historyState.es);
+      if (!source) return;
+
+      source.close()
+      historyState.es.reset(ctx)
     }
-
-    historyState.es(ctx, es)
-  },
-  onDisconnAction: (ctx) => {
-    const source = ctx.get(historyState.es);
-    if (!source) return;
-
-    source.close()
-    historyState.es.reset(ctx)
   }
 })
 

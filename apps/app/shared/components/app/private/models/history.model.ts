@@ -14,8 +14,9 @@ export const historyState = atom(null, "_historyState").pipe(
 export const history = atom(null, "_history").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() =>
-        client<HistoryPayload[]>("privated/history/list").exec()
+      return await ctx.schedule(() => client
+        .get<HistoryPayload[]>("privated/history/list", { signal: ctx.controller.signal })
+        .exec()
       )
     }, `${name}.fetch`).pipe(
       withDataAtom(),

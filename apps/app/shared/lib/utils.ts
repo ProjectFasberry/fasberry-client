@@ -233,3 +233,5 @@ export function downloadFile(content: BlobPart, fileName: string) {
     URL.revokeObjectURL(url);
   }, 100);
 }
+
+export const getApiMiscRoute = (path: string) => `${env.VITE_API_URL}/misc/${path}`

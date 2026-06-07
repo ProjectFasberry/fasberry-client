@@ -14,7 +14,9 @@
 		"type-check": "tsc --build",
 		"circular-check": "bunx dpdm --no-warning ./renderer/+Layout.tsx",
 		"------------------": "",
-		"deploy": "cross-env STAGE=prod bun run build && wrangler deploy"
+		"build:prod": "cross-env STAGE=prod bun run build",
+		"-------------------": "",
+		"deploy": "pnpm type-check && pnpm build:prod && wrangler deploy"
 	},
 	"sideEffects": [
 		"**/*.css"

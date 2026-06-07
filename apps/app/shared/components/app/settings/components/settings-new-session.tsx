@@ -5,7 +5,7 @@ import { Portal } from "@ark-ui/react/portal"
 import { reatomComponent } from "@reatom/npm-react"
 import { Icon } from "@/shared/ui/icon"
 import { scan, scanReaderModel, scanState } from "../models/settings-devices.model"
-import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog"
+import { dialogVariant } from "@/shared/ui/dialog"
 import { Scanner } from "@yudiel/react-qr-scanner"
 import { authLoginQRIsErrorAtom, login, loginState } from "../../auth/models/login.model"
 import type { ReactNode } from "react"
@@ -163,10 +163,10 @@ const ConnectNewConfirmDialog = reatomComponent(({ ctx }) => {
       onOpenChange={v => scanState.confirmDialogIsOpen(ctx, v.open)}
     >
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant()}>
-            <Dialog.Title className={dialogTitleVariant()}>Подтверждение нового входа</Dialog.Title>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content()}>
+            <Dialog.Title className={dialogVariant.title()}>Подтверждение нового входа</Dialog.Title>
             <div className="flex items-center justify-center w-full h-full">
               <ConnectNewVerifyLogin />
             </div>

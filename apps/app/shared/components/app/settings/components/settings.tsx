@@ -6,7 +6,7 @@ import { SettingsNavigationDesktop } from "./settings-navigation";
 import { SettingsContentDesktop, SettingsContentMobile } from "./settings-content";
 import { Dialog } from '@ark-ui/react/dialog'
 import { Portal } from '@ark-ui/react/portal'
-import { dialogBackdropVariant, dialogBaseStyle, DialogClose, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog";
+import { dialogVariant, dialogBaseStyle, DialogClose } from "@/shared/ui/dialog";
 
 const SettingsDialog = reatomComponent(({ ctx }) => {
   return (
@@ -15,10 +15,10 @@ const SettingsDialog = reatomComponent(({ ctx }) => {
       onOpenChange={v => settingsState.isOpen(ctx, v.open)}
     >
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} style={dialogBaseStyle} />
-        <Dialog.Positioner className={dialogPositionerVariant()} >
+        <Dialog.Backdrop className={dialogVariant.backdrop()} style={dialogBaseStyle} />
+        <Dialog.Positioner className={dialogVariant.positioner()} >
           <Dialog.Content
-            className={dialogContentVariant({ className: "p-0 sm:p-0 h-2/3" })}
+            className={dialogVariant.content({ className: "p-0 sm:p-0 h-2/3" })}
             style={dialogBaseStyle}
           >
             <div className="flex items-start w-full min-h-0 h-full">

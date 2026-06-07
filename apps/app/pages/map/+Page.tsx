@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/config/link/link"
 import { client } from "@/shared/lib/client-wrapper"
 import { createPageModel } from "@/shared/lib/events"
 import { getStaticImage } from "@/shared/lib/volume-helpers"
@@ -71,11 +71,13 @@ const ServersList = reatomComponent(({ ctx }) => {
 
 const page = createPageModel({
   name: "map",
-  onConnAction: (ctx) => {
-    availableServers.fetch(ctx)
-  },
-  onDisconnAction: (ctx) => {
-    availableServers.fetch.abort(ctx)
+  hooks: {
+    onConnect: (ctx) => {
+      availableServers.fetch(ctx)
+    },
+    onDisconnect: (ctx) => {
+      availableServers.fetch.abort(ctx)
+    }
   }
 })
 

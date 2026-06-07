@@ -1,9 +1,9 @@
 import { logError } from "@/shared/lib/log"
 import {
   action, atom, batch, reatomAsync, reatomMap, sleep,
-  withAssign, withCache, withConcurrency, withDataAtom, withStatusesAtom
+  withAssign, withCache, withConcurrency, withDataAtom, withErrorAtom, withStatusesAtom
 } from "@reatom/framework"
-import { getNews } from "./news.model"
+import { getNews, type NewsParams } from "./news.model"
 import { createViewerModel } from "@/shared/models/shared.model"
 import { DEFAULT_SOFT_DELAY } from "@/shared/consts"
 
@@ -13,29 +13,30 @@ export const { Component: NewsViewer, inViewAtom: newsStateInView } = createView
   name: "news-filter"
 })
 
-export const newsAllDataArrAtom = atom((ctx) =>
-  Array.from(ctx.spy(newsState.allData).values()),
-  "newsAllDataArr"
-)
+export const newsAllDataArrAtom = atom((ctx) => Array.from(ctx.spy(newsState.allData).values()))
 
 export const newsState = atom(null, "newsState").pipe(
   withAssign((_, name) => ({
     allOldData: reatomMap<number, NewsPayload["data"][number]>(new Map(), `${name}.allOldData`),
     allData: reatomMap<number, NewsPayload["data"][number]>(new Map(), `${name}.allData`),
     allMeta: atom<Nullable<NewsPayload["meta"]>>(null, `${name}.allMeta`),
-    asc: atom(false, `${name}.asc`),
-    searchQuery: atom("", `${name}.seachQuery`).pipe(
+    filters: atom(null, `${name}.filters`).pipe(
       withAssign((_, name) => ({
-        onChangeEvent: action(async (ctx, e: React.ChangeEvent<HTMLInputElement>) => {
-          newsState.searchQuery(ctx, e.target.value);
-          await ctx.schedule(() => sleep(DEFAULT_SOFT_DELAY))
-          news.refetchAll(ctx)
-        }, `${name}.onChangeEvent`).pipe(
-          withConcurrency()
-        )
+        asc: atom(false, `${name}.asc`),
+        searchQuery: atom("", `${name}.seachQuery`).pipe(
+          withAssign((_, name) => ({
+            onChangeEvent: action(async (ctx, e: React.ChangeEvent<HTMLInputElement>) => {
+              newsState.filters.searchQuery(ctx, e.target.value);
+              await ctx.schedule(() => sleep(DEFAULT_SOFT_DELAY))
+              news.refetchAll(ctx)
+            }, `${name}.onChangeEvent`).pipe(
+              withConcurrency()
+            )
+          }))
+        ),
+        endCursor: atom<Nullable<string>>(null, `${name}.endCursor`)
       }))
     ),
-    endCursor: atom<Nullable<string>>(null, `${name}.endCursor`)
   }))
 )
 
@@ -46,10 +47,10 @@ export const news = atom(null, "news").pipe(
       news.fetch(ctx)
     }),
     fetch: reatomAsync(async (ctx) => {
-      const opts = {
-        asc: ctx.get(newsState.asc),
-        searchQuery: ctx.get(newsState.searchQuery),
-        endCursor: ctx.get(newsState.endCursor)
+      const opts: Partial<NewsParams> = {
+        asc: ctx.get(newsState.filters.asc),
+        searchQuery: ctx.get(newsState.filters.searchQuery),
+        endCursor: ctx.get(newsState.filters.endCursor) ?? undefined
       }
 
       return await ctx.schedule(() =>
@@ -72,7 +73,8 @@ export const news = atom(null, "news").pipe(
     }).pipe(
       withDataAtom(null),
       withStatusesAtom(),
-      withCache({ swr: false })
+      withCache({ swr: false }),
+      withErrorAtom()
     ),
     onIsViewEvent: action((ctx) => {
       const meta = ctx.get(newsState.allMeta)
@@ -83,7 +85,7 @@ export const news = atom(null, "news").pipe(
 
       batch(ctx, () => {
         newsState.allOldData(ctx, ctx.get(newsState.allData))
-        newsState.endCursor(ctx, meta.endCursor ?? null)
+        newsState.filters.endCursor(ctx, meta.endCursor ?? null)
       })
 
       news.refetchAll(ctx)
@@ -91,5 +93,11 @@ export const news = atom(null, "news").pipe(
   }))
 )
 
-newsState.asc.onChange((ctx) => news.refetchAll(ctx))
+newsState.filters.asc.onChange((ctx) => news.refetchAll(ctx))
 newsStateInView.onChange((ctx, state) => state && news.onIsViewEvent(ctx))
+
+export const newsNotFoundTitleAtom = atom((ctx) => {
+  const data = ctx.get(newsState.filters.searchQuery)
+  if (data) return `Ничего не нашлось по запросу "${data}"`
+  return "Пока ничего нет"
+})

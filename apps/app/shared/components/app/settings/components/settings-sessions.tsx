@@ -3,12 +3,13 @@ import { reatomComponent, useUpdate } from "@reatom/npm-react";
 import { sessions, sessionsState, type SessionPayload } from "../models/settings-security.model";
 import { Menu } from "@ark-ui/react/menu";
 import { Portal } from "@ark-ui/react/portal";
-import { menuContentVariant } from "@/shared/ui/menu";
+import { menuVariant } from "@/shared/ui/menu";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Noop } from "@/shared/ui/noop";
 import { isEmptyArray } from "@/shared/lib/helpers";
 import { Typography } from "@/shared/ui/typography";
 import { Icon, type IconName } from "@/shared/ui/icon"
+import { spawn } from "@reatom/framework";
 
 const PLATFORM_ICONS: Record<string, IconName> = {
   "desktop": "sprite:device-desktop",
@@ -52,7 +53,7 @@ const SessionItem = reatomComponent<{ session: SessionPayload, type: "current" |
           <Button
             variant="danger"
             className="self-start text-sm font-semibold w-fit"
-            onClick={() => sessions.beforeTerminateAll(ctx)}
+            onClick={() => spawn(ctx, (spawnCtx) => sessions.terminateAll(spawnCtx))}
           >
             Выйти из остальных сессий
           </Button>
@@ -60,7 +61,10 @@ const SessionItem = reatomComponent<{ session: SessionPayload, type: "current" |
       ) : (
         <Menu.Root
           onSelect={(details) => {
-            if (details.value === 'terminate') sessions.terminateById(ctx, "2")
+            if (details.value === 'terminate') {
+              // TODO: implement deleting by id
+              sessions.terminateById(ctx, "2")
+            }
           }}
         >
           <Menu.ContextTrigger>
@@ -68,7 +72,7 @@ const SessionItem = reatomComponent<{ session: SessionPayload, type: "current" |
           </Menu.ContextTrigger>
           <Portal>
             <Menu.Positioner>
-              <Menu.Content className={menuContentVariant()}>
+              <Menu.Content className={menuVariant.content()}>
                 <Menu.Item asChild value="terminate">
                   <Button variant="danger" className="self-start text-sm font-semibold w-fit" >
                     Выйти из сессии

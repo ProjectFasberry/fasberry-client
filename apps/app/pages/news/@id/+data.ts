@@ -5,7 +5,7 @@ import { wrapTitle } from "@/shared/lib/utils";
 import { useConfig } from "vike-react/useConfig";
 import { render } from "vike/abort";
 import { type PageContextServer } from "vike/types";
-import { createCtx } from "@reatom/framework";
+import { createCtx, type Ctx } from "@reatom/framework";
 import { snapshots } from "@/shared/models/ssr";
 import { newsSingleState } from "@/shared/components/app/news/models/news-single.model";
 
@@ -22,14 +22,8 @@ function metadata(
   }
 }
 
-export async function data(pageCtx: PageContextServer) {
-  const config = useConfig()
-
-  const headers = pageCtx.headers
-  if (!headers) return;
-
-  logRouting(pageCtx.urlPathname, "data");
-
+async function init(ctx: Ctx, pageCtx: PageContextServer) {
+  const headers = pageCtx.headers ?? undefined;
   const id = pageCtx.routeParams.id
 
   const news = await client<News>(`news/${id}`, { headers }).exec().catch(e => {
@@ -39,10 +33,18 @@ export async function data(pageCtx: PageContextServer) {
 
   if (!news) throw render("/not-exist")
 
-  config(metadata(news))
+  return newsSingleState.data(ctx, news)!
+}
+
+export async function data(pageCtx: PageContextServer) {
+  const config = useConfig()
+
+  logRouting(pageCtx.urlPathname, "data");
 
   const ctx = createCtx()
-  newsSingleState.data(ctx, news)
+
+  const result = await init(ctx, pageCtx)
+  config(metadata(result))
 
   pageCtx.snapshot = snapshots.merge(ctx, pageCtx)
 }

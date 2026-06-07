@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import { env } from "@/shared/env";
 import { getStaticImage } from "@/shared/lib/volume-helpers";
 import { Button } from "@/shared/ui/button";

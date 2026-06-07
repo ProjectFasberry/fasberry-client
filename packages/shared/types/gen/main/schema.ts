@@ -804,6 +804,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/privated/volume/buckets/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPrivatedVolumeBucketsList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/volume/buckets/{bucket}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPrivatedVolumeBucketsByBucket"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/volume/buckets/{bucket}/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPrivatedVolumeBucketsByBucketList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/lands/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postPrivatedLandsCreate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/lands/{ulid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deletePrivatedLandsByUlid"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/service/cron": {
         parameters: {
             query?: never;
@@ -1084,6 +1164,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getWikiCategoryByName"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/misc/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMiscById"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1460,14 +1556,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/server/lands/list/{nickname}": {
+    "/server/lands/similar": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getServerLandsListByNickname"];
+        get: operations["getServerLandsSimilar"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2309,7 +2405,7 @@ export interface operations {
                                      * @default mysql
                                      * @enum {string}
                                      */
-                                    type: "mysql" | "postgre" | "unknown";
+                                    type: "mysql" | "postgre" | "mariadb";
                                     healthy: boolean;
                                     error?: unknown;
                                 }[];
@@ -3336,8 +3432,11 @@ export interface operations {
                             created_at: string;
                             title: string;
                             description: string;
-                            content: unknown;
-                            creator: string;
+                            content?: unknown;
+                            creator: {
+                                nickname: string;
+                                avatar: string;
+                            };
                         };
                     };
                 };
@@ -3388,7 +3487,16 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: {
-                            [key: string]: string | unknown | boolean;
+                            id: number;
+                            imageUrl: string;
+                            created_at: string;
+                            title: string;
+                            description: string;
+                            content?: unknown;
+                            creator: {
+                                nickname: string;
+                                avatar: string;
+                            };
                         };
                     };
                 };
@@ -3524,8 +3632,12 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: {
+                            id: number;
                             title: string;
                             description: (string | null) | null;
+                            created_at: string;
+                            href_title: string;
+                            href_value: string;
                         };
                     };
                 };
@@ -3543,30 +3655,15 @@ export interface operations {
             content: {
                 "application/json": {
                     name: string;
-                    client: string;
-                    imageUrl: string;
-                    version: string;
-                    mods: string[];
-                    /** @default null */
-                    shaders: (string[] | null) | null;
+                    downloadLink: string;
                 };
                 "application/x-www-form-urlencoded": {
                     name: string;
-                    client: string;
-                    imageUrl: string;
-                    version: string;
-                    mods: string[];
-                    /** @default null */
-                    shaders: (string[] | null) | null;
+                    downloadLink: string;
                 };
                 "multipart/form-data": {
                     name: string;
-                    client: string;
-                    imageUrl: string;
-                    version: string;
-                    mods: string[];
-                    /** @default null */
-                    shaders: (string[] | null) | null;
+                    downloadLink: string;
                 };
             };
         };
@@ -3581,13 +3678,35 @@ export interface operations {
                         data: {
                             id: number;
                             name: string;
-                            client: string;
-                            imageUrl: string;
-                            version: string;
+                            downloadLink: string;
                             created_at: string;
-                            mods: string;
-                            shaders: (string | null) | null;
                         };
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default INVALID_LINK
+                         * @enum {string}
+                         */
+                        error: "INVALID_LINK";
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
                     };
                 };
             };
@@ -3951,6 +4070,266 @@ export interface operations {
             };
         };
     };
+    getPrivatedVolumeBucketsList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            creationDate: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedVolumeBucketsByBucket: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bucket: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            policy?: Record<string, never>;
+                            lifecycle?: Record<string, never>;
+                            tagging?: Record<string, never>;
+                            versioning?: Record<string, never>;
+                            notification?: Record<string, never>;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedVolumeBucketsByBucketList: {
+        parameters: {
+            query?: {
+                folder?: string;
+            };
+            header?: never;
+            path: {
+                bucket: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: ({
+                            contents?: {
+                                checksumAlgorithm?: "CRC32" | "CRC32C" | "SHA1" | "SHA256" | "CRC64NVME";
+                                checksumType?: "COMPOSITE" | "FULL_OBJECT";
+                                eTag?: string;
+                                key: string;
+                                lastModified?: string;
+                                owner?: {
+                                    id?: string;
+                                    displayName?: string;
+                                };
+                                restoreStatus?: {
+                                    isRestoreInProgress?: boolean;
+                                    restoreExpiryDate?: string;
+                                };
+                                size?: number;
+                                storageClass?: "STANDARD" | "REDUCED_REDUNDANCY" | "GLACIER" | "STANDARD_IA" | "ONEZONE_IA" | "INTELLIGENT_TIERING" | "DEEP_ARCHIVE" | "OUTPOSTS" | "GLACIER_IR" | "SNOW" | "EXPRESS_ONEZONE";
+                            }[];
+                            continuationToken?: string;
+                            delimiter?: string;
+                            /** @constant */
+                            encodingType?: "url";
+                            isTruncated?: boolean;
+                            keyCount?: number;
+                            maxKeys?: number;
+                            name?: string;
+                            nextContinuationToken?: string;
+                            prefix?: string;
+                            startAfter?: string;
+                        } | null) | null;
+                    };
+                };
+            };
+        };
+    };
+    postPrivatedLandsCreate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                    initialChunksSize: number;
+                    title?: string;
+                };
+                "application/x-www-form-urlencoded": {
+                    name: string;
+                    initialChunksSize: number;
+                    title?: string;
+                };
+                "multipart/form-data": {
+                    name: string;
+                    initialChunksSize: number;
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            owner: {
+                                nickname: string;
+                                avatar: string;
+                            };
+                            world: string;
+                            server: string;
+                            area: ({
+                                ulid: string;
+                                holder: {
+                                    roles: unknown[];
+                                    trusted: string[];
+                                };
+                                settings: string[];
+                                invites: unknown[];
+                                tax: {
+                                    current: number;
+                                    time: number;
+                                    before: number;
+                                };
+                                banned: unknown[];
+                            } | null) | null;
+                            ulid: string;
+                            title: (string | null) | null;
+                            name: string;
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default INTERNAL_UNKNOWN
+                         * @enum {string}
+                         */
+                        error: "INTERNAL_UNKNOWN" | "NO_DEFAULTS";
+                    };
+                };
+            };
+        };
+    };
+    deletePrivatedLandsByUlid: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ulid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        data: "OK";
+                    };
+                };
+            };
+            /** @description Response for status 403 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default PERMISSION_DENIED
+                         * @enum {string}
+                         */
+                        error: "PERMISSION_DENIED";
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default NOT_FOUND
+                         * @enum {string}
+                         */
+                        error: "NOT_FOUND";
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default INTERNAL_UNKNOWN
+                         * @enum {string}
+                         */
+                        error: "INTERNAL_UNKNOWN";
+                    };
+                };
+            };
+        };
+    };
     getServiceCron: {
         parameters: {
             query?: never;
@@ -4105,13 +4484,8 @@ export interface operations {
                     "application/json": {
                         data: {
                             id: number;
-                            client: string;
                             created_at: string;
-                            imageUrl: string;
-                            mods: string;
                             name: string;
-                            shaders: (string | null) | null;
-                            version: string;
                             downloadLink: string;
                         }[];
                     };
@@ -4139,13 +4513,8 @@ export interface operations {
                     "application/json": {
                         data: ({
                             id: number;
-                            client: string;
                             created_at: string;
-                            imageUrl: string;
-                            mods: string;
                             name: string;
-                            shaders: (string | null) | null;
-                            version: string;
                             downloadLink: string;
                         } | null) | null;
                     };
@@ -4319,6 +4688,17 @@ export interface operations {
                     };
                 };
             };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                };
+            };
         };
     };
     getBannerLatest: {
@@ -4466,6 +4846,34 @@ export interface operations {
                             updated_at: ((Record<string, never> | string | number) | null) | null;
                             title: string;
                         } | null) | null;
+                    };
+                };
+            };
+        };
+    };
+    getMiscById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default NOT_FOUND
+                         * @enum {string}
+                         */
+                        error: "NOT_FOUND";
                     };
                 };
             };
@@ -5492,15 +5900,15 @@ export interface operations {
             };
         };
     };
-    getServerLandsListByNickname: {
+    getServerLandsSimilar: {
         parameters: {
-            query?: {
+            query: {
+                variant: "by-player" | "random";
                 exclude?: string;
+                target?: string;
             };
             header?: never;
-            path: {
-                nickname: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -5512,7 +5920,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: {
+                        data: ({
                             data: {
                                 ulid: string;
                                 type: string;
@@ -5533,7 +5941,22 @@ export interface operations {
                             meta: {
                                 count: number;
                             };
-                        };
+                        } | null) | null;
+                    };
+                };
+            };
+            /** @description Response for status 400 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default INVALID_VARIANT
+                         * @enum {string}
+                         */
+                        error: "INVALID_VARIANT" | "INVALID_TARGET";
                     };
                 };
             };

@@ -1,5 +1,5 @@
 import { client, withJsonBody } from "@/shared/lib/client-wrapper";
-import { action, atom, reatomAsync, withAssign, withCache, withStatusesAtom } from "@reatom/framework";
+import { action, atom, reatomAsync, withAssign, withCache, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { reatomMap } from "@reatom/framework";
 import { notifyAboutRestrictRole } from "./actions.model";
 
@@ -64,7 +64,8 @@ const options = atom(null, "options").pipe(
       onReject: (_, e) => notifyAboutRestrictRole(e)
     }).pipe(
       withStatusesAtom(),
-      withCache({ swr: false })
+      withCache({ swr: false }),
+      withErrorAtom()
     )
   }))
 )

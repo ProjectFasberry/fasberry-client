@@ -25,7 +25,8 @@ export const rolesList = {
   }).pipe(
     withDataAtom(),
     withCache({ swr: false }),
-    withStatusesAtom()
+    withStatusesAtom(),
+    withErrorAtom()
   )
 }
 
@@ -47,8 +48,11 @@ export const permissionsAllList = {
 export const permissionsByRole = atom(null, "permissionsByRole").pipe(
   withAssign((_, name) => ({
     fetchList: reatomAsync(async (ctx, roleId: number) => {
-      return await ctx.schedule(() =>
-        client<RolesRolePermissionListPayload>(`privated/role/${roleId}/permission/list`, { signal: ctx.controller.signal }).exec()
+      return await ctx.schedule(() => client
+        .get<RolesRolePermissionListPayload>(`privated/role/${roleId}/permission/list`, {
+          signal: ctx.controller.signal
+        })
+        .exec()
       )
     }, {
       name: `${name}.fetchList`,
@@ -92,11 +96,13 @@ export const permissionsByRole = atom(null, "permissionsByRole").pipe(
     delete: reatomAsync(async (ctx, roleId: number) => {
       const perms = ctx.get(roleDeletedPermsAtom).map((t) => t.id);
 
+      const json = {
+        permissions: perms
+      }
+
       const result = await client
         .delete<ExtractApiData<"deletePrivatedRoleByIdPermissionRemove">["data"]>(`privated/role/${roleId}/permission/remove`)
-        .pipe(withJsonBody({
-          permissions: perms
-        }))
+        .pipe(withJsonBody(json))
         .exec()
 
       return { roleId, result }

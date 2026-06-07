@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/config/link/link"
 import { navigationModel } from "../models/navigation.model"
 import { Icon } from "@/shared/ui/icon";
 

@@ -11,9 +11,9 @@ import { onDisconnect } from "@reatom/framework";
 import { orderState } from "../../../models/store-order.model";
 import { Dialog } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal";
-import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog";
+import { dialogVariant } from "@/shared/ui/dialog";
 import { QrCode } from "@ark-ui/react/qr-code";
-import { qrCodeFrameVariant, qrCodeOverlayVariant, qrCodePatternVariant, qrCodeRootVariant } from "@/shared/ui/qr-code";
+import { qrCodeVariant } from "@/shared/ui/qr-code";
 
 const STATUSES: Record<Payment["status"], { title: string, color: string }> = {
   "canceled": {
@@ -112,29 +112,29 @@ const OrderQR = ({ url }: { url: string }) => {
         <QrCode.Root
           defaultValue={url}
           encoding={{ ecc: 'M' }}
-          className={qrCodeRootVariant({ className: "[--qr-code-size:196px]" })}
+          className={qrCodeVariant.root({ className: "[--qr-code-size:196px]" })}
         >
-          <QrCode.Frame className={qrCodeFrameVariant()}>
-            <QrCode.Pattern className={qrCodePatternVariant()} />
+          <QrCode.Frame className={qrCodeVariant.frame()}>
+            <QrCode.Pattern className={qrCodeVariant.pattern()} />
           </QrCode.Frame>
-          <QrCode.Overlay className={qrCodeOverlayVariant()}>
+          <QrCode.Overlay className={qrCodeVariant.overlay()}>
             <img src="/favicon.ico" alt="" draggable={false} />
           </QrCode.Overlay>
         </QrCode.Root>
       </Dialog.Trigger>
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "flex p-0 items-center justify-center" })}>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "flex p-0 items-center justify-center" })}>
             <QrCode.Root
               defaultValue={url}
               encoding={{ ecc: 'M' }}
-              className={qrCodeRootVariant({ className: "[--qr-code-size:196px]" })}
+              className={qrCodeVariant.root({ className: "[--qr-code-size:196px]" })}
             >
-              <QrCode.Frame className={qrCodeFrameVariant()}>
-                <QrCode.Pattern className={qrCodePatternVariant()} />
+              <QrCode.Frame className={qrCodeVariant.frame()}>
+                <QrCode.Pattern className={qrCodeVariant.pattern()} />
               </QrCode.Frame>
-              <QrCode.Overlay className={qrCodeOverlayVariant()}>
+              <QrCode.Overlay className={qrCodeVariant.overlay()}>
                 <img src="/favicon.ico" alt="" draggable={false} />
               </QrCode.Overlay>
             </QrCode.Root>

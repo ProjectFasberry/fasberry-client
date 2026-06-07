@@ -8,18 +8,16 @@ type StatusPayload = ExtractApiData<"getServerStatus">["data"]
 export const serverStatus = atom(null, "serverStatus").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() =>
-        client
-          .get<StatusPayload>("server/status", {
-            signal: ctx.controller.signal, 
-            throwHttpErrors: false
-          })
-          .pipe(
-            withQueryParams({ type: "servers" })
-          )
-          .exec()
+      return await ctx.schedule(() => client
+        .get<StatusPayload>("server/status", {
+          signal: ctx.controller.signal,
+        })
+        .pipe(
+          withQueryParams({ type: "servers" })
+        )
+        .exec()
       )
-    }, `_`).pipe(
+    }, `${name}.fetch`).pipe(
       withStatusesAtom(),
       withCache({ swr: false, staleTime: 60000 }),
       withDataAtom(null),

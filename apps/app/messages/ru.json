@@ -62,7 +62,8 @@
     "footer": {
       "about": {
         "title": "О проекте",
-        "news": "Новости"
+        "news": "Новости",
+        "status": "Статус"
       },
       "info": {
         "title": "Информация",
@@ -71,7 +72,7 @@
       },
       "resources": {
         "title": "Ресурсы",
-        "status": "Статус",
+        "status": "Статус серверов",
         "faq": "FAQ"
       },
       "warning": "НЕ ЯВЛЯЕТСЯ ОФИЦИАЛЬНЫМ СЕРВИСОМ MINECRAFT. НЕ ОДОБРЕНО И НЕ СВЯЗАНО С MOJANG ИЛИ MICROSOFT."

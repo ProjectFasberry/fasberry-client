@@ -1,4 +1,3 @@
-import { Link } from "@/shared/components/config/link";
 import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
 import { Icon } from "@/shared/ui/icon"
@@ -43,9 +42,9 @@ const BannerItem = ({ title, description, href, id }: BannerPayload) => {
             <Typography className={bannerItemVariant().description()}>{description}</Typography>
           )}
         </div>
-        <Link href={href.value} className={bannerItemVariant().linkLabel()}>
+        <a href={href.value} target="_blank" className={bannerItemVariant().linkLabel()}>
           {href.title}
-        </Link>
+        </a>
       </div>
       <div className={bannerItemVariant().aside()}>
         <BannerView id={id} />
@@ -81,7 +80,7 @@ export const Banner = reatomComponent(({ ctx }) => {
   if (!ctx.spy(bannerIsExistsAtom)) return null;
 
   return (
-    <div className="flex px-2 sm:px-6 items-center justify-center w-full h-[6vh] border-t border-neutral-800">
+    <div className="flex px-2 py-2 sm:px-6 items-center justify-center w-full h-[6vh] border-t border-neutral-800">
       <BannerInfo />
     </div>
   )

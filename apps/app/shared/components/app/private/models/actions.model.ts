@@ -3,7 +3,7 @@ import { action, atom, withAssign, type AtomState } from "@reatom/framework"
 import { isDeepEqual, reatomRecord, withReset } from "@reatom/framework"
 import { toast } from "sonner";
 
-const PARENTS = ["news", "banner", "event", "dictionaries"] as const
+const PARENTS = ["news", "banner", "event", "dictionaries", "modpack", "lands"] as const
 const TYPES = ["create", "edit", "view"] as const;
 
 export type ActionParent = typeof PARENTS[number]
@@ -113,11 +113,24 @@ export const actionsCanGoBackAtom = (inputParent: AtomState<typeof actionsState.
   return result
 }, 'actionsCanGoBack')
 
-export function notifyAboutRestrictRole(e: Error | unknown) {
+const ERRORS_MAP: Record<string, string> = {
+  "RESTRICTED_BY_ROLE": "Действие недоступно из-за политики ролей",
+  "NULL": "Произошла ошибка"
+}
+
+export function notifyAboutRestrictRole(e: unknown, { withToast = true } = {}) {
   if (!isError(e)) return;
 
-  if (e.message === 'restricted_by_role') {
-    toast.error("Действие недоступно из-за политики ролей")
+  if (e.message) {
+    const message = ERRORS_MAP[e.message] ?? ERRORS_MAP["NULL"]
+
+    if (withToast) {
+      toast.error(message, {
+        description: import.meta.env.DEV ? e.message : undefined
+      })
+    } else {
+      console.error(message)
+    }
   }
 }
 

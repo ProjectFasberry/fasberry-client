@@ -5,13 +5,15 @@ import { type Option, optionsModel } from "../models/options.model";
 import { atom } from "@reatom/framework";
 import { Switch } from "@/shared/ui/switch";
 import { tv } from "tailwind-variants";
+import { ErrorBlock } from "@/shared/ui/error-block";
+import { Noop } from "@/shared/ui/noop";
 
 const { options, optionsControl, getOptionIsLoading, optionsAtom } = optionsModel()
 
 const optionItemVariant = tv({
   base: `flex border border-neutral-800 inert:pointer-events-none inert:opacity-60 h-10 rounded-lg px-2 items-center justify-between w-full gap-1`,
   slots: {
-    label: "font-semibold"
+    label: "font-semibold text-sm"
   }
 })
 
@@ -26,9 +28,7 @@ const OptionItem = reatomComponent<Option>(({ ctx, name, title, value }) => {
   const isLoading = ctx.spy(getOptionIsLoading(name));
 
   return (
-    <div
-      className={optionItemVariant().base()}
-    >
+    <div className={optionItemVariant().base()}>
       <Typography className={optionItemVariant().label()}>{title}</Typography>
       <Switch
         checked={value}
@@ -44,17 +44,20 @@ const optionsArrayAtom = atom((ctx) => Array.from(ctx.spy(optionsAtom).values())
 const OptionsList = reatomComponent(({ ctx }) => {
   useUpdate(options.fetch, []);
 
-  const data = ctx.spy(optionsArrayAtom)
-  if (ctx.spy(options.fetch.statusesAtom).isPending) return <OptionsListSkeleton />
+  if (ctx.spy(options.fetch.statusesAtom).isFirstPending) return <OptionsListSkeleton />
 
-  if (!data) return null;
+  const error = ctx.spy(options.fetch.errorAtom)
+  if (error) return <ErrorBlock title={error.message} />
+
+  const data = ctx.spy(optionsArrayAtom)
+  if (!data) return <Noop />
 
   return data.map((option) => <OptionItem key={option.name} {...option} />)
 }, "OptionsList")
 
 export const Options = () => {
   return (
-    <div className="flex flex-col gap-2 w-full h-full">
+    <div className="flex flex-col gap-1 w-full h-full">
       <OptionsList />
     </div>
   )

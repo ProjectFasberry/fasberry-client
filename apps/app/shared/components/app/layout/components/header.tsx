@@ -1,5 +1,5 @@
 import { Icon, type IconName } from "@/shared/ui/icon"
-import { createLink, Link } from '@/shared/components/config/link';
+import { Link } from '@/shared/components/config/link/link';
 import { reatomComponent } from "@reatom/npm-react";
 import { currentUserState } from "@/shared/models/current-user/index.model";
 import { Avatar } from "@/shared/ui/avatar";
@@ -16,9 +16,9 @@ import { cn } from "@/shared/lib/cn";
 import { translate } from "@/shared/locales/helpers";
 import { Vaul, VaulContent, VaulTrigger } from "@/shared/ui/vaul";
 import { action } from "@reatom/framework";
-import { dropdownMenuItemVariants } from "@/shared/ui/menu";
 import { Menu, type MenuItemProps } from '@ark-ui/react/menu'
-import { menuArrowTipVariant, menuArrowVariant, menuContentVariant, menuTriggerVariant } from "@/shared/ui/menu";
+import { menuVariant } from "@/shared/ui/menu";
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const {
   HEADERS_LINKS, headerUserMenuIsOpenAtom, MENU_ACTIONS, showCartIconAtom, showCurrentUserMenuAtom, showAuthorizeButtonAtom
@@ -31,7 +31,7 @@ const MenuActionItem = reatomComponent<MenuActionItemType & { variant: ItemVaria
 }) => {
   const { Item, itemProps } = defineItem(variant, {
     onClick: () => cb(ctx),
-    className: cn("gap-2 w-full font-semibold", className),
+    className: cn("gap-2 w-full font-semibold text-base", className),
     disabled: disabled?.(ctx) ?? false,
     value: label
   })
@@ -44,7 +44,7 @@ const MenuCurrentUser = reatomComponent<{ variant: ItemVariant }>(({ ctx, varian
   if (!currentUser) return null;
 
   const { Item, itemProps } = defineItem(variant, {
-    className: "active:scale-[0.98] min-h-10 select-none cursor-pointer rounded-lg p-2 bg-neutral-800 w-full overflow-hidden flex gap-2 items-center",
+    className: "flex gap-2 items-center min-h-10 select-none cursor-pointer rounded-lg p-2 bg-neutral-800 w-full overflow-hidden",
     onClick: () => navigate(createLink("player", currentUser.nickname)),
     value: "current-user"
   })
@@ -72,7 +72,7 @@ function defineItem<T extends ItemVariant>(variant: T, props: MenuItemProps) {
   const Item = variant === 'drawer' ? "div" : Menu.Item
   return {
     Item,
-    itemProps: { ...props, className: dropdownMenuItemVariants({ className: props?.className }) }
+    itemProps: { ...props, className: menuVariant.item({ className: props?.className }) }
   };
 }
 
@@ -85,7 +85,7 @@ const MenuLinkItem = reatomComponent<MenuLink & { idx: number, variant: ItemVari
   const showSepartor = type === 'privated' && idx;
 
   const { Item, itemProps } = defineItem(variant, {
-    className: "font-semibold",
+    className: "font-semibold text-base",
     onClick: () => navigate(href),
     value: href
   })
@@ -247,13 +247,13 @@ const UserMenuDropdown = reatomComponent(({ ctx }) => {
       positioning={{ placement: "bottom-end" }}
       onOpenChange={(details) => headerUserMenuIsOpenAtom(ctx, details.open)}
     >
-      <Menu.Trigger className={menuTriggerVariant()}>
+      <Menu.Trigger className={menuVariant.trigger()}>
         <UserMenuTrigger />
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuContentVariant({ className: "min-w-[240px]" })}>
-          <Menu.Arrow className={menuArrowVariant()}>
-            <Menu.ArrowTip className={menuArrowTipVariant()} />
+        <Menu.Content className={menuVariant.content({ className: "min-w-[240px]" })}>
+          <Menu.Arrow className={menuVariant.arrow()}>
+            <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>
           <UserMenuContent variant="menu" />
         </Menu.Content>

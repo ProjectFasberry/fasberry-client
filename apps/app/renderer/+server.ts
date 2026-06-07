@@ -5,6 +5,9 @@ import compress from '@universal-middleware/compress'
 import { paraglideMiddleware } from "@/paraglide/server"
 import consola from "consola";
 import { env } from "@/shared/env";
+import { sentry } from "@/shared/sentry";
+
+await sentry.init({ variant: "server" })
 
 const app = new Elysia()
   .derive(async ({ request }) => {

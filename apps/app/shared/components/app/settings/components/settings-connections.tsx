@@ -11,7 +11,7 @@ import { SOCIALS_ICONS } from "@/shared/consts/icons";
 import { IconLoader } from "@/shared/ui/icon-loader";
 import { Dialog } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal";
-import { dialogBackdropVariant, dialogContentVariant, dialogPositionerVariant } from "@/shared/ui/dialog";
+import { dialogVariant } from "@/shared/ui/dialog";
 import type { PlayerSocialsItem } from "../../player/models/socials.model";
 import dayjs from "@/shared/lib/create-dayjs";
 
@@ -40,9 +40,9 @@ const ConnectionsAddDialog = reatomComponent(({ ctx }) => {
       onOpenChange={v => connectionsState.isOpen(ctx, v.open)}
     >
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "max-w-[600px]" })}>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "max-w-[600px]" })}>
             <div className="flex flex-col w-full">
               {isLoading ? (
                 <IconLoader />

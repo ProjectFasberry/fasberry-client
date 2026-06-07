@@ -4,16 +4,11 @@ import { withSsr } from "@/shared/models/ssr";
 import { withAssign } from "@reatom/framework";
 
 type NewsPayload = ExtractApiData<"getNewsList">["data"]
+export type NewsParams = ExtractApiParams<"getNewsList">["query"]
 
-export const getNews = async (
-  params: Partial<{ content?: boolean, limit: number, asc: boolean }>,
-  init?: RequestInit
-) => {
+export const getNews = async (params: Partial<NewsParams>, init?: RequestInit) => {
   return client
-    .get<NewsPayload>("news/list", {
-      ...init,
-      throwHttpErrors: false,
-    })
+    .get<NewsPayload>("news/list", { ...init })
     .pipe(withQueryParams(params))
     .exec()
 }

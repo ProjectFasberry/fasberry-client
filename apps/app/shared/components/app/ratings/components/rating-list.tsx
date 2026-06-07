@@ -10,7 +10,7 @@ import { reatomComponent } from "@reatom/npm-react";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { type ReactNode } from "react";
 import { type AtomState } from "@reatom/framework";
-import { ratingAscAtom, ratingByAtom, ratingDataAtom, ratingsAction, updateRatingAction } from "../models/ratings.model";
+import { ratingsState, ratings } from "../models/ratings.model";
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button";
 import {
@@ -22,12 +22,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/ui/table"
+} from "@/shared/ui/table"
 import { Avatar } from "../../../../ui/avatar";
-import { createLink, Link } from "@/shared/components/config/link";
+import { Link } from "@/shared/components/config/link/link";
 import dayjs from "@/shared/lib/create-dayjs"
 import { PageLoader } from "@/shared/ui/page-loader";
-import { NotFound } from "@/shared/ui/not-found";
+import { Noop } from "@/shared/ui/noop";
+import { ErrorBlock } from "@/shared/ui/error-block";
+import { createLink } from "@/shared/components/config/link/link.model";
 
 const RatingListParkourHeaderU = () => {
   return (
@@ -108,7 +110,7 @@ const RatingListLandsHeaderU = () => {
 }
 
 const RatingTableBodyParkour = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(ratingDataAtom) as RatingParkour[]
+  const data = ctx.spy(ratingsState.data) as RatingParkour[]
   if (!data) return null
 
   return (
@@ -126,7 +128,7 @@ const RatingTableBodyParkour = reatomComponent(({ ctx }) => {
 })
 
 const RatingTableBodyBelkoin = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(ratingDataAtom) as RatingBelkoin[]
+  const data = ctx.spy(ratingsState.data) as RatingBelkoin[]
   if (!data) return null
 
   return (
@@ -143,7 +145,7 @@ const RatingTableBodyBelkoin = reatomComponent(({ ctx }) => {
 })
 
 const RatingTableBodyReputation = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(ratingDataAtom) as RatingReputation[]
+  const data = ctx.spy(ratingsState.data) as RatingReputation[]
   if (!data) return null
 
   return (
@@ -169,7 +171,7 @@ function formatNumber(n: number): number | string | null {
 }
 
 const RatingTableBodyCharism = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(ratingDataAtom) as RatingCharism[]
+  const data = ctx.spy(ratingsState.data) as RatingCharism[]
   if (!data) return null
 
   return (
@@ -186,7 +188,7 @@ const RatingTableBodyCharism = reatomComponent(({ ctx }) => {
 }, "RatingTableBodyCharism")
 
 const RatingTableBodyLands = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(ratingDataAtom) as RatingLands[]
+  const data = ctx.spy(ratingsState.data) as RatingLands[]
   if (!data) return null
 
   return (
@@ -206,12 +208,12 @@ const RatingTableBodyLands = reatomComponent(({ ctx }) => {
 }, "RatingTableBodyLands")
 
 const RatingsFilter = reatomComponent(({ ctx }) => {
-  const current = ctx.spy(ratingAscAtom);
+  const current = ctx.spy(ratingsState.filters.asc);
 
   return (
     <Button
       className='bg-neutral-800 hover:bg-neutral-700 aspect-square text-neutral-400 h-8 w-8 p-1'
-      onClick={() => ratingAscAtom(ctx, (state) => !state)}
+      onClick={() => ratingsState.filters.asc(ctx, (state) => !state)}
     >
       {current ? <Icon name="sprite:arrow-down" /> : <Icon name="sprite:arrow-up" />}
     </Button>
@@ -242,7 +244,7 @@ const UserHead = ({ nickname, avatar }: { nickname: string, avatar: string }) =>
 }
 
 const RatingTableBodyPlaytime = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(ratingDataAtom) as RatingPlaytime[]
+  const data = ctx.spy(ratingsState.data) as RatingPlaytime[]
   if (!data) return null
 
   return (
@@ -260,7 +262,7 @@ const RatingTableBodyPlaytime = reatomComponent(({ ctx }) => {
   )
 }, "RatingTableBodyPlaytime")
 
-const HEADERS: Record<AtomState<typeof ratingByAtom>, ReactNode> = {
+const HEADERS: Record<AtomState<typeof ratingsState.filters.by>, ReactNode> = {
   "lands": <RatingListLandsHeaderU />,
   "parkour": <RatingListParkourHeaderU />,
   "playtime": <RatingListPlaytimeHeaderU />,
@@ -269,7 +271,7 @@ const HEADERS: Record<AtomState<typeof ratingByAtom>, ReactNode> = {
   "charism": <RatingListCharismHeaderU />
 }
 
-export const COMPONENTS: Record<AtomState<typeof ratingByAtom>, ReactNode> = {
+export const COMPONENTS: Record<AtomState<typeof ratingsState.filters.by>, ReactNode> = {
   "playtime": <RatingTableBodyPlaytime />,
   "lands": <RatingTableBodyLands />,
   "reputation": <RatingTableBodyReputation />,
@@ -278,33 +280,22 @@ export const COMPONENTS: Record<AtomState<typeof ratingByAtom>, ReactNode> = {
   "parkour": <RatingTableBodyParkour />
 }
 
-const RatingTableHeader = reatomComponent(({ ctx }) => HEADERS[ctx.spy(ratingByAtom)], "RatingTableHeader")
+const RatingTableHeader = reatomComponent(({ ctx }) => HEADERS[ctx.spy(ratingsState.filters.by)], "RatingTableHeader")
 const RatingTableBody = reatomComponent(({ ctx }) => {
-  const updateIsLoading = ctx.spy(updateRatingAction.statusesAtom).isPending
-
-  if (updateIsLoading) {
-    return (
-      Array.from({ length: 32 }).map((_, idx) => (
-        <TableRowsSkeleton key={idx} />
-      ))
-    )
+  if (ctx.spy(ratings.update.statusesAtom).isPending) {
+    return Array.from({ length: 32 }).map((_, idx) => <TableRowsSkeleton key={idx} />)
   }
 
-  return COMPONENTS[ctx.spy(ratingByAtom)]
+  return COMPONENTS[ctx.spy(ratingsState.filters.by)]
 }, "RatingTableBody")
 
 export const Ratings = reatomComponent(({ ctx }) => {
-  if (ctx.spy(ratingsAction.statusesAtom).isPending) {
-    return <PageLoader />
-  }
+  if (ctx.spy(ratings.fetch.statusesAtom).isPending) return <PageLoader />
 
-  if (ctx.spy(ratingsAction.errorAtom)) {
-    return <span>Что-то пошло не так</span>
-  }
+  const error = ctx.spy(ratings.fetch.errorAtom);
+  if (error) return <ErrorBlock title={error.message} />
 
-  if (!ctx.spy(ratingDataAtom)) {
-    return <NotFound title="Пока ничего нет" />
-  }
+  if (!ctx.spy(ratingsState.data)) return <Noop  />
 
   return (
     <Table>

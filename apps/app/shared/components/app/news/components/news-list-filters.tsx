@@ -11,8 +11,8 @@ const NewsFilterSearch = reatomComponent(({ ctx }) => {
       <Input
         className="w-full h-10 pl-12"
         placeholder="Название"
-        onChange={e => newsState.searchQuery.onChangeEvent(ctx, e)}
-        value={ctx.spy(newsState.searchQuery)}
+        onChange={e => newsState.filters.searchQuery.onChangeEvent(ctx, e)}
+        value={ctx.spy(newsState.filters.searchQuery)}
         maxLength={1024}
       />
     </div>
@@ -24,10 +24,13 @@ const NewsFilterAsc = reatomComponent(({ ctx }) => {
     <Button
       background="compound"
       className="aspect-square rounded-xl text-neutral-400 h-10 w-10 p-0 *:size-5"
-      onClick={() => newsState.asc(ctx, (state) => !state)}
+      onClick={() => newsState.filters.asc(ctx, (state) => !state)}
       disabled={ctx.spy(news.fetch.statusesAtom).isPending}
     >
-      {ctx.spy(newsState.asc) ? <Icon name="sprite:arrow-up" /> : <Icon name="sprite:arrow-down" />}
+      {ctx.spy(newsState.filters.asc)
+        ? <Icon name="sprite:arrow-up" />
+        : <Icon name="sprite:arrow-down" />
+      }
     </Button>
   )
 }, "TasksFilterAsc")

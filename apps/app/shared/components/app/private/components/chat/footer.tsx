@@ -1,26 +1,25 @@
 import { reatomComponent } from "@reatom/npm-react";
-import { chatCreate, chatCreateMessageAtom } from "../../models/chat.model";
+import { msg, msgState } from "../../models/chat.model";
 import { Input } from "@/shared/ui/input";
 import { Icon } from "@/shared/ui/icon"
 import { Button } from "@/shared/ui/button";
+import { spawn } from "@reatom/framework";
 
 export const ChatCreateMessage = reatomComponent(({ ctx }) => {
-  const isDisabled = !ctx.spy(chatCreateMessageAtom) || ctx.spy(chatCreate.submit.statusesAtom).isPending
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await chatCreate.submit(ctx)
+    spawn(ctx, (spawnCtx) => msg.create.submit(spawnCtx))
   }
 
   return (
     <form
       onSubmit={onSubmit}
       className="flex items-center gap-1 justify-between inert:opacity-50 inert:pointer-events-none w-full"
-      inert={isDisabled}
+      inert={ctx.spy(msg.create.submit.statusesAtom).isPending}
     >
       <Input
-        value={ctx.spy(chatCreateMessageAtom)}
-        onChange={e => chatCreateMessageAtom(ctx, e.target.value)}
+        value={ctx.spy(msgState.create.msg)}
+        onChange={e => msgState.create.msg(ctx, e.target.value)}
         maxLength={2025}
         placeholder="Напишите что-нибудь"
         className="h-10 w-full"
@@ -28,9 +27,13 @@ export const ChatCreateMessage = reatomComponent(({ ctx }) => {
       <Button
         type="submit"
         background="default"
-        className="h-10 min-w-10 min-h-10 w-10 p-0"
+        className="h-10 min-w-10 min-h-10 w-10 p-0 *:size-4"
+        disabled={!ctx.spy(msgState.create.msg)}
       >
-        <Icon name="sprite:brand-telegram" className="size-5 text-neutral-300" />
+        {ctx.spy(msg.create.submit.statusesAtom).isPending
+          ? <Icon name="sprite:loader-2" className='animate-spin duration-150 ease-in-out' />
+          : <Icon name="sprite:brand-telegram" />
+        }
       </Button>
     </form>
   )

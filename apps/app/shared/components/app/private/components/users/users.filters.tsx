@@ -8,7 +8,7 @@ import { Input } from "@/shared/ui/input";
 import { Menu } from '@ark-ui/react/menu'
 import { UserActionsWrapper } from "./users.restrict";
 import { Checkbox } from "@/shared/ui/checkbox";
-import { dropdownMenuItemVariants, menuArrowTipVariant, menuArrowVariant, menuContentVariant } from "@/shared/ui/menu";
+import { menuVariant } from "@/shared/ui/menu";
 import { createViewerModel } from "@/shared/models/shared.model";
 
 const UsersGlobalActions = reatomComponent(({ ctx }) => {
@@ -24,9 +24,9 @@ const UsersGlobalActions = reatomComponent(({ ctx }) => {
           </Button>
         </Menu.Trigger>
         <Menu.Positioner>
-          <Menu.Content className={menuContentVariant()}>
-            <Menu.Arrow className={menuArrowVariant()}>
-              <Menu.ArrowTip className={menuArrowTipVariant()} />
+          <Menu.Content className={menuVariant.content()}>
+            <Menu.Arrow className={menuVariant.arrow()}>
+              <Menu.ArrowTip className={menuVariant.arrowTip()} />
             </Menu.Arrow>
             <UserActionsWrapper type="global" />
           </Menu.Content>
@@ -121,16 +121,16 @@ const UsersFiltersSort = reatomComponent(({ ctx }) => {
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuContentVariant()}>
-          <Menu.Arrow className={menuArrowVariant()}>
-            <Menu.ArrowTip className={menuArrowTipVariant()} />
+        <Menu.Content className={menuVariant.content()}>
+          <Menu.Arrow className={menuVariant.arrow()}>
+            <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>
           <div className="flex flex-col gap-1 w-full h-full">
             {SORTS.map((sort) => (
               <Menu.Item
                 key={sort.value}
                 value={sort.value}
-                className={dropdownMenuItemVariants()}
+                className={menuVariant.item()}
               >
                 {sort.label}
               </Menu.Item>

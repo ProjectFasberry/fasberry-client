@@ -38,8 +38,8 @@ const WIDGETS_SOURCES: Map<string, WidgetItem> = new Map([
     title: "Вы не авторизованы",
     icon: "sprite:lock",
     description: 'Авторизируйтесь, чтобы получить доступ к полному функционалу сайта.',
-    onAction: () => {
-      navigate("/auth")
+    onAction: (ctx) => {
+      ctx.schedule(() => navigate("/auth"))
     },
     onHide: (ctx) => {
       widget.hide(ctx, "auth.required")
@@ -69,7 +69,9 @@ export const widgetsState = atom(null, "widgetsState").pipe(
   }))
 )
 export const widget = atom(null, "widget").pipe(
-  withAssign(() => ({
-    hide: action((ctx, id: string) => widgetsState.data(ctx, (state) => ({ ...state, [id]: false })))
+  withAssign((_, name) => ({
+    hide: action((ctx, id: string) => {
+      widgetsState.data(ctx, (state) => ({ ...state, [id]: false }))
+    }, `${name}.hide`)
   }))
 )

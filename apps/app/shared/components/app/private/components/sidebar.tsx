@@ -1,4 +1,4 @@
-import { Link } from "@/shared/components/config/link"
+import { Link } from "@/shared/components/config/link/link"
 import { tv } from "tailwind-variants"
 import { getFromDictionary } from "@/shared/models/app/utils";
 import { currentUserState } from "@/shared/models/current-user/index.model";
@@ -8,7 +8,7 @@ import { Typography } from "@/shared/ui/typography"
 import { Icon } from "@/shared/ui/icon"
 import { Dialog } from '@ark-ui/react/dialog'
 import { Portal } from '@ark-ui/react/portal'
-import { dialogBackdropVariant, DialogClose, dialogContentVariant, dialogPositionerVariant, dialogTitleVariant } from "@/shared/ui/dialog";
+import { dialogVariant, DialogClose } from "@/shared/ui/dialog";
 import { useState } from "react";
 import { scrollableVariant } from "@/shared/consts/style-variants";
 
@@ -71,10 +71,10 @@ const UserInfo = reatomComponent(({ ctx }) => {
         <Icon name="sprite:arrows-diagonal" className="text-neutral-400 h-3 w-3 sm:h-4.5 sm:w-4.5" />
       </Dialog.Trigger>
       <Portal>
-        <Dialog.Backdrop className={dialogBackdropVariant()} />
-        <Dialog.Positioner className={dialogPositionerVariant()}>
-          <Dialog.Content className={dialogContentVariant({ className: "items-start! justify-start! h-2/3" })}>
-            <Dialog.Title className={dialogTitleVariant()}>Разрешения</Dialog.Title>
+        <Dialog.Backdrop className={dialogVariant.backdrop()} />
+        <Dialog.Positioner className={dialogVariant.positioner()}>
+          <Dialog.Content className={dialogVariant.content({ className: "items-start! justify-start! h-2/3" })}>
+            <Dialog.Title className={dialogVariant.title()}>Разрешения</Dialog.Title>
             <div className="flex flex-col gap-2 h-full overflow-y-auto rounded-xl scrollbar scrollbar-thumb-neutral-800 w-full">
               {groups.map((group) => (
                 <div

@@ -1,14 +1,20 @@
 import { Button } from "@/shared/ui/button"
-import { Icon } from "@/shared/ui/icon"
+import { Icon, type IconName } from "@/shared/ui/icon"
 import { navigate } from "vike/client/router"
 
 type BackButtonProps = {
   event?: "history" | "custom",
   href?: string,
-  onClick?: () => void
+  onClick?: () => void,
+  icon?: IconName
 }
 
-export const BackButton = ({ href, onClick, event = "history" }: BackButtonProps) => {
+export const BackButton = ({
+  href,
+  onClick,
+  event = "history",
+  icon = "sprite:arrow-left"
+}: BackButtonProps) => {
   const handle = () => {
     if (event === 'history') {
       return href ? navigate(href) : window.history.back()
@@ -28,7 +34,7 @@ export const BackButton = ({ href, onClick, event = "history" }: BackButtonProps
       onClick={handle}
       className="min-h-8 h-8 sm:min-h-8 sm:h-8 p-0 aspect-square w-fit"
     >
-      <Icon name="sprite:arrow-left" className="size-4 sm:size-5 text-neutral-400" />
+      <Icon name={icon} className="size-4 sm:size-5 text-neutral-400" />
     </Button>
   )
 }

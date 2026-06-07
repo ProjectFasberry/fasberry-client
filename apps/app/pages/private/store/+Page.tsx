@@ -6,8 +6,10 @@ import { useAtom } from "@reatom/npm-react";
 
 const page = createPageModel({
   name: "store",
-  onSpyAction: (ctx, dataAtom, urlParsed) => {
-    storeState.searchParams(ctx, (state) => urlParsed?.search ?? state)
+  hooks: {
+    onSpy: (ctx, dataAtom, urlParsed) => {
+      storeState.searchParams(ctx, (state) => urlParsed?.search ?? state)
+    },
   },
   spyedAtom: pageState.urlParsed
 })
