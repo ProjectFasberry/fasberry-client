@@ -1,27 +1,26 @@
 {
-	"name": "app",
+	"name": "minotaur",
 	"version": "1.0.0",
 	"private": true,
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"dev": "infisical run --env=dev --path=/app -- bun --bun run vike dev",
-		"build:staging": "cross-env STAGE=staging infisical run --env=staging --path=/app -- bun --bun run vike build",
-		"build:prod": "cross-env STAGE=prod infisical run --env=prod --path=/app -- bun --bun run vike build",
-		"start:staging": "infisical run --env=staging --path=/app -- bun run ./dist/server/index.mjs",
-		"start:prod": "infisical run --env=prod --path=/app -- bun run ./dist/server/index.mjs",
+		"dev": "infisical run --env=dev --path=/minotaur -- bun --bun run vike dev",
+		"build:staging": "cross-env STAGE=staging infisical run --env=staging --path=/minotaur -- bun --bun run vike build",
+		"start:staging": "infisical run --env=staging --path=/minotaur -- bun --bun run ./dist/server/index.mjs",
+		"build:prod": "cross-env STAGE=prod infisical run --env=prod --path=/minotaur -- bun --bun run vike build",
+		"start:prod": "infisical run --env=prod --path=/minotaur -- bun --bun run ./dist/server/index.mjs",
 		"----------------": "",
 		"lint": "bunx biome lint",
 		"type-check": "bun scripts/fix-sprite.ts && tsc --build",
 		"circular-check": "bunx dpdm --no-warning ./renderer/+onCreatePageContext.server.ts",
 		"gen:translate": "inlang machine translate --project project.inlang",
 		"gen:icons": "bun run scripts/generate-icons.ts",
-		"------------------": "",
-		"build:image:prod:all": "infisical run --env=common --path=/root -- make build STAGE=prod NAME=frontend-main",
-		"build:image:staging:all": "infisical run --env=common --path=/root -- make build STAGE=staging NAME=frontend-main",
 		"--------------------": "",
-		"release:prod": "pnpm type-check & pnpm build:prod && pnpm build:image:prod:all",
-		"release:staging": "pnpm type-check && pnpm build:staging && pnpm build:image:staging:all"
+		"build:image:prod": "infisical run --env=common --path=/root -- make build STAGE=prod NAME=minotaur",
+		"release:prod": "pnpm type-check & pnpm build:prod && pnpm build:image:prod",
+		"build:image:staging": "infisical run --env=common --path=/root -- make build STAGE=staging NAME=minotaur",
+		"release:staging": "pnpm type-check && pnpm build:staging && pnpm build:image:staging"
 	},
 	"sideEffects": [
 		"**/*.css"

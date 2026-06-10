@@ -14,8 +14,8 @@
 Welcome to the Fasberry Monorepo, the primary client-side codebase for the Fasberry web landing and app.
 
 This repository contains two primary apps:
-- [Website landing](https://fasberry.fun)
-- [Website app](https://app.fasberry.fun)
+- Taurus - [landing](https://fasberry.fun)
+- Minotaur - [app](https://app.fasberry.fun)
 
 ## License
 Distributed under the GPL-3.0 License. See [LICENSE](./LICENSE) for details.

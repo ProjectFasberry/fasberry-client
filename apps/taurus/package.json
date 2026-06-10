@@ -1,21 +1,18 @@
 {
-	"name": "landing",
+	"name": "taurus",
 	"version": "1.0.0",
 	"private": true,
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"start": "infisical run --env=prod --path=/landing -- node ./dist/server/index.mjs --port 3005",
-		"dev": "infisical run --env=dev --path=/landing -- vike dev --port 3005 --host",
-		"build": "infisical run --env=prod --path=/landing -- vike build",
+		"dev": "infisical run --env=dev --path=/taurus -- vike dev --port 3005 --host",
+		"build:prod": "cross-env STAGE=prod infisical run --env=prod --path=/taurus -- vike build",
+		"start:prod": "infisical run --env=prod --path=/taurus -- node ./dist/server/index.mjs --port 3005",
 		"preview": "vike preview --port 3005 --host",
 		"--------------": "",
-		"lint": "bunx biome lint",
+		"lint": "pnpm biome lint",
 		"type-check": "tsc --build",
-		"circular-check": "bunx dpdm --no-warning ./renderer/+Layout.tsx",
 		"------------------": "",
-		"build:prod": "cross-env STAGE=prod bun run build",
-		"-------------------": "",
 		"deploy": "pnpm type-check && pnpm build:prod && wrangler deploy"
 	},
 	"sideEffects": [

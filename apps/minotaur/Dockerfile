@@ -13,9 +13,9 @@ ENV STAGE=$STAGE
 
 WORKDIR /
 
-COPY apps/app/dist ./dist
-COPY apps/app/package.json ./package.json
-COPY apps/app/entrypoint.sh /entrypoint.sh
+COPY apps/minotaur/dist ./dist
+COPY apps/minotaur/package.json ./package.json
+COPY apps/minotaur/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 

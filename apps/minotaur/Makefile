@@ -1,5 +1,5 @@
 STAGE ?= dev
-NAME ?= frontend-main
+NAME ?= minotaur
 TAG   ?= latest
 
 LOCAL_ENV := .env.local

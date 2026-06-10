@@ -16,5 +16,5 @@ fi
 exec infisical run \
   --projectId "$INFISICAL_PROJECT_ID" \
   --env "$STAGE" \
-  --path /app \
+  --path /minotaur \
   -- bun run ./dist/server/index.mjs

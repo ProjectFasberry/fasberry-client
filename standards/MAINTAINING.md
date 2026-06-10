@@ -1,7 +1,3 @@
-# Maintaining the Application
-
-This document provides guidelines and workflows for maintaining the frontend application (`apps/app`).
-
 ## Development Scripts & Tasks
 
 The `package.json` defines several commands for routine maintenance:

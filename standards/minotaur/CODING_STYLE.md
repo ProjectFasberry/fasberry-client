@@ -1,9 +1,10 @@
 # Coding Style & Guidelines
 
-Follow these guidelines when writing code in the `app` app. 
+Follow these guidelines when writing code in the `minotaur` app. 
 
 ## General TypeScript / React
 
+- **Runtime:** Bun
 - **React:** Since we use SSR, explicitly think about the server vs. client boundary.
 - **Strict Typing:** Avoid `any`. Use `unknown` if a type is genuinely indeterminable. Use `zod` for parsing unknown data at runtime boundaries.
 - **Linting:** We strictly enforce **Biome**. Do not bypass formatting or lint rules unless absolutely necessary (and if so, leave a `biome-ignore` comment with an explanation).
