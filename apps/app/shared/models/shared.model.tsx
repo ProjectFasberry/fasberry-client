@@ -1,5 +1,5 @@
 import { client } from "../lib/client-wrapper"
-import { action, atom, type AtomMut, type Ctx } from "@reatom/framework";
+import { action, atom, type Ctx } from "@reatom/framework";
 import { withAssign, withReset } from "@reatom/framework";
 import { playerSeemsLikePlayersIsShowKey, playerSLPState } from "../components/app/player/models/player-seems-like.model";
 import { parseBoolean } from "../lib/utils";
@@ -7,6 +7,8 @@ import { parseCookie } from "../lib/cookie-utils";
 import type { PageContextServer } from "vike/types";
 import { useInView } from "react-intersection-observer";
 import { useUpdate } from "@reatom/npm-react";
+import { withSsr } from "./ssr";
+import { invariant } from "../lib/invariant";
 
 type ExistNicknamePayload = ExtractApiData<"getValidateNicknameByNickname">["data"]
 export async function getExistNickname(nickname: string) {
@@ -71,3 +73,24 @@ export const createViewerModel = ({ name, logging }: { name: string, logging?: b
     inViewAtom
   }
 }
+
+type Socials = ExtractApiData<"getMiscSocials">["data"];
+
+export async function fetchSocials() {
+  return await client<Socials>("misc/socials").exec()
+}
+
+export const socialsAtom = atom<Socials>([], "socials").pipe(withSsr("socials"))
+
+type Currencies = ExtractApiData<"getMiscCurrencies">["data"];
+
+export async function fetchCurrencies() {
+  return await client<Currencies>("misc/currencies").exec()
+}
+export const currenciesAtom = atom<Currencies | null>(null, "currencies").pipe(withSsr("currencies"))
+
+export const getCurrencies = action((ctx) => {
+  const data = ctx.get(currenciesAtom)
+  invariant(data, "Currencies is not defined")
+  return data
+})

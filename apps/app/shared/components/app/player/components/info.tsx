@@ -1,12 +1,15 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { Rate } from "./rate";
 import { playerState, wrapAsClientSideAtom } from "../models/player.model";
-import { DONATE_COLORS, DONATE_TITLE } from "@/shared/consts";
+import { DONATE_COLORS } from "@/shared/consts";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { getFromDictionary } from "@/shared/models/app/utils";
 
 type Player = ExtractApiData<"getServerPlayerByNickname">["data"]
 
-const PlayerTag = ({ group }: { group: Player["group"] }) => {
+const PlayerTag = reatomComponent<{ group: Player["group"] }>(({ ctx, group }) => {
+  const title = getFromDictionary(ctx, group);
+
   return (
     <div
       style={{ borderColor: DONATE_COLORS[group as keyof typeof DONATE_COLORS] }}
@@ -16,10 +19,10 @@ const PlayerTag = ({ group }: { group: Player["group"] }) => {
         style={{ backgroundColor: DONATE_COLORS[group as keyof typeof DONATE_COLORS] }}
         className="h-3 w-3 rounded-full"
       />
-      <span>{DONATE_TITLE[group as keyof typeof DONATE_COLORS]}</span>
+      <span className="capitalize">{title}</span>
     </div>
   )
-}
+}, "PlayerTag")
 const PlayerTags = reatomComponent(({ ctx }) => {
   const data = ctx.spy(playerState.tags)
 

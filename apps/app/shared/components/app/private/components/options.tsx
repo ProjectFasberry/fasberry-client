@@ -13,7 +13,7 @@ const { options, optionsControl, getOptionIsLoading, optionsAtom } = optionsMode
 const optionItemVariant = tv({
   base: `flex border border-neutral-800 inert:pointer-events-none inert:opacity-60 h-10 rounded-lg px-2 items-center justify-between w-full gap-1`,
   slots: {
-    label: "font-semibold text-sm"
+    label: "text-sm"
   }
 })
 

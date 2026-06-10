@@ -27,6 +27,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get health */
         get: operations["getHealth"];
         put?: never;
         post?: never;
@@ -43,6 +44,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get ready */
         get: operations["getHealthReady"];
         put?: never;
         post?: never;
@@ -59,6 +61,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get app options */
         get: operations["getAppOptions"];
         put?: never;
         post?: never;
@@ -75,6 +78,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get app dictionaries */
         get: operations["getAppDictionaries"];
         put?: never;
         post?: never;
@@ -91,6 +95,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get app library */
         get: operations["getAppLibrary"];
         put?: never;
         post?: never;
@@ -107,6 +112,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Validate nickname */
         get: operations["getValidateNicknameByNickname"];
         put?: never;
         post?: never;
@@ -123,71 +129,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get ban status */
         get: operations["getValidateBan"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/options/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPrivatedOptionsList"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/options/{name}/edit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["postPrivatedOptionsByNameEdit"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/permissions/list/all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPrivatedPermissionsListAll"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/permissions/list/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPrivatedPermissionsListById"];
         put?: never;
         post?: never;
         delete?: never;
@@ -205,6 +148,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create store item */
         post: operations["postPrivatedStoreItemCreate"];
         delete?: never;
         options?: never;
@@ -222,6 +166,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete store item */
         delete: operations["deletePrivatedStoreItemById"];
         options?: never;
         head?: never;
@@ -235,6 +180,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get editable store item fields */
         get: operations["getPrivatedStoreItemEditable-fields"];
         put?: never;
         post?: never;
@@ -253,6 +199,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Edit store item */
         post: operations["postPrivatedStoreItemByIdEdit"];
         delete?: never;
         options?: never;
@@ -267,6 +214,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get store methods */
         get: operations["getPrivatedStoreMethodsList"];
         put?: never;
         post?: never;
@@ -285,6 +233,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Edit store method */
         post: operations["postPrivatedStoreMethodsEditByMethod"];
         delete?: never;
         options?: never;
@@ -299,6 +248,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get players list */
         get: operations["getPrivatedUserList"];
         put?: never;
         post?: never;
@@ -317,6 +267,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Restrict player */
         post: operations["postPrivatedUserRestrictCreate"];
         delete?: never;
         options?: never;
@@ -334,6 +285,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Unrestrict player */
         delete: operations["deletePrivatedUserRestrictRemove"];
         options?: never;
         head?: never;
@@ -349,6 +301,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Change player role */
         post: operations["postPrivatedUserRoles"];
         delete?: never;
         options?: never;
@@ -365,6 +318,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Change player permission */
         post: operations["postPrivatedUserPermission"];
         delete?: never;
         options?: never;
@@ -381,6 +335,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Register player */
         post: operations["postPrivatedUserAuthRegister"];
         delete?: never;
         options?: never;
@@ -397,6 +352,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Unregister player */
         post: operations["postPrivatedUserAuthUnregister"];
         delete?: never;
         options?: never;
@@ -411,6 +367,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get player by nickname */
         get: operations["getPrivatedUserByNickname"];
         put?: never;
         post?: never;
@@ -429,6 +386,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Add permission to role */
         post: operations["postPrivatedRoleByIdPermissionAdd"];
         delete?: never;
         options?: never;
@@ -446,6 +404,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Remove permission from role */
         delete: operations["deletePrivatedRoleByIdPermissionRemove"];
         options?: never;
         head?: never;
@@ -459,6 +418,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** List role permissions */
         get: operations["getPrivatedRoleByIdPermissionList"];
         put?: never;
         post?: never;
@@ -475,6 +435,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** List roles */
         get: operations["getPrivatedRoleList"];
         put?: never;
         post?: never;
@@ -491,6 +452,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** List news articles */
         get: operations["getPrivatedNewsList"];
         put?: never;
         post?: never;
@@ -509,6 +471,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create a news article */
         post: operations["postPrivatedNewsCreate"];
         delete?: never;
         options?: never;
@@ -526,6 +489,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete a news article */
         delete: operations["deletePrivatedNewsById"];
         options?: never;
         head?: never;
@@ -541,6 +505,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Update a news article */
         post: operations["postPrivatedNewsByIdEdit"];
         delete?: never;
         options?: never;
@@ -557,6 +522,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create a banner */
         post: operations["postPrivatedBannersCreate"];
         delete?: never;
         options?: never;
@@ -574,6 +540,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete a banner */
         delete: operations["deletePrivatedBannersById"];
         options?: never;
         head?: never;
@@ -589,6 +556,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Edit a banner */
         post: operations["postPrivatedBannersByIdEdit"];
         delete?: never;
         options?: never;
@@ -605,6 +573,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create a modpack */
         post: operations["postPrivatedModpacksCreate"];
         delete?: never;
         options?: never;
@@ -622,6 +591,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete a modpack */
         delete: operations["deletePrivatedModpacksById"];
         options?: never;
         head?: never;
@@ -637,6 +607,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create an event */
         post: operations["postPrivatedEventsCreate"];
         delete?: never;
         options?: never;
@@ -654,6 +625,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete an event */
         delete: operations["deletePrivatedEventsById"];
         options?: never;
         head?: never;
@@ -667,6 +639,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get history list */
         get: operations["getPrivatedHistoryList"];
         put?: never;
         post?: never;
@@ -683,6 +656,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get history events */
         get: operations["getPrivatedHistoryEvents"];
         put?: never;
         post?: never;
@@ -699,6 +673,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get chat history */
         get: operations["getPrivatedChatList"];
         put?: never;
         post?: never;
@@ -731,6 +706,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get chat message views */
         get: operations["getPrivatedChatByIdViews"];
         put?: never;
         post?: never;
@@ -747,6 +723,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** List all dictionaries */
         get: operations["getPrivatedDictionariesList"];
         put?: never;
         post?: never;
@@ -765,6 +742,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create a dictionary entry */
         post: operations["postPrivatedDictionariesCreate"];
         delete?: never;
         options?: never;
@@ -781,6 +759,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Edit a dictionary entry */
         post: operations["postPrivatedDictionariesByIdEdit"];
         delete?: never;
         options?: never;
@@ -798,55 +777,8 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete a dictionary entry */
         delete: operations["deletePrivatedDictionariesByIdRemove"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/volume/buckets/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPrivatedVolumeBucketsList"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/volume/buckets/{bucket}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPrivatedVolumeBucketsByBucket"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/privated/volume/buckets/{bucket}/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getPrivatedVolumeBucketsByBucketList"];
-        put?: never;
-        post?: never;
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -861,6 +793,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create a land */
         post: operations["postPrivatedLandsCreate"];
         delete?: never;
         options?: never;
@@ -878,7 +811,178 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete a land */
         delete: operations["deletePrivatedLandsByUlid"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/api/keys/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an API key [withExternal] */
+        post: operations["postPrivatedApiKeysCreate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/api/keys/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all API keys [withExternal] */
+        get: operations["getPrivatedApiKeysList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/api/keys/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an API key [withExternal] */
+        delete: operations["deletePrivatedApiKeysById"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/permissions/list/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all permissions */
+        get: operations["getPrivatedPermissionsListAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/permissions/list/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List permissions by role */
+        get: operations["getPrivatedPermissionsListById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/options/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all options */
+        get: operations["getPrivatedOptionsList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/options/{name}/edit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Update an option */
+        post: operations["postPrivatedOptionsByNameEdit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/volume/buckets/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List buckets */
+        get: operations["getPrivatedVolumeBucketsList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/volume/buckets/{bucket}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get bucket details */
+        get: operations["getPrivatedVolumeBucketsByBucket"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/privated/volume/buckets/{bucket}/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List bucket objects */
+        get: operations["getPrivatedVolumeBucketsByBucketList"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -891,6 +995,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get cron tasks */
         get: operations["getServiceCron"];
         put?: never;
         post?: never;
@@ -925,6 +1030,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Process player vote */
         post: operations["postThird-partyVote"];
         delete?: never;
         options?: never;
@@ -939,6 +1045,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get news list */
         get: operations["getNewsList"];
         put?: never;
         post?: never;
@@ -955,6 +1062,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get news single */
         get: operations["getNewsById"];
         put?: never;
         post?: never;
@@ -971,6 +1079,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get modpack list */
         get: operations["getModpackList"];
         put?: never;
         post?: never;
@@ -987,6 +1096,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get modpack single */
         get: operations["getModpackId"];
         put?: never;
         post?: never;
@@ -1003,6 +1113,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get rules list */
         get: operations["getRulesList"];
         put?: never;
         post?: never;
@@ -1019,6 +1130,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get rules tags */
         get: operations["getRulesTags"];
         put?: never;
         post?: never;
@@ -1035,6 +1147,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get server IP */
         get: operations["getServer-ip"];
         put?: never;
         post?: never;
@@ -1051,6 +1164,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get servers with map */
         get: operations["getServers-with-map"];
         put?: never;
         post?: never;
@@ -1067,6 +1181,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get random fact */
         get: operations["getRandom-fact"];
         put?: never;
         post?: never;
@@ -1083,6 +1198,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get banner list */
         get: operations["getBannerList"];
         put?: never;
         post?: never;
@@ -1099,6 +1215,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get latest banner */
         get: operations["getBannerLatest"];
         put?: never;
         post?: never;
@@ -1115,6 +1232,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get banner by id */
         get: operations["getBannerById"];
         put?: never;
         post?: never;
@@ -1133,6 +1251,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** View banner */
         post: operations["postBannerViewById"];
         delete?: never;
         options?: never;
@@ -1147,6 +1266,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get wiki categories */
         get: operations["getWikiCategories"];
         put?: never;
         post?: never;
@@ -1163,7 +1283,40 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get wiki category */
         get: operations["getWikiCategoryByName"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/misc/currencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMiscCurrencies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/misc/socials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMiscSocials"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1197,6 +1350,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Login */
         post: operations["postAuthLoginBasic"];
         delete?: never;
         options?: never;
@@ -1213,6 +1367,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Generate QR code */
         post: operations["postAuthLoginQrGenerate"];
         delete?: never;
         options?: never;
@@ -1245,6 +1400,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Confirm QR code */
         post: operations["postAuthLoginQrConfirm"];
         delete?: never;
         options?: never;
@@ -1261,6 +1417,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Decline QR code */
         post: operations["postAuthLoginQrDecline"];
         delete?: never;
         options?: never;
@@ -1275,6 +1432,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Callback */
         get: operations["getAuthLoginQrCallback"];
         put?: never;
         post?: never;
@@ -1293,6 +1451,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Create session */
         post: operations["postAuthLoginQrCreate"];
         delete?: never;
         options?: never;
@@ -1307,6 +1466,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Validate QR code */
         get: operations["getAuthLoginQrValidate"];
         put?: never;
         post?: never;
@@ -1325,6 +1485,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Generate game code */
         post: operations["postAuthLoginGameGenerate"];
         delete?: never;
         options?: never;
@@ -1341,6 +1502,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Invalidate session */
         post: operations["postAuthInvalidate-session"];
         delete?: never;
         options?: never;
@@ -1357,6 +1519,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Register */
         post: operations["postAuthRegister"];
         delete?: never;
         options?: never;
@@ -1371,6 +1534,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Validate session */
         get: operations["getAuthValidate-session"];
         put?: never;
         post?: never;
@@ -1389,6 +1553,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Validate restore */
         post: operations["postAuthRestoreValidate"];
         delete?: never;
         options?: never;
@@ -1405,6 +1570,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Set new password */
         post: operations["postAuthRestoreSet-new-password"];
         delete?: never;
         options?: never;
@@ -1419,6 +1585,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get session list */
         get: operations["getAuthSessionList"];
         put?: never;
         post?: never;
@@ -1435,6 +1602,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get current session */
         get: operations["getAuthSessionCurrent"];
         put?: never;
         post?: never;
@@ -1454,6 +1622,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete all sessions */
         delete: operations["deleteAuthSessionAll"];
         options?: never;
         head?: never;
@@ -1470,6 +1639,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete session by id */
         delete: operations["deleteAuthSessionById"];
         options?: never;
         head?: never;
@@ -1483,6 +1653,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get me */
         get: operations["getMe"];
         put?: never;
         post?: never;
@@ -1499,6 +1670,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get rating list */
         get: operations["getServerRatingList"];
         put?: never;
         post?: never;
@@ -1515,6 +1687,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get rating by */
         get: operations["getServerRatingByBy"];
         put?: never;
         post?: never;
@@ -1531,6 +1704,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get lands list */
         get: operations["getServerLandsList"];
         put?: never;
         post?: never;
@@ -1547,6 +1721,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get land by ulid */
         get: operations["getServerLandsByUlid"];
         put?: never;
         post?: never;
@@ -1563,6 +1738,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get lands similar */
         get: operations["getServerLandsSimilar"];
         put?: never;
         post?: never;
@@ -1579,6 +1755,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get server status */
         get: operations["getServerStatus"];
         put?: never;
         post?: never;
@@ -1595,6 +1772,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** List events */
         get: operations["getServerEventsList"];
         put?: never;
         post?: never;
@@ -1611,6 +1789,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get event by id */
         get: operations["getServerEventsById"];
         put?: never;
         post?: never;
@@ -1627,6 +1806,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get tasks list */
         get: operations["getServerTaskList"];
         put?: never;
         post?: never;
@@ -1643,6 +1823,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get task by id */
         get: operations["getServerTaskById"];
         put?: never;
         post?: never;
@@ -1661,6 +1842,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Upload skin */
         post: operations["postServerSkinUpload"];
         delete?: never;
         options?: never;
@@ -1675,6 +1857,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Download skin */
         get: operations["getServerSkinDownloadByNickname"];
         put?: never;
         post?: never;
@@ -1691,6 +1874,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Set skin */
         get: operations["getServerSkinSet"];
         put?: never;
         post?: never;
@@ -1707,6 +1891,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get skin history */
         get: operations["getServerSkinHistoryByNickname"];
         put?: never;
         post?: never;
@@ -1723,6 +1908,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** List referrals */
         get: operations["getServerReferralsList"];
         put?: never;
         post?: never;
@@ -1739,6 +1925,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get player profile */
         get: operations["getServerPlayerByNickname"];
         put?: never;
         post?: never;
@@ -1787,6 +1974,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get activity now */
         get: operations["getServerActivityNowByNickname"];
         put?: never;
         post?: never;
@@ -1803,6 +1991,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get activity summary */
         get: operations["getServerActivitySummaryByNickname"];
         put?: never;
         post?: never;
@@ -1819,6 +2008,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get achievements by player */
         get: operations["getServerAchievementsByNickname"];
         put?: never;
         post?: never;
@@ -1835,6 +2025,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get achievements meta */
         get: operations["getServerAchievementsMeta"];
         put?: never;
         post?: never;
@@ -1851,6 +2042,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get player location */
         get: operations["getServerLocationByNickname"];
         put?: never;
         post?: never;
@@ -1867,6 +2059,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get seems players */
         get: operations["getServerSeems-likeByNickname"];
         put?: never;
         post?: never;
@@ -1883,6 +2076,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get balance */
         get: operations["getServerBalance"];
         put?: never;
         post?: never;
@@ -1901,6 +2095,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Add player social */
         post: operations["postServerSocialsAdd"];
         delete?: never;
         options?: never;
@@ -1950,6 +2145,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete player social */
         delete: operations["deleteServerSocialsBySocial"];
         options?: never;
         head?: never;
@@ -1963,6 +2159,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get player socials available */
         get: operations["getServerSocialsAvailable"];
         put?: never;
         post?: never;
@@ -1979,6 +2176,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get player socials */
         get: operations["getServerSocialsListByNickname"];
         put?: never;
         post?: never;
@@ -2011,6 +2209,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get store item */
         get: operations["getStoreItemById"];
         put?: never;
         post?: never;
@@ -2027,6 +2226,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get store items */
         get: operations["getStoreItems"];
         put?: never;
         post?: never;
@@ -2043,6 +2243,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get cart list */
         get: operations["getStoreCartList"];
         put?: never;
         post?: never;
@@ -2059,6 +2260,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get cart price */
         get: operations["getStoreCartPrice"];
         put?: never;
         post?: never;
@@ -2077,6 +2279,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Add item to cart */
         post: operations["postStoreCartAddById"];
         delete?: never;
         options?: never;
@@ -2094,6 +2297,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Remove item from cart */
         delete: operations["deleteStoreCartRemoveById"];
         options?: never;
         head?: never;
@@ -2109,6 +2313,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Edit item in cart */
         post: operations["postStoreCartEditById"];
         delete?: never;
         options?: never;
@@ -2267,6 +2472,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get player likes */
         get: operations["getRateListByNickname"];
         put?: never;
         post?: never;
@@ -2285,6 +2491,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Rate player */
         post: operations["postRateByNickname"];
         delete?: never;
         options?: never;
@@ -2302,6 +2509,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
+        /** Delete account */
         delete: operations["deleteAccount"];
         options?: never;
         head?: never;
@@ -2321,6 +2529,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
+        /** Change password */
         patch: operations["patchAccountPassword"];
         trace?: never;
     };
@@ -2366,14 +2575,6 @@ export interface operations {
                             /** @constant */
                             status: "OK";
                             uptime: number;
-                            memory: {
-                                rss: number;
-                                heapTotal: number;
-                                heapUsed: number;
-                                external: number;
-                                arrayBuffers: number;
-                            };
-                            availableMemory: number;
                         };
                     };
                 };
@@ -2405,7 +2606,7 @@ export interface operations {
                                      * @default mysql
                                      * @enum {string}
                                      */
-                                    type: "mysql" | "postgre" | "mariadb";
+                                    dialect: "mysql" | "postgres" | "mariadb";
                                     healthy: boolean;
                                     error?: unknown;
                                 }[];
@@ -2511,7 +2712,8 @@ export interface operations {
                         data: {
                             list: {
                                 url: string;
-                                created_at: string | (Record<string, never> | string | number);
+                                /** Format: date-time */
+                                created_at: string;
                                 id: number;
                                 title: (string | null) | null;
                             }[];
@@ -2562,130 +2764,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: ({
-                            created_at: Record<string, never> | string | number;
+                            /** Format: date-time */
+                            created_at: string;
                             nickname: string;
                             reason: (string | null) | null;
                         } | null) | null;
-                    };
-                };
-            };
-        };
-    };
-    getPrivatedOptionsList: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            name: string;
-                            value: boolean;
-                            title: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    postPrivatedOptionsByNameEdit: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    value: boolean;
-                };
-                "application/x-www-form-urlencoded": {
-                    value: boolean;
-                };
-                "multipart/form-data": {
-                    value: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            value: boolean;
-                        };
-                    };
-                };
-            };
-        };
-    };
-    getPrivatedPermissionsListAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            name: string;
-                            id: number;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    getPrivatedPermissionsListById: {
-        parameters: {
-            query: {
-                type: "accessed" | "restricted" | "all";
-            };
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            permission_id: number;
-                            id: number;
-                            name: string;
-                            role_id: number;
-                        }[];
                     };
                 };
             };
@@ -2865,7 +2948,7 @@ export interface operations {
                                 nickname: string;
                                 lower_case_nickname: string;
                                 uuid: string;
-                                created_at: string;
+                                created_at: Record<string, never> | string | number;
                                 premium_uuid: (string | null) | null;
                                 avatar: string;
                                 player: ({
@@ -3169,6 +3252,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             nickname: string;
+                            /** Format: date-time */
                             created_at: string;
                         };
                     };
@@ -3243,7 +3327,7 @@ export interface operations {
                             nickname: string;
                             lower_case_nickname: string;
                             uuid: string;
-                            created_at: string;
+                            created_at: Record<string, never> | string | number;
                             premium_uuid: (string | null) | null;
                             avatar: string;
                             player: ({
@@ -3429,6 +3513,7 @@ export interface operations {
                         data: {
                             id: number;
                             imageUrl: string;
+                            /** Format: date-time */
                             created_at: string;
                             title: string;
                             description: string;
@@ -3489,6 +3574,7 @@ export interface operations {
                         data: {
                             id: number;
                             imageUrl: string;
+                            /** Format: date-time */
                             created_at: string;
                             title: string;
                             description: string;
@@ -3549,6 +3635,7 @@ export interface operations {
                         data: {
                             id: number;
                             title: string;
+                            /** Format: date-time */
                             created_at: string;
                             description: (string | null) | null;
                             href: {
@@ -3635,6 +3722,7 @@ export interface operations {
                             id: number;
                             title: string;
                             description: (string | null) | null;
+                            /** Format: date-time */
                             created_at: string;
                             href_title: string;
                             href_value: string;
@@ -3679,6 +3767,7 @@ export interface operations {
                             id: number;
                             name: string;
                             downloadLink: string;
+                            /** Format: date-time */
                             created_at: string;
                         };
                     };
@@ -3794,6 +3883,7 @@ export interface operations {
                             type: string;
                             title: string;
                             content: {
+                                /** Format: date-time */
                                 created_at: string;
                                 description: (string | null) | null;
                                 initiator: string;
@@ -3862,6 +3952,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             id: number;
+                            /** Format: date-time */
                             created_at: string;
                             event: string;
                             initiator: string;
@@ -3927,6 +4018,7 @@ export interface operations {
                         data: {
                             id: number;
                             value: string;
+                            /** Format: date-time */
                             created_at: string;
                             key: string;
                         }[];
@@ -3980,6 +4072,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             value: string;
+                            /** Format: date-time */
                             created_at: string;
                             id: number;
                             key: string;
@@ -4037,6 +4130,7 @@ export interface operations {
                         data: {
                             key: string;
                             value: string;
+                            /** Format: date-time */
                             created_at: string;
                             id: number;
                         };
@@ -4065,116 +4159,6 @@ export interface operations {
                     "application/json": {
                         /** @constant */
                         data: "OK";
-                    };
-                };
-            };
-        };
-    };
-    getPrivatedVolumeBucketsList: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            name: string;
-                            creationDate: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    getPrivatedVolumeBucketsByBucket: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                bucket: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: {
-                            policy?: Record<string, never>;
-                            lifecycle?: Record<string, never>;
-                            tagging?: Record<string, never>;
-                            versioning?: Record<string, never>;
-                            notification?: Record<string, never>;
-                        };
-                    };
-                };
-            };
-        };
-    };
-    getPrivatedVolumeBucketsByBucketList: {
-        parameters: {
-            query?: {
-                folder?: string;
-            };
-            header?: never;
-            path: {
-                bucket: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response for status 200 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: ({
-                            contents?: {
-                                checksumAlgorithm?: "CRC32" | "CRC32C" | "SHA1" | "SHA256" | "CRC64NVME";
-                                checksumType?: "COMPOSITE" | "FULL_OBJECT";
-                                eTag?: string;
-                                key: string;
-                                lastModified?: string;
-                                owner?: {
-                                    id?: string;
-                                    displayName?: string;
-                                };
-                                restoreStatus?: {
-                                    isRestoreInProgress?: boolean;
-                                    restoreExpiryDate?: string;
-                                };
-                                size?: number;
-                                storageClass?: "STANDARD" | "REDUCED_REDUNDANCY" | "GLACIER" | "STANDARD_IA" | "ONEZONE_IA" | "INTELLIGENT_TIERING" | "DEEP_ARCHIVE" | "OUTPOSTS" | "GLACIER_IR" | "SNOW" | "EXPRESS_ONEZONE";
-                            }[];
-                            continuationToken?: string;
-                            delimiter?: string;
-                            /** @constant */
-                            encodingType?: "url";
-                            isTruncated?: boolean;
-                            keyCount?: number;
-                            maxKeys?: number;
-                            name?: string;
-                            nextContinuationToken?: string;
-                            prefix?: string;
-                            startAfter?: string;
-                        } | null) | null;
                     };
                 };
             };
@@ -4330,6 +4314,382 @@ export interface operations {
             };
         };
     };
+    postPrivatedApiKeysCreate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    duration?: number;
+                    description?: string;
+                };
+                "application/x-www-form-urlencoded": {
+                    duration?: number;
+                    description?: string;
+                };
+                "multipart/form-data": {
+                    duration?: number;
+                    description?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            description: (string | null) | null;
+                            duration: number;
+                            /** Format: date-time */
+                            created_at: string;
+                            rawKey: string;
+                            key: string;
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedApiKeysList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            description: (string | null) | null;
+                            duration: number;
+                            /** Format: date-time */
+                            created_at: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    deletePrivatedApiKeysById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        data: "OK";
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedPermissionsListAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            id: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedPermissionsListById: {
+        parameters: {
+            query: {
+                type: "accessed" | "restricted" | "all";
+            };
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            permission_id: number;
+                            id: number;
+                            name: string;
+                            role_id: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedOptionsList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            value: boolean;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    postPrivatedOptionsByNameEdit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    value: boolean;
+                };
+                "application/x-www-form-urlencoded": {
+                    value: boolean;
+                };
+                "multipart/form-data": {
+                    value: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            value: boolean;
+                        };
+                    };
+                };
+            };
+            /** @description Response for status 404 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @default OPTION_NOT_FOUND
+                         * @enum {string}
+                         */
+                        error: "OPTION_NOT_FOUND";
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedVolumeBucketsList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            creationDate: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedVolumeBucketsByBucket: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bucket: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            policy?: Record<string, never>;
+                            lifecycle?: Record<string, never>;
+                            tagging?: Record<string, never>;
+                            versioning?: Record<string, never>;
+                            notification?: Record<string, never>;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getPrivatedVolumeBucketsByBucketList: {
+        parameters: {
+            query?: {
+                folder?: string;
+            };
+            header?: never;
+            path: {
+                bucket: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: ({
+                            contents?: {
+                                checksumAlgorithm?: "CRC32" | "CRC32C" | "SHA1" | "SHA256" | "CRC64NVME";
+                                checksumType?: "COMPOSITE" | "FULL_OBJECT";
+                                eTag?: string;
+                                key: string;
+                                lastModified?: string;
+                                owner?: {
+                                    id?: string;
+                                    displayName?: string;
+                                };
+                                restoreStatus?: {
+                                    isRestoreInProgress?: boolean;
+                                    restoreExpiryDate?: string;
+                                };
+                                size?: number;
+                                storageClass?: "STANDARD" | "REDUCED_REDUNDANCY" | "GLACIER" | "STANDARD_IA" | "ONEZONE_IA" | "INTELLIGENT_TIERING" | "DEEP_ARCHIVE" | "OUTPOSTS" | "GLACIER_IR" | "SNOW" | "EXPRESS_ONEZONE";
+                            }[];
+                            continuationToken?: string;
+                            delimiter?: string;
+                            /** @constant */
+                            encodingType?: "url";
+                            isTruncated?: boolean;
+                            keyCount?: number;
+                            maxKeys?: number;
+                            name?: string;
+                            nextContinuationToken?: string;
+                            prefix?: string;
+                            startAfter?: string;
+                        } | null) | null;
+                    };
+                };
+            };
+        };
+    };
     getServiceCron: {
         parameters: {
             query?: never;
@@ -4408,6 +4768,7 @@ export interface operations {
                             data: {
                                 id: number;
                                 title: string;
+                                /** Format: date-time */
                                 created_at: string;
                                 description: string;
                                 imageUrl: string;
@@ -4451,6 +4812,7 @@ export interface operations {
                         data: {
                             id: number;
                             title: string;
+                            /** Format: date-time */
                             created_at: string;
                             description: string;
                             imageUrl: string;
@@ -4484,6 +4846,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             id: number;
+                            /** Format: date-time */
                             created_at: string;
                             name: string;
                             downloadLink: string;
@@ -4513,6 +4876,7 @@ export interface operations {
                     "application/json": {
                         data: ({
                             id: number;
+                            /** Format: date-time */
                             created_at: string;
                             name: string;
                             downloadLink: string;
@@ -4540,8 +4904,9 @@ export interface operations {
                     "application/json": {
                         data: {
                             id: number;
-                            created_at: Record<string, never> | string | number;
-                            updated_at: ((Record<string, never> | string | number) | null) | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            updated_at: (string | null) | null;
                             content: unknown;
                             category: string;
                         }[];
@@ -4846,6 +5211,61 @@ export interface operations {
                             updated_at: ((Record<string, never> | string | number) | null) | null;
                             title: string;
                         } | null) | null;
+                    };
+                };
+            };
+        };
+    };
+    getMiscCurrencies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            [key: string]: {
+                                img: string;
+                                symbol: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getMiscSocials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            title: string;
+                            value: string;
+                            img: string;
+                            color: string;
+                            href: string;
+                        }[];
                     };
                 };
             };
@@ -5444,6 +5864,7 @@ export interface operations {
                         data: {
                             nickname: string;
                             ip: string;
+                            /** Format: date-time */
                             created_at: string;
                             browser: {
                                 name: string;
@@ -5481,6 +5902,7 @@ export interface operations {
                         data: {
                             nickname: string;
                             ip: string;
+                            /** Format: date-time */
                             created_at: string;
                             browser: {
                                 name: string;
@@ -5794,7 +6216,8 @@ export interface operations {
                                 name: string;
                                 title: (string | null) | null;
                                 level: number;
-                                created_at: string | (Record<string, never> | string | number);
+                                /** Format: date-time */
+                                created_at: string;
                                 type: string;
                                 stats: {
                                     kills: number;
@@ -5860,7 +6283,8 @@ export interface operations {
                                 };
                                 banned: unknown[];
                             } | null) | null;
-                            created_at: string | (Record<string, never> | string | number);
+                            /** Format: date-time */
+                            created_at: string;
                             details: {
                                 banner: (string | null) | null;
                                 gallery: string[];
@@ -5906,6 +6330,7 @@ export interface operations {
                 variant: "by-player" | "random";
                 exclude?: string;
                 target?: string;
+                limit?: number;
             };
             header?: never;
             path?: never;
@@ -5936,7 +6361,8 @@ export interface operations {
                                     banner: (string | null) | null;
                                     gallery: string[];
                                 };
-                                created_at: string | (Record<string, never> | string | number);
+                                /** Format: date-time */
+                                created_at: string;
                             }[];
                             meta: {
                                 count: number;
@@ -6106,7 +6532,8 @@ export interface operations {
                             data: {
                                 id: number;
                                 description: string;
-                                created_at: string | (Record<string, never> | string | number);
+                                /** Format: date-time */
+                                created_at: string;
                                 title: string;
                                 expires: string | null | (Record<string, never> | string | number);
                                 action_type: string;
@@ -6147,7 +6574,8 @@ export interface operations {
                         data: {
                             id: number;
                             description: string;
-                            created_at: string | (Record<string, never> | string | number);
+                            /** Format: date-time */
+                            created_at: string;
                             title: string;
                             expires: string | null | (Record<string, never> | string | number);
                             action_type: string;
@@ -6295,6 +6723,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             id: number;
+                            /** Format: date-time */
                             created_at: string;
                             completed: boolean;
                             referral: {
@@ -7141,6 +7570,7 @@ export interface operations {
                              */
                             asset: "USDT" | "TON" | "BTC" | "ETH" | "LTC" | "BNB" | "TRX" | "USDC";
                             price: string;
+                            /** Format: date-time */
                             created_at: string;
                             /**
                              * @default canceled
@@ -7283,6 +7713,7 @@ export interface operations {
                              */
                             asset: "USDT" | "TON" | "BTC" | "ETH" | "LTC" | "BNB" | "TRX" | "USDC";
                             price: string;
+                            /** Format: date-time */
                             created_at: string;
                             /**
                              * @default canceled
@@ -7363,10 +7794,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: ({
+                            /** Format: date-time */
                             created_at: string;
                             initiator: string;
                             unique_id: string;
-                            finished_at: ((Record<string, never> | string | number) | null) | null;
+                            finished_at: (string | null) | null;
                             /** @constant */
                             status: "succeeded";
                         }[] | null) | null;
@@ -7396,6 +7828,7 @@ export interface operations {
                         data: {
                             data: {
                                 initiator: string;
+                                /** Format: date-time */
                                 created_at: string;
                                 avatar: string;
                             }[];

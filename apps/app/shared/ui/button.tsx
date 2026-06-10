@@ -21,7 +21,7 @@ const buttonVariants = tv({
   }
 })
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
   & VariantProps<typeof buttonVariants> & (
     | { withSpinner?: true, isLoading: boolean }
     | { withSpinner?: false, isLoading?: never })

@@ -12,6 +12,7 @@ import { Options } from "./options"
 import { atom } from "@reatom/framework"
 import { modpackSection } from "./modpack"
 import { landsSection } from "./lands"
+import { apiKeysSection } from "./api"
 
 type ComponentType = Nullable<() => ReactNode>;
 
@@ -28,7 +29,7 @@ const COMPONENTS: Record<string, Partial<Record<ActionType, ComponentType>>> = {
   },
   "event": {
     "create": eventsSection.Header.Create,
-    "edit": null,
+    "edit": eventsSection.Header.Edit,
     "view": eventsSection.Header.View,
   },
   "banner": {
@@ -38,14 +39,19 @@ const COMPONENTS: Record<string, Partial<Record<ActionType, ComponentType>>> = {
   },
   "dictionaries": {
     "create": dictionariesSection.Header.Create,
-    "edit": null,
+    "edit": dictionariesSection.Header.Edit,
     "view": dictionariesSection.Header.View,
   },
   "lands": {
     "create": landsSection.Header.Create,
-    "edit": null,
+    "edit": landsSection.Header.Edit,
     "view": landsSection.Header.View,
   },
+  "api": {
+    "create": apiKeysSection.Header.Create,
+    "edit": apiKeysSection.Header.Edit,
+    "view": apiKeysSection.Header.View
+  }
 }
 
 const actionsHeaderComponentAtom = (parent: ActionParent) => atom((ctx): ComponentType => {
@@ -110,6 +116,12 @@ export const Config = () => {
           <ActionsHeaderSlot parent="dictionaries" />
         </WithHeader>
         <dictionariesSection.Wrapper />
+      </SectionWrapper>
+      <SectionWrapper className="flex flex-col gap-2 w-full h-full">
+        <WithHeader title="API Ключи">
+          <ActionsHeaderSlot parent="api" />
+        </WithHeader>
+        <apiKeysSection.Wrapper />
       </SectionWrapper>
       <SectionWrapper className="flex flex-col gap-2 w-full h-full">
         <WithHeader title="Регионы">

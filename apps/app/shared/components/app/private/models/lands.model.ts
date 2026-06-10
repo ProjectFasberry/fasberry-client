@@ -1,6 +1,8 @@
 import { alertDialog } from "@/shared/components/config/alert-dialog/alert-dialog.model";
 import { createLink } from "@/shared/components/config/link/link.model";
 import { client } from "@/shared/lib/client-wrapper";
+import { isError } from "@/shared/lib/helpers";
+import { logError } from "@/shared/lib/log";
 import { atom, reatomAsync, withAssign, withErrorAtom, withReset, withStatusesAtom } from "@reatom/framework";
 import { toast } from "sonner";
 import { navigate } from "vike/client/router";
@@ -55,6 +57,11 @@ export const lands = atom(null, "lands").pipe(
         landsState.create.initialChunksSize.reset(ctx)
         landsState.create.landName.reset(ctx)
         landsState.create.title.reset(ctx)
+      },
+      onReject: (_, e) => {
+        logError(e, { type: "toast" });
+
+        if (!isError(e)) return;
       }
     }).pipe(
       withErrorAtom(),

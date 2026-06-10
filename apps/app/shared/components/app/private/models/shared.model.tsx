@@ -6,7 +6,7 @@ import { actionsState, getSelectedParentAtom, type ActionParent, type ActionType
 export const createPrivatedSectionModel = ({
   event, components
 }: {
-  event: string,
+  event: ActionParent,
   components: {
     header: Record<"create" | "edit", ReactNode>,
     content: Record<ActionType, ReactNode>

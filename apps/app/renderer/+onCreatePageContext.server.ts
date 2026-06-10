@@ -8,7 +8,7 @@ import { appState, type AppDictionaries, type AppOptionsPayload, type AppOptions
 import { setupUrlAtomSettings } from '@reatom/url';
 import { snapshotAtom } from "@/shared/models/ssr";
 import { client } from '@/shared/lib/client-wrapper';
-import { initCookie } from '@/shared/models/shared.model';
+import { currenciesAtom, fetchCurrencies, fetchSocials, initCookie, socialsAtom } from '@/shared/models/shared.model';
 import { pageState } from '@/shared/models/page-context.model';
 import { isError } from '@/shared/lib/helpers';
 
@@ -31,10 +31,10 @@ function getTopCountry(acceptLanguage?: string): string | null {
   return best?.country ?? null
 }
 
-async function getAppOptions(init: RequestInit) {
+async function fetchAppState(init: RequestInit) {
   return client<AppOptionsPayload>("app/options", init).exec();
 }
-async function getAppDictionaries(init: RequestInit) {
+async function fetchAppDictionaries(init: RequestInit) {
   return client<AppDictionaries>("app/dictionaries", init).exec();
 }
 
@@ -44,6 +44,23 @@ const CB_BY_PAYLOAD: Record<"BANNED", (pageCtx: PageContextServer) => void> = {
       throw redirect("/banned");
     }
   }
+}
+
+function fetchSharedData(ctx: ReturnType<typeof createCtx>) {
+  fetchCurrencies()
+    .then(r => currenciesAtom(ctx, r))
+    .catch(e => {
+      if (import.meta.env.DEV) {
+        console.error("CURRENCIES", e)
+      }
+    })
+  fetchSocials()
+    .then(r => socialsAtom(ctx, r))
+    .catch(e => {
+      if (import.meta.env.DEV) {
+        console.error("SOCIALS", e)
+      }
+    })
 }
 
 export async function onCreatePageContext(pageCtx: PageContextServer) {
@@ -96,8 +113,9 @@ export async function onCreatePageContext(pageCtx: PageContextServer) {
   const url = new URL(urlPathname, `http://${headers["host"]}`);
   setupUrlAtomSettings(ctx, () => url)
 
-  const options = await getAppOptions({ headers })
-    .then(r => r)
+  fetchSharedData(ctx);
+
+  const options = await fetchAppState({ headers })
     .catch(e => {
       if (import.meta.env.DEV) {
         console.error("OPTIONS", e)
@@ -105,8 +123,7 @@ export async function onCreatePageContext(pageCtx: PageContextServer) {
       throw redirect("/not-available")
     })
 
-  const dictionaries = await getAppDictionaries({ headers })
-    .then(r => r)
+  const dictionaries = await fetchAppDictionaries({ headers })
     .catch(e => {
       if (import.meta.env.DEV) {
         console.error("DICTIONARIES", e)

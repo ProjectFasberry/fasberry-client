@@ -7,7 +7,7 @@ import { storeItem } from "../../models/store-item.model"
 import { cart, cartDataItemIsSelectAtom, type CartItem as CartItemProps } from "../../models/store-cart.model"
 import { changeLocalRecipient } from "../../../settings/models/settings-store.model"
 import { Checkbox } from "@/shared/ui/checkbox"
-import { CURRENCIES } from "@/shared/consts/store"
+import { getCurrencies } from "@/shared/models/shared.model"
 
 const CartItemRemoveFromCart = reatomComponent<{ id: number }>(({ ctx, id }) => {
   return (
@@ -40,6 +40,8 @@ export const CartItem = reatomComponent<CartItemProps>(({
   ctx, ...item
 }) => {
   const { id, title, imageUrl, description, price, currency } = item
+
+  const currencies = getCurrencies(ctx);
 
   return (
     <div
@@ -85,9 +87,9 @@ export const CartItem = reatomComponent<CartItemProps>(({
             {price}
           </Typography>
           <img
-            src={CURRENCIES[currency].img}
+            src={currencies[currency].img}
             draggable={false}
-            alt={CURRENCIES[currency].symbol}
+            alt={currencies[currency].symbol}
             className="w-5 h-5 inline-block"
           />
         </div>

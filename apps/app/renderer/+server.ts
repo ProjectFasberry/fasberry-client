@@ -10,6 +10,7 @@ import { sentry } from "@/shared/sentry";
 await sentry.init({ variant: "server" })
 
 const app = new Elysia()
+  .get("/health", ({ status }) => status(200))
   .derive(async ({ request }) => {
     let modifiedRequest = request
     let locale = "ru";
@@ -22,10 +23,21 @@ const app = new Elysia()
     }
   })
 
-consola.success(`Started server`, {
+const appState = {
   runtime: typeof Bun === 'undefined' ? 'nodejs' : 'bun',
   port: process.env.PORT,
   env
+}
+
+consola.box({
+  title: " App ",
+  message: `
+Runtime: ${appState.runtime}
+Port: ${appState.port}
+Stage: ${process.env.STAGE}
+Env: ${JSON.stringify(appState.env, null, 2)}
+Routes: \n${app.routes.map((r) => "- " + r.method + "" + r.path).join("\n")}
+  `
 })
 
 vike(app, [compress()]);

@@ -5,7 +5,7 @@
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"dev": "infisical run --env=dev --path=/app -- vike dev",
+		"dev": "infisical run --env=dev --path=/app -- bun --bun run vike dev",
 		"build:staging": "cross-env STAGE=staging infisical run --env=staging --path=/app -- bun --bun run vike build",
 		"build:prod": "cross-env STAGE=prod infisical run --env=prod --path=/app -- bun --bun run vike build",
 		"start:staging": "infisical run --env=staging --path=/app -- bun run ./dist/server/index.mjs",

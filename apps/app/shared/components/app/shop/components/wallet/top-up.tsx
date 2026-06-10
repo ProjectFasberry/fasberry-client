@@ -14,7 +14,7 @@ import { ErrorBlock } from "@/shared/ui/error-block";
 import { Select, createListCollection } from '@ark-ui/react/select'
 import { Portal } from "@ark-ui/react/portal";
 import { selectContentBaseStyle, selectVariant } from "@/shared/ui/select"
-import { TARGET_TITLE } from "@/shared/consts/store";
+import { getFromDictionary } from "@/shared/models/app/utils";
 
 type TopupTargetProps = {
   variant?: "compact", title?: never, img: string
@@ -165,12 +165,14 @@ const TopupNavigation = reatomComponent(({ ctx }) => {
   )
 }, "TopUpSubmit")
 
-const ExchangeItem = ({ type, values }: { type: string, values: Record<string, number> }) => {
+const ExchangeItem = reatomComponent<{ type: string, values: Record<string, number> }>(({ ctx, type, values }) => {
+  const title = getFromDictionary(ctx, type);
+
   return (
     <div className="flex flex-col w-full gap-2">
       <div className="flex bg-neutral-800 justify-between px-4 h-10 rounded-lg cursor-pointer items-center gap-2 w-full">
         <Typography className="text-lg leading-5">
-          {TARGET_TITLE[type as keyof typeof TARGET_TITLE]}
+          {title}
         </Typography>
         <Icon name="sprite:exchange" className="size-4 text-neutral-400" />
       </div>
@@ -184,7 +186,7 @@ const ExchangeItem = ({ type, values }: { type: string, values: Record<string, n
       </div>
     </div>
   )
-}
+}, "ExchangeItem")
 export const TopUpExchanges = reatomComponent(({ ctx }) => {
   if (ctx.spy(topup.fetchExchange.statusesAtom).isPending) {
     return Array.from({ length: 3 }).map((_, idx) => <Skeleton key={idx} className="h-12 w-full" />)

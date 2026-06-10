@@ -21,7 +21,7 @@ export const lands = atom(null, "lands").pipe(
       }
 
       const searchParams: LandsSimilarParams = {
-        // limit,
+        limit: params?.limit,
         variant: params?.variant ?? "random"
       }
 

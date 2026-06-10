@@ -3,7 +3,7 @@ import { action, atom, withAssign, type AtomState } from "@reatom/framework"
 import { isDeepEqual, reatomRecord, withReset } from "@reatom/framework"
 import { toast } from "sonner";
 
-const PARENTS = ["news", "banner", "event", "dictionaries", "modpack", "lands"] as const
+const PARENTS = ["news", "banner", "event", "dictionaries", "modpack", "lands", "api"] as const
 const TYPES = ["create", "edit", "view"] as const;
 
 export type ActionParent = typeof PARENTS[number]

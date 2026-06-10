@@ -12,6 +12,9 @@ type KeysData = {
   [PLAYER_TAGS_DATA_KEY]: PlayerTagsPayload
 }
 
+/**
+* Server-friendly
+*/
 export function getDataFromSnapshot<T extends keyof KeysData>(key: T, snapshot?: Snapshot): Nullable<KeysData[T]> {
   const targetSnapshot = snapshot ?? usePageContext().snapshot
   if (!targetSnapshot) return null;
@@ -26,14 +29,19 @@ export function getDataFromSnapshot<T extends keyof KeysData>(key: T, snapshot?:
   return null;
 }
 
-/** For server side, when reatom ctx is not accesible */
+/**
+ * For server side, when reatom ctx is not accesible
+*/
 export function getIsAuthed(snapshot?: Snapshot): boolean {
   const snap = snapshot ?? usePageContext().snapshot;
   const isAuthed = getDataFromSnapshot("appState.options", snap)?.flags.isAuthed;
   return isAuthed ?? false;
 }
 
-/** @constructor
+/**
+* Client-only
+*
+* @constructor
 * @param {AppOptionsPayloadExtend} parentKey - is parent key
 * @param {AppOptionsPayloadExtend[K]} nestedKey - is nested key
 * @param {string} nestedKey2 - is nested key
@@ -49,7 +57,9 @@ export function spyOptionAtom<
 	return map?.[key]?.[subKey] ?? defaultVal;
 }
 
+/**
+* Server-friendly
+*/
 export function getFromDictionary(ctx: Ctx, key: string): string {
 	return ctx.get(appState.dict)?.[key] ?? key;
 }
-

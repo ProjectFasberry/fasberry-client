@@ -4,25 +4,27 @@ import { wrapTitle } from "@/shared/lib/utils";
 import { logRouting } from "@/shared/lib/log";
 import { player, playerSsrModel } from "@/shared/components/app/player/models/player.model";;
 import dayjs from "@/shared/lib/create-dayjs"
-import { DONATE_GROUPS, DONATE_TITLE } from "@/shared/consts";
-import { createCtx } from "@reatom/framework";
+import { createCtx, type Ctx } from "@reatom/framework";
 import { playerLands } from "@/shared/components/app/player/models/player-lands.model";
 import { snapshots } from "@/shared/models/ssr";
+import { getFromDictionary } from "@/shared/models/app/utils";
 
 export type Player = ExtractApiData<"getServerPlayerByNickname">["data"]
 export type Data = Awaited<ReturnType<typeof data>>;
 
-function buildMetadataValues(user: Player, pageCtx: PageContextServer) {
+function buildMetadataValues(ctx: Ctx, user: Player, pageCtx: PageContextServer) {
   const nickname = user.nickname;
   const reg = dayjs(user.meta.reg_date.toString()).format("DD MMM YYYY");
   const login = dayjs(user.meta.login_date.toString()).format("DD MMM YYYY");
+
+  const group = getFromDictionary(ctx, user.group)
 
   return {
     title: wrapTitle(nickname),
     image: user.avatar ?? "",
     description: `
       Профиль игрока ${nickname}.
-      Привилегия: ${DONATE_TITLE[user.group as keyof typeof DONATE_GROUPS]}.
+      Привилегия: ${group}.
       Играет с ${reg}. Последний вход: ${login}.
     `,
     url: pageCtx.urlPathname,
@@ -56,7 +58,7 @@ export async function data(pageCtx: PageContextServer) {
 
   const ctx = createCtx()
   const result = await player.init(ctx, pageCtx)
-  const metaValues = buildMetadataValues(result, pageCtx);
+  const metaValues = buildMetadataValues(ctx, result, pageCtx);
 
   config({
     title: metaValues.title,

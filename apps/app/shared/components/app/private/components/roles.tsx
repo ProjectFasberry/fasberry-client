@@ -237,7 +237,9 @@ const RolesListItem = reatomComponent<RolePayload>(({ ctx, id, name }) => {
     <div className={rolesListItemVariant().base()}>
       <div className={rolesListItemVariant().group()}>
         <div className={rolesListItemVariant().name()}>
-          {title}
+          <Typography className="text-sm">
+            {title}
+          </Typography>
         </div>
         <div className="flex gap-1 items-center">
           {isSelected ? (

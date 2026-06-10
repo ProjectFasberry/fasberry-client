@@ -9,7 +9,6 @@ import { LandBanner } from "../../land/components/land-banner"
 import { Avatar } from "../../../../ui/avatar"
 import { Icon } from "@/shared/ui/icon"
 import { pageState } from "@/shared/models/page-context.model"
-import { scrollableVariant } from "@/shared/consts/style-variants"
 import { translate } from "@/shared/locales/helpers"
 import { atom } from "@reatom/framework"
 import { MasonryGrid } from "@/shared/ui/masonry-grid"
@@ -21,7 +20,7 @@ const landCardVariants = tv({
   base: `flex items-start justify-between gap-6 duration-150 relative w-full rounded-xl p-3 sm:p-4 lg:p-6 bg-neutral-900`,
   slots: {
     child: "flex flex-col gap-3 overflow-hidden",
-    stat: "inline-flex items-center gap-2 text-base"
+    stat: "inline-flex items-center gap-2 text-sm sm:text-base"
   }
 })
 
@@ -35,14 +34,14 @@ const LandCard = ({ members, name, title, ulid, details: { banner } }: LandSimil
             url={members[0].avatar}
             className="h-6 w-6"
           />
-          <Typography className="text-lg truncate">
+          <Typography className="text-base sm:text-lg truncate">
             {members[0].nickname}
           </Typography>
         </div>
-        <Typography className="text-xl truncate font-semibold">
+        <Typography className="text-base sm:text-xl truncate font-semibold">
           {name}
         </Typography>
-        {title && <FormattedText text={title} />}
+        {title && <FormattedText text={title} className="text-sm sm:text-base" />}
         <div className="flex flex-col select-none gap-1">
           <Typography className={landCardVariants().stat()}>
             <Icon name="sprite:circle" className="size-2" />
@@ -90,12 +89,8 @@ const LandsSkeleton = reatomComponent(({ ctx }) => {
   )
 }, "LandsSkeleton")
 
-const landsListVariant = scrollableVariant({
-  className: "flex rounded-lg scrollbar-h-2 overflow-x-auto gap-4 pb-2"
-})
-
 const LandsListShortedSkeleton = () => (
-  <div className={landsListVariant}>
+  <div className="flex flex-col sm:flex-row rounded-lg scrollbar-h-2 overflow-x-auto gap-4 pb-2">
     <Skeleton className="h-44 w-full" />
     <Skeleton className="h-44 w-full" />
     <Skeleton className="h-44 w-full" />
@@ -117,7 +112,7 @@ export const LandsListShorted = reatomComponent(({ ctx }) => {
 
   return (
     <div className="flex flex-col w-full gap-2">
-      <div className={landsListVariant}>
+      <div className="flex flex-col sm:flex-row rounded-lg scrollbar-h-2 overflow-x-auto gap-4 pb-2">
         {data.map((land) => <LandCard key={land.ulid} {...land} />)}
       </div>
       {data.length > 3 && (

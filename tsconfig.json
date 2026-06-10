@@ -3,6 +3,5 @@
 	"references": [
 		{ "path": "./apps/app" },
 		{ "path": "./apps/landing" },
-		{ "path": "./packages/ui" }
 	]
 }

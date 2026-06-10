@@ -14,7 +14,7 @@ const methodVariant = tv({
     first_parent: "flex items-center min-w-0 gap-1 sm:gap-2",
     image: "h-6 w-6 rounded-lg",
     second_parent: "flex items-center gap-2 h-full",
-    title: "truncate text-sm font-semibold"
+    title: "truncate text-sm"
   }
 })
 

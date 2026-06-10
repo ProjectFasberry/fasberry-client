@@ -28,7 +28,7 @@ const UserInfo = reatomComponent(({ ctx }) => {
         <Typography>
           Никнейм: {data.nickname} ({data.lower_case_nickname})
         </Typography>
-        Регистрация: {dayjs(data.created_at).format("DD.MM.YYYY hh:mm")}
+        Регистрация: {data.created_at ? dayjs(data.created_at.toString()).format("DD.MM.YYYY hh:mm") : "none"}
         <Typography>
           UUID: {data.uuid}
         </Typography>

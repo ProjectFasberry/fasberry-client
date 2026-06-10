@@ -1,17 +1,40 @@
 import { Icon } from "@/shared/ui/icon"
 import { Link } from "../../../config/link/link"
 import { Typography } from "@/shared/ui/typography"
-import { CONTACTS } from "../../../../consts/contacts"
 import { env } from "@/shared/env"
 import { Logotype } from "./logotype"
 import { translate } from "@/shared/locales/helpers"
+import { action } from "@reatom/framework"
+import { reatomComponent } from "@reatom/npm-react"
+import { socialsAtom } from "@/shared/models/shared.model"
 
-const telegramHref = CONTACTS.find(t => t.value === 'tg')?.href as string
-const discordHref = CONTACTS.find(t => t.value === 'ds')?.href as string
+const getHrefs = action((ctx) => {
+  const data = ctx.get(socialsAtom);
+  if (!data) return null;
+
+  let telegramHref: string | undefined;
+  let discordHref: string | undefined;
+
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+
+    if (item.value === 'tg') {
+      telegramHref = item.href;
+    } else if (item.value === 'ds') {
+      discordHref = item.href;
+    }
+
+    if (telegramHref && discordHref) break;
+  }
+
+  return { telegramHref, discordHref }
+})
 
 const createLandingUrl = (path: string) => `${env.VITE_LANDING_URL}${path}`
 
-export const Footer = () => {
+export const Footer = reatomComponent(({ ctx }) => {
+  const data = getHrefs(ctx);
+
   return (
     <div
       className="
@@ -26,20 +49,22 @@ export const Footer = () => {
             <div className="h-14 w-full">
               <Logotype />
             </div>
-            <div
-              className="
+            {data && (
+              <div
+                className="
                 flex items-center gap-2
                 *:bg-neutral-600/40 *:hover:bg-neutral-600/60 *:duration-150
                 *:flex *:items-center *:justify-center *:p-2 *:rounded-full
               "
-            >
-              <a href={discordHref} aria-label="Дискорд">
-                <Icon name="sprite:brand-discord" className="size-[18px]" />
-              </a>
-              <a href={telegramHref} aria-label="Телеграм">
-                <Icon name="sprite:brand-telegram" className="size-[18px]" />
-              </a>
-            </div>
+              >
+                <a href={data.discordHref} aria-label="Дискорд">
+                  <Icon name="sprite:brand-discord" className="size-[18px]" />
+                </a>
+                <a href={data.telegramHref} aria-label="Телеграм">
+                  <Icon name="sprite:brand-telegram" className="size-[18px]" />
+                </a>
+              </div>
+            )}
           </div>
           <div className="grid auto-rows-auto grid-cols-1 lg:grid-rows-none lg:grid-cols-3 gap-4 w-full lg:w-2/3">
             <div className="flex flex-col min-w-0 gap-1 *:w-fit">
@@ -89,4 +114,4 @@ export const Footer = () => {
       </div>
     </div>
   )
-}
+}, "Footer")

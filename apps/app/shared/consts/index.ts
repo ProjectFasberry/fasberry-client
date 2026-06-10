@@ -4,17 +4,7 @@ const ALERT_DIALOG_DELAY = 150
 
 const ENVIRONMENT = typeof window === 'undefined' ? "server" : "client"
 
-const DONATE_GROUPS = {
-  default: "игрок",
-  arkhont: "архонт",
-  helper: "хелпер",
-  loyal: "лоял",
-  authentic: "аутентик",
-  dev: "разработчик",
-  moder: "модератор",
-} as const;
-
-const DONATE_COLORS: Record<keyof typeof DONATE_GROUPS, string> = {
+const DONATE_COLORS: Record<string, string> = {
   "arkhont": "#30ff5d",
   "authentic": "#e342cd",
   "loyal": "#40c983",
@@ -24,22 +14,10 @@ const DONATE_COLORS: Record<keyof typeof DONATE_GROUPS, string> = {
   "moder": "#6452d9",
 } as const;
 
-const DONATE_TITLE: Record<keyof typeof DONATE_GROUPS, string> = {
-  "arkhont": "Архонт",
-  "authentic": "Аутентик",
-  "loyal": "Лоял",
-  "default": "Игрок",
-  "helper": "Хелпер",
-  "dev": "Разработчик",
-  "moder": "Модератор",
-} as const;
-
 export {
   DIALOG_DELAY,
   DEFAULT_SOFT_DELAY,
   ALERT_DIALOG_DELAY,
   ENVIRONMENT,
-  DONATE_TITLE,
   DONATE_COLORS,
-  DONATE_GROUPS
 }

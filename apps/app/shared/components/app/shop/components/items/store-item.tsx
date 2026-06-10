@@ -8,8 +8,8 @@ import { reatomComponent } from "@reatom/npm-react"
 import { tv } from "tailwind-variants"
 import { Button } from "@/shared/ui/button"
 import { translate } from "@/shared/locales/helpers"
-import { CURRENCIES } from "@/shared/consts/store"
 import { createLink } from "@/shared/components/config/link/link.model"
+import { getCurrencies } from "@/shared/models/shared.model"
 
 const buyButtonVariants = tv({
   base: `group gap-2 duration-150 h-10 *:duration-150 px-6 w-full rounded-xl`,
@@ -58,26 +58,28 @@ const storeItemVariant = tv({
   }
 })
 
-export const ItemPrice = ({ currency, price }: { currency: string, price: string | number }) => {
+export const ItemPrice = reatomComponent<{ currency: string, price: string | number }>(({ ctx, currency, price }) => {
+  const currencies = getCurrencies(ctx);
+
   return (
     <div className="flex items-center gap-1 text-base select-none text-nowrap font-semibold">
       <Typography>
         {price}
       </Typography>
-      {CURRENCIES[currency].img ? (
+      {currencies[currency].img ? (
         <img
-          src={CURRENCIES[currency].img}
+          src={currencies[currency].img}
           draggable={false}
-          alt={CURRENCIES[currency].symbol}
+          alt={currencies[currency].symbol}
           width={24}
           height={24}
         />
       ) : (
-        <span>{CURRENCIES[currency].symbol}</span>
+        <span>{currencies[currency].symbol}</span>
       )}
     </div>
   )
-}
+}, "ItemPrice")
 
 export const ItemSelectToCart = reatomComponent<Pick<StoreItemProps, "id">>(({ ctx, id }) => {
   if (!ctx.spy(pageState.isClientside)) {

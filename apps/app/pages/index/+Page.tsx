@@ -1,30 +1,20 @@
 import { Typography } from "@/shared/ui/typography";
 import { Intro } from "@/shared/components/app/intro/components/intro";
 import { EventsList } from "@/shared/components/app/events/components/events";
-import { CONTACTS } from "@/shared/consts/contacts";
-import { action } from "@reatom/framework";
 import { reatomComponent } from "@reatom/npm-react";
 import { LandsListShorted } from "@/shared/components/app/lands/components/lands-list";
 import { NewsList } from "@/shared/components/app/news/components/news-main-list";
 import { translate } from "@/shared/locales/helpers";
-import { userState } from "@/shared/models/app/index.model";
 import { Icon } from "@/shared/ui/icon"
+import { socialsAtom } from "@/shared/models/shared.model";
 
-const ruAttr = ['ru-RU', 'RU', 'ru'];
-
-const getContacts = action((ctx) => {
-  const country = ctx.get(userState.geo.country)
-  if (!country || !ruAttr.includes(country)) return CONTACTS;
-
-  return CONTACTS.filter(d => d.value !== 'ds')
-})
-
-const Contacts = reatomComponent(({ ctx }) => {
-  const data = getContacts(ctx)
+const Socials = reatomComponent(({ ctx }) => {
+  const data = ctx.spy(socialsAtom)
+  if (!data) return null;
 
   return (
     <div
-      id="contacts"
+      id="socials"
       className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 auto-rows-auto gap-2 sm:gap-4 w-full"
     >
       {data.map((item, idx) => (
@@ -33,7 +23,10 @@ const Contacts = reatomComponent(({ ctx }) => {
           key={idx}
           target="_blank"
           rel="noreferrer"
-          className={`flex items-center justify-between p-4 group rounded-xl ${item.color}`}
+          className={`flex items-center justify-between p-4 group rounded-xl`}
+          style={{
+            backgroundColor: item.color,
+          }}
         >
           <div className="flex items-center gap-2 sm:gap-4">
             <img src={item.img} alt="TG" width={36} height={36} />
@@ -41,12 +34,12 @@ const Contacts = reatomComponent(({ ctx }) => {
               {item.title}
             </Typography>
           </div>
-          <Icon name="sprite:arrow-right" className="size-[18px] duration-150 -rotate-45 group-hover:rotate-0" />
+          <Icon name="sprite:arrow-right" className="size-5 duration-150 -rotate-45 group-hover:rotate-0" />
         </a>
       ))}
     </div>
   )
-}, "Contacts")
+}, "Socials")
 
 export default function Page() {
   return (
@@ -74,7 +67,7 @@ export default function Page() {
         </Typography>
         <LandsListShorted />
       </div>
-      <Contacts />
+      <Socials />
     </div>
   )
 }
