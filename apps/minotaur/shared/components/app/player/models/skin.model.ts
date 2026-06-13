@@ -1,5 +1,5 @@
-import { reatomAsync, spawn, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework";
-import { action, atom, batch } from "@reatom/framework";
+import { reatomAsync, spawn, withDataAtom, withStatusesAtom } from "@reatom/framework";
+import { action, atom } from "@reatom/framework";
 import { sleep, withAssign, withReset } from "@reatom/framework";
 import { logError } from "@/shared/lib/log";
 import { client } from "@/shared/lib/client-wrapper";
@@ -136,7 +136,7 @@ const skins = atom(null, "skins").pipe(
           return await ctx.schedule(() =>
             client
               .get<"success" | "error">("server/skin/set", {
-                searchParams: { id }, 
+                searchParams: { id },
                 retry: 1
               })
               .exec()

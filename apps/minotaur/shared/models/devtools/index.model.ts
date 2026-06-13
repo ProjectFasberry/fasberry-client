@@ -90,7 +90,7 @@ export const devtools = atom(null, "_devtools").pipe(
                       }
 
                       if (applyAs === 'static') {
-                        configItem.__meta.onChange?.(bindingVal)
+                        configItem.__meta.onChange?.(ctx, bindingVal)
                       }
                     })
                 }

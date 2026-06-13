@@ -4,7 +4,7 @@ import { client } from "@/shared/lib/client-wrapper";
 import { isError } from "@/shared/lib/helpers";
 import { invariant } from "@/shared/lib/invariant";
 import { logError } from "@/shared/lib/log";
-import { createWsUrl } from "@/shared/lib/utils";
+import { createWsUrl, getApiHost } from "@/shared/lib/utils";
 import { reatomAsync, sleep, withCache, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { action, atom, batch, type Ctx } from "@reatom/framework";
 import { reatomMap, withAssign, withReset } from "@reatom/framework";
@@ -38,7 +38,7 @@ const chatState = atom(null).pipe(
 
 const url = createWsUrl({
   path: "/privated/chat/subscribe",
-  host: env.VITE_API_HOST,
+  host: getApiHost(),
   isSecure: import.meta.env.PROD
 });
 

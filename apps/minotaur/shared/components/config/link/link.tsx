@@ -15,9 +15,9 @@ export const Link = ({ href, locale, className, ...props }: LinkProps) => {
 
   let finalHref = href.startsWith('/') ? href : `/${href}`;
 
-  if (targetLocale !== "ru") {
-    finalHref = `/${targetLocale}${finalHref === '/' ? '' : finalHref}`;
-  }
+  // if (targetLocale !== "ru") {
+  //   finalHref = `/${targetLocale}${finalHref === '/' ? '' : finalHref}`;
+  // }
 
   const normalizedPathname = pathname.replace(/\/$/, "") || "/";
   const normalizedHref = finalHref.replace(/\/$/, "") || "/";

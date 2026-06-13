@@ -1,5 +1,8 @@
 import { reatomComponent } from "@reatom/npm-react"
-import { login, type AuthLoginQRStatus, loginState, type AuthLoginVariant, authLoginVariantAtom, authSubmitIsDisabledAtom } from "../models/login.model"
+import {
+  login, type AuthLoginQRStatus, loginState,
+  type AuthLoginVariant, authLoginVariantAtom, authSubmitIsDisabledAtom
+} from "../models/login.model"
 import { type ReactNode, useRef } from "react"
 import { Icon } from "@/shared/ui/icon"
 // import { Copy } from "@/shared/ui/copy"

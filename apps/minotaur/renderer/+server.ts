@@ -12,8 +12,8 @@ await sentry.init({ variant: "server" })
 const app = new Elysia()
   .get("/health", ({ status }) => status(200))
   .derive(async ({ request }) => {
-    let modifiedRequest = request
     let locale = "ru";
+    let modifiedRequest = request;
 
     await paraglideMiddleware(request, ({ request: newRequest, locale }) => { modifiedRequest = newRequest; locale })
 
@@ -24,8 +24,8 @@ const app = new Elysia()
   })
 
 const appState = {
-  runtime: typeof Bun === 'undefined' ? 'nodejs' : 'bun',
-  port: process.env.PORT,
+  runtime: typeof Bun !== 'undefined' ? 'bun' : 'node',
+  port: process.env.VITE_APP_PORT,
   env
 }
 

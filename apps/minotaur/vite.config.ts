@@ -37,7 +37,7 @@ const STAGES: Partial<Record<Stage, StageOpts>> = {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd()) as ImportMetaEnv;
 
-  const host = env.VITE_APP_HOST ?? "0.0.0.0"
+  const host = process.env.NODE_ENV === 'development' ? "0.0.0.0" : new URL(env.VITE_API_URL).hostname;
   const port = Number(env.VITE_APP_PORT)
 
   const previewAndServerOpts: PreviewOptions = {

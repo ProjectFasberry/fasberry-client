@@ -3,7 +3,7 @@ import type { PageContext } from "vike/types";
 import { withSsr } from "../ssr";
 import { detectHardwareAcceleration, detectMobile, parseBoolean } from "../../lib/utils";
 import { ENVIRONMENT } from "../../consts";
-import { getIsAuthed, spyOptionAtom } from "./utils";
+import { getIsAuthed, maybeSpyOptionAtom } from "./utils";
 import { snapshots } from "../ssr";
 import { pageState } from "../page-context.model";
 import { logger } from "@/shared/lib/logger";
@@ -44,14 +44,14 @@ export const userState = atom(null, "userState").pipe(
   withAssign((_, name) => ({
     geo: atom(null, `${name}.geo`).pipe(
       withAssign((_, name) => ({
-        country: atom((ctx) => spyOptionAtom(ctx, "specified", "country", "ru"), `${name}.country`)
+        country: atom((ctx) => maybeSpyOptionAtom(ctx, "specified", "country", "ru"), `${name}.country`)
       }))
     ),
     isAuthed: atom((ctx, snapshot?: Snapshot) => {
       if (ENVIRONMENT === 'server') {
         return getIsAuthed(snapshot)
       }
-      return spyOptionAtom(ctx, "flags", "isAuthed", false)
+      return maybeSpyOptionAtom(ctx, "flags", "isAuthed", false)
     })
   }))
 )
@@ -60,7 +60,7 @@ export const getDevModulesInfo = (ctx: Ctx) => {
   const isMobile = ctx.get(appState.inited.isMobile)
   if (isMobile) return;
 
-  const stage = spyOptionAtom(ctx, "state", "stage", "prod")
+  const stage = maybeSpyOptionAtom(ctx, "state", "stage", "prod")
   const ALLOWED_STAGE: typeof stage[] = ["staging"];
 
   return {

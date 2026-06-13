@@ -2,13 +2,16 @@ import { action, atom, type Action } from "@reatom/framework";
 import { reatomRecord, withAssign, withReset } from "@reatom/framework";
 import { withSearchParamsPersist } from "@reatom/url";
 import { pof } from "@/shared/models/shared.model";
-import { spyOptionAtom } from "@/shared/models/app/utils";
+import { maybeSpyOptionAtom } from "@/shared/models/app/utils";
 import { isError } from "@/shared/lib/helpers";
 import { logger } from "@/shared/lib/logger";
 
-export type AuthType = "register" | "login";
-export type AuthErrorType = "nickname" | "password" | "findout";
-export type AuthFindoutType = "referrer" | "custom";
+const AUTH_TYPE = ["register", "login"] as const;
+export type AuthType = typeof AUTH_TYPE[number];
+const AUTH_ERROR_TYPE = ["nickname", "password", "findout"] as const;
+export type AuthErrorType = typeof AUTH_ERROR_TYPE[number];
+const AUTH_FINDOUT_TYPE = ["referrer", "custom"] as const;
+export type AuthFindoutType = typeof AUTH_FINDOUT_TYPE[number];
 
 export const authState = atom(null, "authState").pipe(
   withAssign((_, name) => ({
@@ -16,7 +19,7 @@ export const authState = atom(null, "authState").pipe(
       withSearchParamsPersist("type", (type = "login") => type),
     ),
     searchParams: reatomRecord<Record<string, string>>({}, `${name}.searchParams`),
-    fields: atom(null, `${name}.fields`).pipe(
+    fields: atom(null, `_${name}.fields`).pipe(
       withAssign((_, name) => ({
         nickname: atom<string>("", `${name}.nickname`).pipe(withReset()),
         password: atom<string>("", `${name}.password`).pipe(withReset()),
@@ -33,7 +36,8 @@ export const authState = atom(null, "authState").pipe(
     ),
     globalError: atom<Nullable<string>>(null, `${name}.globalError`).pipe(withReset()),
     errorsType: atom<AuthErrorType[]>([], `${name}.errorsType`).pipe(withReset()),
-    isProcessing: atom(false, `${name}.isProcessing`).pipe(withReset())
+    isProcessing: atom(false, `${name}.isProcessing`).pipe(withReset()),
+    token: atom<Nullable<string>>(null, `${name}.token`).pipe(withReset()),
   }))
 )
 
@@ -47,7 +51,6 @@ authState.searchParams.onChange((ctx, state) => {
 });
 
 authState.type.onChange((ctx) => auth.resetErrors(ctx));
-pof.token.onChange((ctx, state) => state !== null && pof.showTokenVerifySectionAtom.reset(ctx))
 
 export const auth = atom(null, "auth").pipe(
   withAssign(() => ({
@@ -62,7 +65,6 @@ export const auth = atom(null, "auth").pipe(
         authState.errorsType(ctx, (state) => state.filter((error) => error !== target));
       }
     }),
-    solve: action((ctx, value: string) => pof.token(ctx, value)),
     resetAuthState: action((ctx) => {
       authState.fields.nickname.reset(ctx);
       authState.fields.password.reset(ctx);
@@ -75,15 +77,25 @@ export const auth = atom(null, "auth").pipe(
       authState.settings.showPassword.reset(ctx)
 
       pof.resetAll(ctx)
+    }),
+    defineCap: action((ctx) => {
+      pof.isOpen(ctx, true);
+      pof.cb(ctx, {
+        onSolve: (token) => {
+          pof.isOpen(ctx, false);
+          authState.token(ctx, token);
+          authState.isProcessing(ctx, false);
+        },
+        onError: () => {
+          authState.globalError(ctx, "Captcha error");
+        }
+      })
     })
   })),
 );
 
-export const authTriggerIsDisabledAtom = atom((ctx) =>
-  spyOptionAtom(ctx, "flags", "isPof", true) ? Boolean(ctx.spy(pof.token)) : false,
-);
 export const isPofActiveAtom = atom((ctx) =>
-  spyOptionAtom(ctx, "flags", "isPof", true) ? ctx.spy(pof.showTokenVerifySectionAtom) : false,
+  maybeSpyOptionAtom(ctx, "flags", "isPof", true) ? ctx.spy(pof.isOpen) : false,
 );
 export const authIsDisabledAtom = atom((ctx) => ctx.spy(isPofActiveAtom) || ctx.spy(authState.isProcessing));
 
@@ -117,8 +129,7 @@ const SCOPE_ACTIONS: Record<ScopeName, Action<[], void>> = {
   }),
   global: action(() => { }),
   captcha: action((ctx) => {
-    pof.showTokenVerifySectionAtom(ctx, true);
-    pof.token.reset(ctx);
+
   })
 };
 

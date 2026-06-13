@@ -235,3 +235,6 @@ export function downloadFile(content: BlobPart, fileName: string) {
 }
 
 export const getApiMiscRoute = (path: string) => `${env.VITE_API_URL}/misc/${path}`
+export const getApiHost = () => {
+  return new URL(env.VITE_API_URL).hostname
+}

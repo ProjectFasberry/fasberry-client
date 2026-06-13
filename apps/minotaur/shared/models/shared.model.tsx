@@ -15,14 +15,20 @@ export async function getExistNickname(nickname: string) {
   return client<ExistNicknamePayload>(`validate/nickname/${nickname}`).exec()
 }
 
+type PofCallback = Partial<{
+  onSolve: (token: string) => void,
+  onError: (e: unknown) => void,
+  onReady: () => void
+}>
+
 export const pof = atom(null, "pof").pipe(
   withAssign((_, name) => ({
-    showTokenVerifySectionAtom: atom(false, `${name}.showTokenVerifySection`).pipe(withReset()),
-    token: atom<Nullable<string>>(null, `${name}.token`).pipe(withReset()),
+    isOpen: atom(false, `${name}.isOpen`),
+    cb: atom<PofCallback | null>(null, `${name}.cb`).pipe(withReset()),
     resetAll: action((ctx) => {
-      pof.showTokenVerifySectionAtom.reset(ctx)
-      pof.token.reset(ctx)
-    })
+      pof.isOpen(ctx, false)
+      pof.cb.reset(ctx)
+    }),
   })),
 );
 

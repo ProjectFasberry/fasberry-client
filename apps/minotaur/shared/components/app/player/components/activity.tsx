@@ -112,7 +112,7 @@ export const PlayerActivity = reatomComponent(({ ctx }) => {
 
   const data = ctx.spy(playerActivity.online.fetch.dataAtom);
 
-  if (!ctx.spy(pageState.isClientside) || ctx.spy(playerActivity.online.fetch.statusesAtom).isPending) {
+  if (!ctx.spy(pageState.isClientside) || ctx.spy(playerActivity.online.fetch.statusesAtom).isFirstPending) {
     return <PlayerActivitySkeleton />
   }
 

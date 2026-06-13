@@ -6,14 +6,13 @@ import { invariant } from "@/shared/lib/invariant";
 import { registerSchema } from "@/shared/schemas/auth";
 import { client } from "@/shared/lib/client-wrapper";
 import { auth, type AuthFindoutType, authState, defineError } from "./auth.model";
-import { pof } from "../../../../models/shared.model";
 import { logError } from "@/shared/lib/log";
 import { isEmptyArray } from "@/shared/lib/helpers";
 import { createPhraseModel } from "./seed-phrase.model";
 import { createNavigationModel } from "./navigation.model";
 import { authSecurity } from "./auth-security.model";
 import { getExistNickname } from "@/shared/models/shared.model";
-import { spyOptionAtom } from "@/shared/models/app/utils";
+import { maybeSpyOptionAtom } from "@/shared/models/app/utils";
 import { translate } from "@/shared/locales/helpers";
 import * as z from "zod";
 import { downloadFile } from "@/shared/lib/utils";
@@ -98,11 +97,12 @@ export const register = atom(null, "register").pipe(
           return false;
         }
 
-        const pofIsActive = spyOptionAtom(ctx, "flags", "isPof", true)
-        const token = ctx.get(pof.token);
+        const pofIsActive = maybeSpyOptionAtom(ctx, "flags", "isPof", true)
+        const token = ctx.get(authState.token);
 
-        if (!token && pofIsActive) {
-          pof.showTokenVerifySectionAtom(ctx, true);
+        if (pofIsActive && !token) {
+          authState.isProcessing(ctx, true);
+          auth.defineCap(ctx)
           return false;
         }
 
@@ -174,7 +174,7 @@ export const register = atom(null, "register").pipe(
       authState.type(ctx, "login")
       auth.resetAuthState(ctx)
       register.resetRegisterState(ctx)
-      pof.token.reset(ctx);
+      authState.token.reset(ctx);
     }),
     next: action((ctx) => {
       spawn(ctx, (spawnCtx) => {
@@ -183,7 +183,7 @@ export const register = atom(null, "register").pipe(
         if (skipPhrase) {
           registerState.type(ctx, "confirm");
 
-          const token = ctx.get(pof.token);
+          const token = ctx.get(authState.token);
           register.submit(spawnCtx, token);
         }
 
