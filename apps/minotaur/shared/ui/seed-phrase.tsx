@@ -1,8 +1,8 @@
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { type ComponentPropsWithoutRef, createContext, type PropsWithChildren, type ReactNode, useContext, useRef } from 'react';
-import { cn } from '../lib/cn';
 import { Icon } from "@/shared/ui/icon"
+import clsx from 'clsx';
 
 type SeedPhraseContextType = {
   words: string[];
@@ -84,7 +84,7 @@ const SeedPhrase = ({
         isHidden
       }}
     >
-      <div className={cn("flex flex-col w-full", className)}>
+      <div className={clsx("flex flex-col w-full", className)}>
         {children}
       </div>
     </seedPhraseCtx.Provider>

@@ -6,7 +6,7 @@ import { client, withJsonBody } from "@/shared/lib/client-wrapper";
 import { withSsr } from "@/shared/models/ssr";
 import { withAssign } from "@reatom/framework";
 import { type SelectItemToCartOptions, storeItemsState } from "./store.model";
-import { invariant } from "@/shared/lib/invariant";
+import { invariant } from "@/shared/lib/utils";
 
 export type StoreItem = ExtractApiData<"getStoreItems">["data"]["data"][number]
 

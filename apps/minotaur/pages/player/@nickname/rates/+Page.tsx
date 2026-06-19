@@ -1,6 +1,6 @@
 import { Avatar } from "@/shared/ui/avatar";
 import { Link } from "@/shared/components/config/link/link";
-import { isEmptyArray } from "@/shared/lib/helpers";
+import { isEmptyArray } from "@/shared/lib/utils";
 import { pageState } from "@/shared/models/page-context.model";
 import { PageLoader } from "@/shared/ui/page-loader";
 import { reatomComponent, useAtom } from "@reatom/npm-react";

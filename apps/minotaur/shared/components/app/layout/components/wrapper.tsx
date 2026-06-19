@@ -19,10 +19,10 @@ const AppProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <>
-      <div id="page-container">
+      <main id="page-container">
         {children}
         <Footer />
-      </div>
+      </main>
       <Global />
     </>
   )

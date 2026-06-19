@@ -1,6 +1,6 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { UserActionsChangeRoleGlobal } from "./users.change-role";
-import { users, usersState, usersLengthAtom, usersSelectedLengthAtom, usersSelectedOverAtom, usersControl, usersControlState } from "../../models/users.model";
+import { users, usersState, usersLengthAtom, usersSelectedLengthAtom, usersSelectedOverAtom, usersRestrict, usersRestrictState } from "../../models/users.model";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Button } from "@/shared/ui/button";
 import { Icon } from "@/shared/ui/icon"
@@ -79,8 +79,8 @@ const UsersFiltersSelect = reatomComponent(({ ctx }) => {
       <div className="flex items-center gap-2">
         <Checkbox
           id="users-filter-selectAll"
-          checked={ctx.spy(usersControlState.isCheckedAll)}
-          onCheckedChange={(v) => typeof v === 'boolean' && usersControl.select.all(ctx, v)}
+          checked={ctx.spy(usersRestrictState.isCheckedAll)}
+          onCheckedChange={(v) => typeof v === 'boolean' && usersRestrict.select.all(ctx, v)}
         />
         <label htmlFor="checkbox:users-filter-selectAll:input">Выбрать все</label>
       </div>

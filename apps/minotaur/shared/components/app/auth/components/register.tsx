@@ -9,7 +9,8 @@ import { SeedPhrase, SeedPhraseFooter, SeedPhraseHeader, SeedPhraseBody } from "
 import { Icon } from "@/shared/ui/icon"
 import {
   type AuthRegisterType,
-  registerNavigationModel, register, registerSeedPhraseModel, registerState, findoutSelectedTypeAtom, FINDOUT_OPTIONS
+  registerNavigationModel, register, registerSeedPhraseModel, registerState, findoutSelectedTypeAtom,
+  createFindoutOptions
 } from "../models/register.model"
 import { IconLoader } from "@/shared/ui/icon-loader"
 import { spawn } from "@reatom/framework"
@@ -57,7 +58,7 @@ const FINDOUT_COMPONENTS: Record<AuthFindoutType, ReactNode> = {
 }
 
 const collection = createListCollection({
-  items: FINDOUT_OPTIONS
+  items: createFindoutOptions()
 })
 
 const FindoutOptions = reatomComponent(({ ctx }) => {
@@ -89,7 +90,7 @@ const FindoutOptions = reatomComponent(({ ctx }) => {
         <Select.Positioner>
           <Select.Content className={selectVariant.content()} style={selectContentBaseStyle}>
             <Select.ItemGroup className={selectVariant.itemGroup()}>
-              {FINDOUT_OPTIONS.map((item) => (
+              {createFindoutOptions().map((item) => (
                 <Select.Item key={item.value} item={item} className={selectVariant.item()}>
                   <Select.ItemText className={selectVariant.itemText()}>
                     {item.title}
@@ -225,10 +226,10 @@ const RegisterConfirmLoading = () => {
       <IconLoader className="size-9" />
       <div className="flex flex-col gap-1 justify-center items-center w-full">
         <Typography className="text-xl font-semibold">
-          Регистрируем
+          {translate["auth.register.in-progress"]()}
         </Typography>
         <Typography color="gray" className="text-sm">
-          это займет немного времени...
+          {translate["auth.register.in-progress-subtitle"]()}
         </Typography>
       </div>
     </>
@@ -255,7 +256,7 @@ const RegisterConfirmError = reatomComponent(({ ctx }) => {
         }}
         className="font-semibold"
       >
-        Вернуться
+        {translate["auth.register.to-back"]()}
       </Button>
     </>
   )

@@ -1,5 +1,5 @@
 import { client } from "../lib/client-wrapper"
-import { action, atom, type Ctx } from "@reatom/framework";
+import { action, atom, reatomAsync, withErrorAtom, withStatusesAtom, type Ctx } from "@reatom/framework";
 import { withAssign, withReset } from "@reatom/framework";
 import { playerSeemsLikePlayersIsShowKey, playerSLPState } from "../components/app/player/models/player-seems-like.model";
 import { parseBoolean } from "../lib/utils";
@@ -8,7 +8,10 @@ import type { PageContextServer } from "vike/types";
 import { useInView } from "react-intersection-observer";
 import { useUpdate } from "@reatom/npm-react";
 import { withSsr } from "./ssr";
-import { invariant } from "../lib/invariant";
+import { invariant } from "../lib/utils";
+import { setLocale } from "@/paraglide/runtime";
+import { LOCALES, type Locale } from "../locales";
+import { logError } from "../lib/log";
 
 type ExistNicknamePayload = ExtractApiData<"getValidateNicknameByNickname">["data"]
 export async function getExistNickname(nickname: string) {
@@ -100,3 +103,35 @@ export const getCurrencies = action((ctx) => {
   invariant(data, "Currencies is not defined")
   return data
 })
+
+const isAvailableLang = (lang: string): lang is Locale => LOCALES.includes(lang as Locale)
+
+export const locale = atom(null, "locale").pipe(
+  withAssign((_, name) => ({
+    change: reatomAsync(async (_, lang: string, cb?: () => void) => {
+      if (!isAvailableLang(lang)) {
+        console.error(`Language "${lang}" is not available`)
+        return;
+      }
+
+      await setLocale(lang, { reload: false })
+      return { cb }
+    }, {
+      name: `${name}.change`,
+      onFulfill: (_, res) => {
+        if (!res) return;
+
+        const { cb } = res;
+        cb?.();
+
+        window.location.reload();
+      },
+      onReject: (_, e) => {
+        logError(e)
+      }
+    }).pipe(
+      withErrorAtom(),
+      withStatusesAtom()
+    )
+  }))
+)

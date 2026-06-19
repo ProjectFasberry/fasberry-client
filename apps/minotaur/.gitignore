@@ -90,3 +90,5 @@ web_modules/
 
 # Visualizer file
 /stats.html
+
+/messages/_en.json

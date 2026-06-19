@@ -3228,17 +3228,14 @@ export interface operations {
                 "application/json": {
                     nickname: string & (unknown & unknown);
                     password: string;
-                    hash: string;
                 };
                 "application/x-www-form-urlencoded": {
                     nickname: string & (unknown & unknown);
                     password: string;
-                    hash: string;
                 };
                 "multipart/form-data": {
                     nickname: string & (unknown & unknown);
                     password: string;
-                    hash: string;
                 };
             };
         };

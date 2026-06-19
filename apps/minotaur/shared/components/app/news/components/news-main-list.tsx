@@ -4,7 +4,7 @@ import { Link } from "@/shared/components/config/link/link"
 import { NotFound } from "@/shared/ui/not-found"
 import { tv } from "tailwind-variants"
 import { newsState } from "../models/news.model"
-import { isEmptyArray } from "@/shared/lib/helpers"
+import { isEmptyArray } from "@/shared/lib/utils"
 import { translate } from "@/shared/locales/helpers"
 import { createLink } from "@/shared/components/config/link/link.model"
 

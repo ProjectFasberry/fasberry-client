@@ -1,7 +1,7 @@
 import type { CreateSvgSpriteBuilderParams } from "@neodx/svg";
 
 export const SVG_OPTIONS: CreateSvgSpriteBuilderParams = {
-  inputRoot: 'assets/svg',
+  inputRoot: '../../packages/assets/svg',
   output: 'public/sprites',
   fileName: '{name}.{hash:8}.svg',
   resetColors: false,

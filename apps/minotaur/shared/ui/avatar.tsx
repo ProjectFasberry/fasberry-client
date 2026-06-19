@@ -4,7 +4,7 @@ import { getStaticImage } from '@/shared/lib/volume-helpers';
 import { Skeleton } from './skeleton';
 
 export const avatarVariants = tv({
-  base: `relative rounded-lg select-none aspect-square border border-neutral-800`,
+  base: `relative rounded-sm select-none aspect-square border border-white/10`,
   variants: {
     variant: {
       default: 'min-h-16 min-w-16 w-16 h-16 max-w-16 max-h-16',

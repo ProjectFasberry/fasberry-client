@@ -1,5 +1,5 @@
-import dayjs from "@/shared/lib/create-dayjs"
-import { wrapTitle } from "@/shared/lib/utils";
+import { dayjs } from "@/shared/lib/dayjs"
+import { wrapTitle } from "@/shared/lib/helpers";
 import { useConfig } from "vike-react/useConfig";
 import { type PageContextServer } from "vike/types";
 import { getStaticImage } from "@/shared/lib/volume-helpers";
@@ -8,7 +8,7 @@ import { land } from "@/shared/components/app/land/models/land.model";
 import { createCtx } from "@reatom/framework";
 import { snapshots } from "@/shared/models/ssr";
 
-const previewImage = getStaticImage("arts/adventure-in-blossom.jpg")
+const image = getStaticImage("arts/adventure-in-blossom.jpg")
 
 export type Land = ExtractApiData<"getServerLandsByUlid">["data"]
 export type Data = Awaited<ReturnType<typeof data>>;
@@ -30,7 +30,7 @@ function metadata(
   return {
     title,
     description,
-    image: previewImage,
+    image,
     Head: (
       <>
         <meta property="og:url" content={pageCtx.urlPathname} />

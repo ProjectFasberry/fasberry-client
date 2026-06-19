@@ -1,6 +1,9 @@
-export type Locale = (typeof locales)[number]
+export type Locale = (typeof LOCALES)[number]
 
-const locales = ["ru", "en"] as const
-const localeDefault: Locale = locales[0]
+export const LOCALES = ["ru", "en"] as const
+export const DEFAULT_LOCALE: Locale = "ru"
 
-export { locales, localeDefault };
+export const LOCALES_MAP: Record<Locale, string> = {
+  "en": "English",
+  "ru": "Russian",
+}

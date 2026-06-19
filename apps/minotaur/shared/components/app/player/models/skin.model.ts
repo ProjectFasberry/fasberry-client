@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { DEFAULT_SOFT_DELAY, DIALOG_DELAY, ENVIRONMENT } from "@/shared/consts";
 import { FlyingAnimation, IdleAnimation, RunningAnimation, SkinViewer } from "skinview3d";
 import { appState } from "@/shared/models/app/index.model";
-import { isEmptyArray } from "@/shared/lib/helpers";
+import { isEmptyArray } from "@/shared/lib/utils";
 
 type SkinSelected = {
   skin_head_url: string | null,

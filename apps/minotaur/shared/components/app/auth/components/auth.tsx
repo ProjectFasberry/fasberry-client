@@ -38,6 +38,7 @@ const PasswordVisibility = reatomComponent(({ ctx }) => {
 
   return (
     <button
+      type="button"
       className="absolute right-0 top-1/2 -translate-1/2"
       onClick={() => authState.settings.showPassword(ctx, (state) => !state)}
     >
@@ -82,10 +83,10 @@ export const ResetPassword = reatomComponent(({ ctx }) => {
   )
 }, "ResetPassword")
 
-const AUTH_VARIANTS = [
+const createAuthVariants = () => ([
   { label: translate["auth.navigation.auth.loginTitle"](), value: "login" },
   { label: translate["auth.navigation.auth.regTitle"](), value: "register" }
-]
+])
 
 export const Auth = reatomComponent(({ ctx }) => {
   return (
@@ -100,7 +101,7 @@ export const Auth = reatomComponent(({ ctx }) => {
       <Tabs.List
         className="flex flex-col sm:flex-row min-h-24 h-24 sm:min-h-fit sm:h-fit w-full gap-2 *:h-10 *:w-full"
       >
-        {AUTH_VARIANTS.map((item) => (
+        {createAuthVariants().map((item) => (
           <Tabs.Trigger key={item.value} value={item.value} className={tabsTriggerVariants()}>
             {item.label}
           </Tabs.Trigger >

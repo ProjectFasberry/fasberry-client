@@ -11,4 +11,4 @@ dayjs.extend(duration);
 dayjs.extend(localizedFormat);
 dayjs.locale("ru");
 
-export default dayjs;
+export { dayjs }

@@ -1,15 +1,16 @@
 import { Icon } from "@/shared/ui/icon"
 import { tv, type VariantProps } from "tailwind-variants"
 import { Checkbox as CheckboxDefault } from '@ark-ui/react/checkbox'
-import { cn } from "../lib/cn"
+import clsx from "clsx"
 
 const checkboxVariant = tv({
   base: `
-    inline-flex items-center gap-1 peer relative border-2 group border-neutral-200 data-[state=checked]:text-neutral-50 data-[state=checked]:border-green-600
-        focus-visible:border-neutral-600 focus-visible:ring-neutral-700/50 aria-invalid:ring-red-600/20
-        aria-invalid:border-red-600 size-4 shrink-0
-        rounded-[6px] transition-shadow outline-none focus-visible:ring-[3px]
-        disabled:cursor-not-allowed disabled:opacity-50
+    inline-flex items-center gap-1 peer relative border-2 group border-neutral-200
+    data-[state=checked]:text-neutral-50 data-[state=checked]:border-green-600
+    focus-visible:border-neutral-600 focus-visible:ring-neutral-700/50 aria-invalid:ring-red-600/20
+    aria-invalid:border-red-600 size-4 shrink-0
+    rounded-[6px] transition-shadow outline-none focus-visible:ring-[3px]
+    disabled:cursor-not-allowed disabled:opacity-50
   `,
   variants: {
     variant: {
@@ -40,18 +41,21 @@ export const Checkbox = ({
       id={id}
       checked={checked}
       onCheckedChange={(details) => typeof details.checked === 'boolean' && onCheckedChange?.(details.checked)}
-      className={cn("inline-flex items-center gap-1 px-2 relative disabled:opacity-50 disabled:grayscale-[100%]", className)}
+      className={clsx("inline-flex items-center gap-2 px-2 relative disabled:opacity-50 disabled:grayscale-[100%]", className)}
       disabled={disabled}
     >
       <CheckboxDefault.Control className={checkboxVariant({ variant })}>
         <CheckboxDefault.Indicator>
           {withIndicator && (
-            <Icon name="sprite:check" className="size-[14px] group-data-[state=checked]:block group-data-[state=unchecked]:hidden m-auto -z-1" />
+            <Icon
+              name="sprite:check"
+              className="size-3.5 group-data-[state=checked]:block group-data-[state=unchecked]:hidden m-auto -z-1"
+            />
           )}
         </CheckboxDefault.Indicator>
       </CheckboxDefault.Control>
       {label && (
-        <CheckboxDefault.Label className="select-none text-neutral-50 text-sm">
+        <CheckboxDefault.Label className="select-none text-neutral-50 text-base">
           {label}
         </CheckboxDefault.Label>
       )}

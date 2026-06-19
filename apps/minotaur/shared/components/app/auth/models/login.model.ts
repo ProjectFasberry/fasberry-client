@@ -1,11 +1,12 @@
 import { client } from "@/shared/lib/client-wrapper";
-import { invariant } from "@/shared/lib/invariant";
+import { invariant } from "@/shared/lib/utils";
 import { atom } from "@reatom/framework";
 import { type AsyncCtx, reatomAsync, spawn, withAssign, withDataAtom, withErrorAtom, withReset, withStatusesAtom } from "@reatom/framework";
 import { onEvent } from "@reatom/web";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { auth, type AuthErrorType, authState, defineError, isPofActiveAtom } from "./auth.model";
-import { createWsUrl, getApiHost } from "@/shared/lib/utils";
+import { createWsUrl } from "@/shared/lib/helpers";
+import { getApiHost } from "@/shared/lib/helpers";
 import { env } from "@/shared/env";
 import { logError } from "@/shared/lib/log";
 import * as z from "zod";

@@ -2,46 +2,54 @@ import type { Server } from "vike/types";
 import Elysia from "elysia";
 import vike from "@vikejs/elysia";
 import compress from '@universal-middleware/compress'
-import { paraglideMiddleware } from "@/paraglide/server"
 import consola from "consola";
 import { env } from "@/shared/env";
 import { sentry } from "@/shared/sentry";
+import { paraglideMiddleware } from "@/paraglide/server";
+import { DEFAULT_LOCALE, type Locale } from "@/shared/locales";
 
 await sentry.init({ variant: "server" })
 
-const app = new Elysia()
-  .get("/health", ({ status }) => status(200))
-  .derive(async ({ request }) => {
-    let locale = "ru";
-    let modifiedRequest = request;
+const port = Number(env["VITE_APP_PORT"])
+process.env.PORT = String(port)
 
-    await paraglideMiddleware(request, ({ request: newRequest, locale }) => { modifiedRequest = newRequest; locale })
-
-    return {
-      request: modifiedRequest,
-      locale
-    }
+function printAppInfo() {
+  consola.box({
+    title: " App ",
+    message: `
+  Runtime: ${typeof Bun !== 'undefined' ? 'bun' : 'node'}
+  Port: ${port}
+  Stage: ${process.env.STAGE}
+  Env: ${JSON.stringify(env, null, 2)}
+  Routes: \n${app.routes.map((r) => "- " + r.method + "" + r.path).join("\n")}
+    `
   })
-
-const appState = {
-  runtime: typeof Bun !== 'undefined' ? 'bun' : 'node',
-  port: process.env.VITE_APP_PORT,
-  env
 }
 
-consola.box({
-  title: " App ",
-  message: `
-Runtime: ${appState.runtime}
-Port: ${appState.port}
-Stage: ${process.env.STAGE}
-Env: ${JSON.stringify(appState.env, null, 2)}
-Routes: \n${app.routes.map((r) => "- " + r.method + "" + r.path).join("\n")}
-  `
-})
+const defineLocale = () => new Elysia()
+  .derive(async (ctx) => {
+    let locale: Locale = DEFAULT_LOCALE;
+
+    await paraglideMiddleware(ctx.request, ({ locale: newLocale, request: newRequest }) => {
+      ctx.request = newRequest;
+      locale = newLocale;
+    })
+
+    return { request: ctx.request, locale }
+  })
+  .as("global")
+
+const app = new Elysia()
+  .use(defineLocale())
+  .get("/health", ({ status }) => status(200))
 
 vike(app, [compress()]);
 
+printAppInfo();
+
 export default {
-  fetch: app.fetch
+  fetch: app.fetch,
+  prod: {
+    port
+  }
 } satisfies Server;

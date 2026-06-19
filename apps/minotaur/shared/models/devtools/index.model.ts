@@ -3,7 +3,7 @@ import { FolderApi, Pane } from 'tweakpane';
 import { type ConfigItem, devtoolsConfig } from './config';
 import { type DevtoolsCookieChildKey, devtoolsCoords, type DevtoolsCoords, devtoolsData } from './state.model';
 import { throttle } from '@/shared/lib/utils';
-import { isMap, isNullish } from "@/shared/lib/helpers";
+import { isMap, isNullish } from "@/shared/lib/utils";
 
 const devtoolsState = atom(null, "_devtoolsState").pipe(
   withAssign((_, name) => ({

@@ -353,6 +353,8 @@ importers:
         specifier: 4.94.0
         version: 4.94.0
 
+  packages/assets: {}
+
   packages/config-biome:
     devDependencies:
       '@biomejs/biome':

@@ -1,10 +1,11 @@
 import { DEFAULT_SOFT_DELAY } from "@/shared/consts";
 import { env } from "@/shared/env";
 import { client } from "@/shared/lib/client-wrapper";
-import { isError } from "@/shared/lib/helpers";
-import { invariant } from "@/shared/lib/invariant";
+import { isError } from "@/shared/lib/utils";
+import { invariant } from "@/shared/lib/utils";
 import { logError } from "@/shared/lib/log";
-import { createWsUrl, getApiHost } from "@/shared/lib/utils";
+import { createWsUrl } from "@/shared/lib/helpers";
+import { getApiHost } from "@/shared/lib/helpers";
 import { reatomAsync, sleep, withCache, withErrorAtom, withStatusesAtom } from "@reatom/framework";
 import { action, atom, batch, type Ctx } from "@reatom/framework";
 import { reatomMap, withAssign, withReset } from "@reatom/framework";

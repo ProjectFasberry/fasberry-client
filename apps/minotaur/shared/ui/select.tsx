@@ -1,4 +1,6 @@
 import { tv } from "tailwind-variants"
+import { SingleCheck } from "./check"
+import { Select } from "@ark-ui/react/select"
 
 const control = tv({
   base: `
@@ -38,7 +40,7 @@ const content = tv({
 })
 const item = tv({
   base: `
-    flex hover:bg-neutral-800 rounded-lg items-center justify-between w-full px-4 py-2 select-none
+    flex hover:bg-neutral-800 gap-4 rounded-lg items-center justify-between w-full px-4 py-2 select-none
   `
 })
 const itemGroup = tv({
@@ -63,6 +65,14 @@ const selectVariant = {
   indicators,
   trigger,
   itemIndicator
+}
+
+export const SelectItemIndicator = () => {
+  return (
+    <Select.ItemIndicator>
+      <SingleCheck />
+    </Select.ItemIndicator>
+  )
 }
 
 export {

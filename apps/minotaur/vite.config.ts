@@ -80,7 +80,7 @@ export default defineConfig(({ mode }) => {
       paraglideVitePlugin({
         project: "./project.inlang",
         outdir: "./paraglide",
-        strategy: ["url", "baseLocale"]
+        strategy: ["cookie", "preferredLanguage", "baseLocale"]
       }),
       visualizerIsEnabled && visualizer({
         filename: "dist/bundleStats.html",

@@ -1,9 +1,9 @@
-import dayjs from "@/shared/lib/create-dayjs"
+import { dayjs } from "@/shared/lib/dayjs"
 import { reatomComponent } from "@reatom/npm-react";
 import { Typography } from "@/shared/ui/typography"
 import { tv } from "tailwind-variants";
 import { eventsState } from "../models/events.model";
-import { isEmptyArray } from "@/shared/lib/helpers";
+import { isEmptyArray } from "@/shared/lib/utils";
 import { Noop } from "@/shared/ui/noop";
 
 type EventCardProps = ExtractApiData<"getServerEventsList">["data"][number]

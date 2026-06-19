@@ -1,8 +1,9 @@
 import { reatomComponent } from "@reatom/npm-react"
-import { settingsState, type SettingsParent } from "../models/settings.model"
+import { settingsState } from "../models/settings.model"
 import { lazy, type JSX } from "react"
 import { SettingsAccount } from "./settings-account"
 import { SettingsNavigationMobile } from "./settings-navigation"
+import { SettingsLanguage } from "./settings-language"
 
 const SettingsDevices = lazy(() => import("./settings-devices").then(m => ({ default: m.SettingsDevices })))
 const SettingsStore = lazy(() => import("./settings-store").then(m => ({ default: m.SettingsStore })))
@@ -10,7 +11,7 @@ const SettingsSecurity = lazy(() => import("./settings-security").then(m => ({ d
 const SettingsConnections = lazy(() => import("./settings-connections").then(m => ({ default: m.SettingsMainConnections })))
 const SettingsAppearance = lazy(() => import("./settings-appearance").then(m => ({ default: m.SettingsAppearance })))
 
-const SETTINGS_NODES: Partial<Record<SettingsParent, Record<string, typeof SettingsAppearance | (() => JSX.Element)>>> = {
+const SETTINGS_NODES: Partial<Record<string, Record<string, typeof SettingsAppearance | (() => JSX.Element)>>> = {
   main: {
     account: SettingsAccount,
     devices: SettingsDevices,
@@ -19,7 +20,8 @@ const SETTINGS_NODES: Partial<Record<SettingsParent, Record<string, typeof Setti
     store: SettingsStore
   },
   app: {
-    appearance: SettingsAppearance
+    appearance: SettingsAppearance,
+    language: SettingsLanguage
   }
 }
 

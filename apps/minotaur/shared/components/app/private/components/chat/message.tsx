@@ -11,7 +11,7 @@ import { Icon, type IconName } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input";
 import { Typography } from "@/shared/ui/typography";
 import { ActionButton, DeleteButton } from "../ui";
-import dayjs from "@/shared/lib/create-dayjs";
+import { dayjs } from "@/shared/lib/dayjs";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Fragment, type ReactNode } from "react";
 import { createLink } from "@/shared/components/config/link/link.model";

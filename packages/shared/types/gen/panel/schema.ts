@@ -11,6 +11,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Return static welcome HTML */
         get: operations["getIndex"];
         put?: never;
         post?: never;
@@ -27,6 +28,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Healthcheck */
         get: operations["getHealth"];
         put?: never;
         post?: never;
@@ -45,6 +47,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Webhook for receiving all watchtower alerts */
         post: operations["postWatchtower"];
         delete?: never;
         options?: never;
@@ -59,8 +62,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Get Traefik dynamic configuration */
         get: operations["getTraefik"];
         put?: never;
+        /** Update Traefik dynamic configuration */
         post: operations["postTraefik"];
         delete?: never;
         options?: never;
@@ -98,7 +103,29 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
-        responses: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": "OK";
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        error: "INTERNAL_SERVER_ERROR";
+                    };
+                };
+            };
+        };
     };
     postWatchtower: {
         parameters: {
@@ -115,7 +142,28 @@ export interface operations {
                 };
             };
         };
-        responses: never;
+        responses: {
+            /** @description Response for status 200 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": "OK";
+                };
+            };
+            /** @description Response for status 500 */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
     };
     getTraefik: {
         parameters: {

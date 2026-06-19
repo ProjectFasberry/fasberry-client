@@ -1,7 +1,7 @@
 import { reatomComponent } from "@reatom/npm-react";
 import { createStorageModel } from "../models/storage.model";
 import { Skeleton } from "@/shared/ui/skeleton";
-import dayjs from "@/shared/lib/create-dayjs";
+import { dayjs } from "@/shared/lib/dayjs";
 import { Portal } from "@ark-ui/react/portal";
 import { Menu } from "@ark-ui/react/menu";
 import { menuVariant } from "@/shared/ui/menu";

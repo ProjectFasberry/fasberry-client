@@ -1,6 +1,6 @@
 import { EditorTest } from "@/shared/components/config/editor/editor"
 import { Link } from "@/shared/components/config/link/link"
-import { locales } from "@/shared/locales"
+import { LOCALES } from "@/shared/locales"
 import { translate } from "@/shared/locales/helpers"
 import { Typography } from "@/shared/ui/typography"
 import { usePageContext } from "vike-react/usePageContext"
@@ -14,7 +14,7 @@ export default function Page() {
         {translate["shared.change-lang.title"]()}
       </Typography>
       <div className="flex flex-col w-full gap-1">
-        {locales.map((locale) => (
+        {LOCALES.map((locale) => (
           <Link
             key={locale}
             locale={locale}

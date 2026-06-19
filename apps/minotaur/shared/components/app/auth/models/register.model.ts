@@ -2,12 +2,12 @@ import {
   action, atom, reatomAsync, spawn, withAssign, withDataAtom, withReset, withStatusesAtom,
   type AtomMut
 } from "@reatom/framework";
-import { invariant } from "@/shared/lib/invariant";
+import { invariant } from "@/shared/lib/utils";
 import { registerSchema } from "@/shared/schemas/auth";
 import { client } from "@/shared/lib/client-wrapper";
 import { auth, type AuthFindoutType, authState, defineError } from "./auth.model";
 import { logError } from "@/shared/lib/log";
-import { isEmptyArray } from "@/shared/lib/helpers";
+import { isEmptyArray } from "@/shared/lib/utils";
 import { createPhraseModel } from "./seed-phrase.model";
 import { createNavigationModel } from "./navigation.model";
 import { authSecurity } from "./auth-security.model";
@@ -15,7 +15,7 @@ import { getExistNickname } from "@/shared/models/shared.model";
 import { maybeSpyOptionAtom } from "@/shared/models/app/utils";
 import { translate } from "@/shared/locales/helpers";
 import * as z from "zod";
-import { downloadFile } from "@/shared/lib/utils";
+import { downloadFile } from "@/shared/lib/helpers";
 
 export type AuthRegisterType = |
   "start-input" |
@@ -227,11 +227,11 @@ export const registerNavigationModel = createNavigationModel({
   typeAtom: registerState.type as AtomMut<string>
 })
 
-export const FINDOUT_OPTIONS: { title: string; value: AuthFindoutType }[] = [
+export const createFindoutOptions = (): { title: string; value: AuthFindoutType }[] => ([
   { title: translate["auth.register.findout.referrer"](), value: "referrer" },
   { title: translate["auth.register.findout.custom"](), value: "custom" },
-];
+])
 
 export const findoutSelectedTypeAtom = atom((ctx) =>
-  FINDOUT_OPTIONS.find((d) => d.value === ctx.spy(authState.fields.findoutType)) ?? null,
+  createFindoutOptions().find((d) => d.value === ctx.spy(authState.fields.findoutType)) ?? null,
 );

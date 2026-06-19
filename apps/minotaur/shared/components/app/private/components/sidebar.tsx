@@ -108,13 +108,12 @@ const linkVariant = tv({
 })
 
 const links = [
-  { title: "Конфигурация", value: "/private/config" },
+  { title: "Конфигурация", value: "/private/" },
   { title: "Мессенджер", value: "/private/messenger" },
   { title: "Магазин", value: "/private/store" },
   { title: "Игрок", value: "/private/users" },
   { title: "История", value: "/private/history" },
   { title: "Панель", value: "/private/panel" },
-  { title: "Дашборд", value: "/private/dashboard" },
   { title: "Тестовое", value: "/private/test" },
 ]
 

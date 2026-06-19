@@ -3,7 +3,7 @@ import { reatomRecord, withAssign, withReset } from "@reatom/framework";
 import { withSearchParamsPersist } from "@reatom/url";
 import { pof } from "@/shared/models/shared.model";
 import { maybeSpyOptionAtom } from "@/shared/models/app/utils";
-import { isError } from "@/shared/lib/helpers";
+import { isError } from "@/shared/lib/utils";
 import { logger } from "@/shared/lib/logger";
 
 const AUTH_TYPE = ["register", "login"] as const;
