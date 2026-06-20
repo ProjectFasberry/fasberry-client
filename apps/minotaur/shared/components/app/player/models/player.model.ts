@@ -10,6 +10,7 @@ import { logError } from "@/shared/lib/log"
 import type { PageContextServer } from "vike/types"
 import { redirect } from "vike/abort"
 import { pageState } from "@/shared/models/page-context.model"
+import { getNotExistUrlByEntity } from "@/shared/lib/helpers"
 
 export const PLAYER_RATE_DATA_KEY = "playerRateState.data";
 export const PLAYER_TAGS_DATA_KEY = "playerState.tags"
@@ -64,7 +65,7 @@ export const player = atom(null, "player").pipe(
         });
 
       if (!player) {
-        throw redirect("/not-exist?type=player")
+        throw redirect(getNotExistUrlByEntity("player"))
       };
 
       const { rate, nickname, ...base } = player;

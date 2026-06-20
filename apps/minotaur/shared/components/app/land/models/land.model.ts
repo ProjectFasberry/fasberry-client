@@ -9,6 +9,7 @@ import { client, withQueryParams } from "@/shared/lib/client-wrapper";
 import { isEmpty, isEmptyArray } from "@/shared/lib/utils";
 import type { PageContextServer } from "vike/types";
 import { render } from "vike/abort";
+import { getNotExistUrlByEntity } from "@/shared/lib/helpers";
 
 export type Land = ExtractApiData<"getServerLandsByUlid">["data"]
 type LandExtended = Land & {
@@ -68,7 +69,7 @@ export const land = atom(null, "lands").pipe(
         return null;
       })
 
-      if (!land) throw render("/not-exist?type=land")
+      if (!land) throw render(getNotExistUrlByEntity("land"))
 
       const item = {
         ...land,

@@ -157,3 +157,18 @@ export function isBotRequest(headers: Record<string, string | undefined>, pathna
   return result;
 }
 
+const NOT_EXIST_TYPES_ARR = ["player", "land", "store.item", "default"] as const;
+
+export const NOT_EXIST_TYPES: Record<typeof NOT_EXIST_TYPES_ARR[number], string> = {
+  "player": "Игрок не найден",
+  "land": "Похоже этого региона уже нет",
+  "store.item": "Товар не найден",
+  "default": "Ресурс не найден"
+} as const;
+
+export const getNotExistUrlByEntity = (t?: keyof typeof NOT_EXIST_TYPES): `/not-exist?t=${NonNullable<typeof t>}` => {
+  return `/not-exist?t=${t ?? "default"}`
+}
+export const getNotExistType = (search: Record<string, string>): typeof NOT_EXIST_TYPES_ARR[number] => {
+  return NOT_EXIST_TYPES_ARR.find((t) => t === search.t) ?? "default"
+}

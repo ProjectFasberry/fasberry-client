@@ -10,7 +10,6 @@ import { navigate } from "vike/client/router"
 import { changesIsExistsAtom, landActionTitleAtom, landEditing, landEditingState } from "../models/edit-land.model"
 import { LandBanner, LandBannerWithEditing } from "./land-banner"
 import { Carousel } from '@ark-ui/react/carousel'
-import { lazy } from "react"
 import { getDataFromSnapshot } from "@/shared/models/app/utils"
 import { isEmptyArray } from "@/shared/lib/utils"
 import { tv } from "tailwind-variants"
@@ -23,12 +22,13 @@ import { Noop } from "@/shared/ui/noop"
 import { SummaryNumber } from "@/shared/ui/summary-number"
 import { translate } from "@/shared/locales/helpers"
 import type { LandSimilar } from "../../lands/models/lands.model"
-
-const LandAccess = lazy(() => import("./land-access").then(m => ({ default: m.LandAccess })))
+import { ENVIRONMENT } from "@/shared/consts"
+import { LandAccess } from "./land-access"
+import { ClientOnly } from "vike-react/ClientOnly"
 
 const LandGallery = reatomComponent(({ ctx }) => {
   const landGallery = ctx.spy(landGalleryAtom)
-  if (isEmptyArray(landGallery)) return null;
+  if (!landGallery || isEmptyArray(landGallery)) return null;
 
   return (
     <Carousel.Root
@@ -196,12 +196,10 @@ const LandLinks = reatomComponent(({ ctx }) => {
 
 const LandDetails = reatomComponent(({ ctx }) => {
   const land = ctx.spy(landState.data)
-  if (!land) return null;
 
   const currentUser = getDataFromSnapshot("currentUser")
   const isAccessible = currentUser?.meta.role.id === 3
-
-  const { ulid, members } = land;
+  console.log(ENVIRONMENT, isAccessible); // server, true
 
   const isOwner = ctx.spy(landIsOwnerAtom);
   const points = land?.points
@@ -212,12 +210,14 @@ const LandDetails = reatomComponent(({ ctx }) => {
       className="flex flex-col sm:flex-row items-start min-w-0 sm:items-center gap-1 sm:gap-4 w-full"
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 min-w-0">
-        <Typography
-          className="text-base text-nowrap truncate"
-          color='gray'
-        >
-          {members.length} {members.length === 1 ? "участник" : "участников"}
-        </Typography>
+        {land?.members && (
+          <Typography
+            className="text-base text-nowrap truncate"
+            color='gray'
+          >
+            {land?.members.length} {land?.members.length === 1 ? "участник" : "участников"}
+          </Typography>
+        )}
         <Splitter className="hidden sm:inline" />
         <Typography
           className="text-base cursor-pointer hover:text-neutral-50 text-nowrap truncate"
@@ -229,7 +229,9 @@ const LandDetails = reatomComponent(({ ctx }) => {
       </div>
       <div className="flex items-center gap-2 min-w-0">
         {isAccessible && (
-          <LandAccess ulid={ulid} />
+          <ClientOnly>
+            <LandAccess ulid={land?.ulid ?? ""} />
+          </ClientOnly>
         )}
         {isOwner && (
           <LandToggleMode />
