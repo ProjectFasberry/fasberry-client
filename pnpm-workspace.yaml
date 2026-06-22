@@ -9,3 +9,5 @@ allowBuilds:
   workerd: false
 overrides:
   "@reatom/core": "3.10.3"
+  "@tiptap/core": "3.10.5"
+  "@tiptap/extensions": "3.10.5"

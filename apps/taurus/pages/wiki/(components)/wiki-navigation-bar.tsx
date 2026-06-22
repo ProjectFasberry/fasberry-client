@@ -8,9 +8,9 @@ import { useAtom } from "@reatom/npm-solid-js";
 import { createSignal, For, Index, Match, Show, Switch } from "solid-js";
 import { Icon } from "@/shared/ui/icon";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/shared/ui/drawer";
-import { accordionItemContentVariant, accordionItemTriggerVariant, accordionItemVariant, accordionRootVariant } from "@/shared/ui/accordion";
+import { accordionVariant } from "@/shared/ui/accordion";
 import { atom } from "@reatom/framework";
-import { pageState } from "@/shared/models/global.model";
+import { pageState } from "@/shared/models/page.model";
 
 const BarTrigger = (p: { value: string, title: string, onClick?: () => void }) => {
   const [isActiveAtom] = useAtom(getIsActiveAtom(p.value));
@@ -59,16 +59,16 @@ const NavigationList = (p: { handle?: () => void }) => {
                 collapsible
                 value={accordionNodesAtom()}
                 onValueChange={(details) => setAccordionNodesAtom(details.value)}
-                class={accordionRootVariant()}
+                class={accordionVariant.root()}
               >
                 <For each={data()}>
                   {([key, { title, isChilded, nodes }]) => (
                     isChilded ? (
-                      <Accordion.Item value={key} class={accordionItemVariant()}>
-                        <Accordion.ItemTrigger class={accordionItemTriggerVariant({ class: "px-0 py-2 group" })}>
+                      <Accordion.Item value={key} class={accordionVariant.item()}>
+                        <Accordion.ItemTrigger class={accordionVariant.itemTrigger({ class: "px-0 py-2 group" })}>
                           <Typography class="text-lg">{title}</Typography>
                         </Accordion.ItemTrigger>
-                        <Accordion.ItemContent class={accordionItemContentVariant({ class: "flex gap-1 w-full h-full" })}>
+                        <Accordion.ItemContent class={accordionVariant.itemContent({ class: "flex gap-1 w-full h-full" })}>
                           <div class="w-1 mt-1 bg-neutral-800" />
                           <div class="flex flex-col gap-0.5 h-full w-full">
                             <For each={nodes}>

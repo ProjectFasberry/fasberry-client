@@ -4,14 +4,14 @@ import { Menu } from '@ark-ui/solid/menu'
 import { Typography } from "@/shared/ui/typography";
 import { useAtom } from "@reatom/npm-solid-js";
 import { For, lazy, Show } from "solid-js";
-import { pageState } from "@/shared/models/global.model";
+import { pageState } from "@/shared/models/page.model";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/shared/ui/drawer";
 import { getStaticObject } from "@/shared/lib/helpers";
 import { ClientOnly } from "vike-solid/ClientOnly";
-import { expImage, logoImage, MAIN_HEADER, headerDrawerState } from "./header.model";
+import { expImage, logoImage, createMainHeaderLinks, headerDrawerState, type MainHeaderLink } from "./header.model";
 import { tv } from "tailwind-variants";
-import { menuContentVariant, menuTriggerVariant } from "../ui/menu";
-import { cn } from "../lib/utils";
+import { menuVariant } from "../../ui/menu";
+import { cn } from "../../lib/utils";
 
 const bellImg = getStaticObject("minecraft/icons", "bell.webp");
 const bgImage = getStaticObject("minecraft/static", "cracked_polished_blacked.webp")
@@ -61,7 +61,7 @@ const headerItemVariant = tv({
   }
 })
 
-const HeaderItemMenu = (props: typeof MAIN_HEADER[0]) => {
+const HeaderItemMenu = (props: MainHeaderLink) => {
   const [urlParsedAtom] = useAtom(pageState.urlParsed);
 
   const pathname = () => urlParsedAtom()?.pathname
@@ -88,7 +88,7 @@ const HeaderItemMenu = (props: typeof MAIN_HEADER[0]) => {
       when={props.href}
       fallback={
         <Menu.Root>
-          <Menu.Trigger class={menuTriggerVariant({ class: "group" })}>
+          <Menu.Trigger class={menuVariant.trigger({ class: "group" })}>
             <div class={cn(headerItemVariant().base(), props.class)}>
               <Typography class={headerItemVariant().label()}>{props.name}</Typography>
               <Show when={props.childs}>
@@ -97,7 +97,7 @@ const HeaderItemMenu = (props: typeof MAIN_HEADER[0]) => {
             </div>
           </Menu.Trigger>
           <Menu.Positioner>
-            <Menu.Content class={menuContentVariant({ class: "flex flex-col gap-2 w-full min-w-[200px]" })}>
+            <Menu.Content class={menuVariant.content({ class: "flex flex-col gap-2 w-full min-w-[200px]" })}>
               <Show when={props.childs}>
                 {(childs) => (
                   <For each={childs()}>
@@ -152,7 +152,8 @@ export const Header = () => {
         <img src={logoImage} draggable={false} width={224} height={64} title="Fasberry" alt="Fasberry" />
       </Link>
       <div class="hidden xl:flex gap-8 items-center justify-start pr-[132px]">
-        <For each={MAIN_HEADER}>
+        <For each={createMainHeaderLinks()}>
+          {/* @ts-expect-error */}
           {(item) => <HeaderItemMenu {...item} />}
         </For>
       </div>

@@ -10,6 +10,7 @@ import { onMount, Show } from "solid-js";
 import { useAtom, useCtx } from "@reatom/npm-solid-js";
 import { serverIp } from "./(models)/server-ip.model";
 import { Portal } from "solid-js/web";
+import { translate } from "@/shared/locales/helpers";
 
 const APP_URL = env.VITE_APP_URL
 const dirtImage = getStaticObject("minecraft/static", "dirt.webp")
@@ -45,9 +46,9 @@ const ServerIp = () => {
           <Typography onClick={() => serverIp.copyIp(ctx)} class="text-left">
             <Show
               when={!statusesAtom().isPending}
-              fallback={"загрузка..."}
+              fallback={translate["start.loading"]()}
             >
-              <Show when={dataAtom()} fallback="недоступно">
+              <Show when={dataAtom()} fallback={translate["start.not-available"]()}>
                 {(data) => data()}
               </Show>
             </Show>
@@ -57,7 +58,7 @@ const ServerIp = () => {
       <Portal>
         <Tooltip.Positioner>
           <Tooltip.Content class={tooltipContentVariant()}>
-            <Typography color="gray">Скопировать IP</Typography>
+            <Typography color="gray">{translate["start.copy-ip"]()}</Typography>
           </Tooltip.Content>
         </Tooltip.Positioner>
       </Portal>
@@ -70,11 +71,11 @@ const HowToConnectOnServer = () => {
     <div class="flex justify-center items-center px-4 py-8 relative h-full w-full">
       <div class="flex flex-col gap-6 justify-between md:w-96 w-full">
         <div class="flex flex-col gap-2 w-full">
-          <Typography color="gray">Название сервера</Typography>
+          <Typography color="gray">{translate["start.template.server-name"]()}</Typography>
           <div class="bg-black py-2 px-2 border-2 border-neutral-500 w-full">
-            <Typography class="text-left">Сервер Minecraft</Typography>
+            <Typography class="text-left">{translate["start.template.server-mc"]()}</Typography>
           </div>
-          <Typography color="gray">Адрес сервера</Typography>
+          <Typography color="gray">{translate["start.template.server-addr"]()}</Typography>
           <ServerIp />
         </div>
         <div class="flex flex-col gap-y-2">
@@ -82,7 +83,7 @@ const HowToConnectOnServer = () => {
             <Tooltip.Trigger>
               <div class="flex items-center justify-start bg-black w-full py-2 px-2 border-2 border-neutral-500">
                 <Typography class="text-center">
-                  Наборы ресурсов: Включены
+                  {translate["start.template.rp-enabled"]()}
                 </Typography>
               </div>
             </Tooltip.Trigger>
@@ -90,7 +91,7 @@ const HowToConnectOnServer = () => {
               <Tooltip.Positioner>
                 <Tooltip.Content class={tooltipContentVariant()}>
                   <Typography color="gray">
-                    На сервере используется ресурспак. Эту нужно оставить включенным!
+                    {translate["start.template.rp-tip"]()}
                   </Typography>
                 </Tooltip.Content>
               </Tooltip.Positioner>
@@ -98,7 +99,7 @@ const HowToConnectOnServer = () => {
           </Tooltip.Root>
           <Button class="flex items-center justify-center w-full px-2 py-1">
             <Typography class="text-center">
-              Готово
+              {translate["start.template.done"]()}
             </Typography>
           </Button>
         </div>
@@ -124,7 +125,7 @@ export default function Page() {
     <MainWrapperPage>
       <div class="flex flex-col items-center w-full gap-12 h-full">
         <h1 class="text-white text-center text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl">
-          Как начать играть
+          {translate["start.template.steps.title"]()}
         </h1>
         <div class="flex flex-col gap-16 w-full h-full">
           <div class={stepVariant()}>
@@ -136,9 +137,9 @@ export default function Page() {
                     href={`${APP_URL}/auth`}
                     class="text-green text-shadow-lg hover:underline-offset-8 hover:underline"
                   >
-                    Зарегистрироваться
-                  </a>&nbsp;на проекте.
-                  После регистрации убедитесь, что вы успешно вошли на форум и личный кабинет.
+                    {translate["start.template.register"]()}
+                  </a>&nbsp;{translate["start.template.register-project"]()}
+                  {translate["start.template.register-after"]()}
                 </Typography>
               </div>
             </div>
@@ -159,14 +160,18 @@ export default function Page() {
                 <NumericItem index={2} />
                 <div class="flex flex-col">
                   <Typography color="white" class="text-md md:text-xl lg:text-2xl">
-                    Зайди в клиент майнкрафта под ником, который вы указали при регистрации
+                    {translate["start.template.steps.login"]()}
                   </Typography>
                   <span class="text-white text-md md:text-xl lg:text-2xl mt-4">P.S:</span>
                   <Typography color="white" class="text-md md:text-xl lg:text-2xl">
-                    Если пиратка, рекомендую: <Link href="https://llaun.ch/ru" class="text-neutral-400">*тык</Link>
+                    {translate["start.template.steps.login-tip-pirate"]()} <Link href="https://llaun.ch/ru" class="text-neutral-400">
+                      {translate["start.shared.click"]()}
+                    </Link>
                   </Typography>
                   <Typography color="white" class="text-md md:text-xl lg:text-2xl">
-                    Если лицензия, рекомендую: <Link href="https://modrinth.com/app" class="text-neutral-400">*тык</Link>
+                    {translate["start.template.steps.login-tip-license"]()} <Link href="https://modrinth.com/app" class="text-neutral-400">
+                      {translate["start.shared.click"]()}
+                    </Link>
                   </Typography>
                 </div>
               </div>
@@ -186,7 +191,7 @@ export default function Page() {
             <div class="flex items-start gap-4 w-full sm:w-2/3">
               <NumericItem index={3} />
               <Typography color="white" class="text-md md:text-xl lg:text-2xl">
-                Удачной игры! <span class="text-red">❤</span>
+                {translate["start.template.steps.luckily-game"]()} <span class="text-red">❤</span>
               </Typography>
             </div>
             <div class={stepImageVariant()}>

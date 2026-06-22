@@ -1,5 +1,4 @@
-import { client } from "@/shared/api/client";
-import { wrapClient } from "@/shared/lib/api";
+import { mainClient } from "@/shared/api/client";
 import { reatomAsync, withCache, withStatusesAtom } from "@reatom/framework";
 import { atom, withAssign } from "@reatom/framework";
 
@@ -13,9 +12,6 @@ export type Wiki = {
 type CategoryNode = { title: string, value: string }
 type RulesCategoriesPayloadExtend = {
   [key: string]: { title: string, isChilded: boolean, nodes: CategoryNode[] }
-}
-type RulesCategoriesPayload = {
-  [key: string]: { title: string, nodes: CategoryNode[] }
 }
 
 export const WIKI_PARAM_FALLBACK = "general"
@@ -32,11 +28,13 @@ export const wikiCategories = atom(null, "wikiCategories").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
       return await ctx.schedule(() =>
-        wrapClient<RulesCategoriesPayload>(() => client("wiki/categories", { signal: ctx.controller.signal }))
+        mainClient.GET("/wiki/categories", { signal: ctx.controller.signal }).then(r => r.data?.data ?? null)
       )
     }, {
       name: `${name}.fetch`,
       onFulfill: (ctx, res) => {
+        if (!res) return;
+
         const categories = Object.entries(
           Object.fromEntries(
             Object.entries(res).map(([key, val]) => [

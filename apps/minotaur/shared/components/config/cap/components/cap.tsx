@@ -1,15 +1,11 @@
-import { env } from "@/shared/env";
-import { pof } from "@/shared/models/shared.model";
 import { dialogVariant } from "@/shared/ui/dialog";
-import { IconLoader } from "@/shared/ui/icon-loader";
 import { Noop } from "@/shared/ui/noop";
 import { Typography } from "@/shared/ui/typography";
 import { Dialog } from "@ark-ui/react/dialog";
 import { Portal } from "@ark-ui/react/portal";
 import { CapWidget } from "@better-captcha/react/provider/cap-widget";
 import { reatomComponent } from "@reatom/npm-react";
-
-const getCapUrl = () => `${env.VITE_CAP_URL}/${env.VITE_CAP_SITE_KEY}/`;
+import { getCapUrl, pof } from "../models/cap.model";
 
 const CAP_OPTIONS = {
   i18nInitialState: "Я человек",
@@ -23,28 +19,44 @@ const CAP_OPTIONS = {
   i18nSolvedLabel: "Пройдено",
 }
 
-const CapWidgetWrapper = reatomComponent(({ ctx }) => {
-  const data = ctx.spy(pof.cb);
-  if (!data) return (
+const CapWidgetError = ({ callback }: { callback: () => void }) => {
+  return (
     <div className="flex flex-col items-center justify-center gap-4">
       <Noop title="ничего нет" />
       <Typography color="gray" className="text-sm font-semibold">
         Возможно это ошибка
       </Typography>
       {import.meta.env.DEV && (
-        <button onClick={() => pof.cb(ctx, {})}>
-          test
+        <button onClick={callback}>
+          Повторить
         </button>
       )}
     </div>
   )
+}
 
-  const { onSolve, onError, onReady } = data;
+const CapWidgetWrapper = reatomComponent(({ ctx }) => {
+  const data = ctx.spy(pof.data);
+
+  if (!data) {
+    return (
+      <CapWidgetError callback={() => { }} />
+    )
+  }
+
+  const { cb: { onSolve, onError, onReady }, withProgress } = data;
 
   return (
     <CapWidget
       endpoint={getCapUrl()}
-      options={CAP_OPTIONS}
+      options={{
+        ...CAP_OPTIONS,
+        onprogress: (e) => {
+          if (withProgress) {
+            console.log(e.detail.progress)
+          }
+        },
+      }}
       onSolve={(value) => onSolve?.(value)}
       onError={(e) => onError?.(e)}
       onReady={() => onReady?.()}

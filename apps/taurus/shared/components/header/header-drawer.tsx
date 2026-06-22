@@ -1,11 +1,11 @@
 import { useAtom, useCtx } from "@reatom/npm-solid-js";
-import { pageState } from "@/shared/models/global.model";
+import { pageState } from "@/shared/models/page.model";
 import { tv } from "tailwind-variants";
 import { For, Show } from "solid-js";
 import { Accordion } from "@ark-ui/solid/accordion";
 import { Typography } from "@/shared/ui/typography";
-import { expImage, MAIN_HEADER, headerDrawerState } from "./header.model";
-import { accordionItemContentVariant, accordionItemTriggerVariant, accordionItemVariant, accordionRootVariant } from "../ui/accordion";
+import { expImage, createMainHeaderLinks, headerDrawerState } from "./header.model";
+import { accordionVariant } from "../../ui/accordion";
 
 const ExperienceCircle = () => {
   return (
@@ -37,7 +37,7 @@ export const HeaderDrawerContent = () => {
 
   return (
     <div class="flex flex-col items-center justify-center w-full gap-2">
-      <For each={MAIN_HEADER}>
+      <For each={createMainHeaderLinks()}>
         {(item) => (
           <Show
             when={item.childs}
@@ -65,18 +65,18 @@ export const HeaderDrawerContent = () => {
                 multiple={false}
                 collapsible
                 defaultValue={[item.name]}
-                class={accordionRootVariant()}
+                class={accordionVariant.root()}
               >
-                <Accordion.Item value={item.name} class={accordionItemVariant()}>
+                <Accordion.Item value={item.name} class={accordionVariant.item()}>
                   <Accordion.ItemTrigger
-                    class={accordionItemTriggerVariant({ class: itemVariant() })}
+                    class={accordionVariant.itemTrigger({ class: itemVariant() })}
                   >
                     <Show when={item.href === pathname()}>
                       <ExperienceCircle />
                     </Show>
                     <Typography>{item.name}</Typography>
                   </Accordion.ItemTrigger>
-                  <Accordion.ItemContent class={accordionItemContentVariant({ class: "flex gap-1 pt-1" })}>
+                  <Accordion.ItemContent class={accordionVariant.itemContent({ class: "flex gap-1 pt-1" })}>
                     <div class="w-[2px] mt-1 bg-neutral-700" />
                     <div class="flex flex-col gap-2 w-full">
                       <For each={data()}>

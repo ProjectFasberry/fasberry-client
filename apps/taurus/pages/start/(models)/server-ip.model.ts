@@ -1,5 +1,5 @@
-import { client } from "@/shared/api/client"
-import { wrapClient } from "@/shared/lib/api"
+import { mainClient } from "@/shared/api/client"
+import { translate } from "@/shared/locales/helpers"
 import { reatomAsync, withCache, withDataAtom, withStatusesAtom } from "@reatom/framework"
 import { action, atom, withAssign } from "@reatom/framework"
 import { toast } from "solid-sonner"
@@ -7,11 +7,12 @@ import { toast } from "solid-sonner"
 export const serverIp = atom(null, "serverIp").pipe(
   withAssign((_, name) => ({
     fetch: reatomAsync(async (ctx) => {
-      return await ctx.schedule(() =>
-        wrapClient<ExtractApiData<"getServer-ip">["data"]>(() => client("server-ip", { signal: ctx.controller.signal, }))
+      return await ctx.schedule(() => mainClient
+        .GET("/server-ip", { signal: ctx.controller.signal })
+        .then(r => r.data?.data ?? null)
       )
     }, `${name}.fetch`).pipe(
-      withDataAtom(null, (_, data) => data.ip),
+      withDataAtom(null, (_, data) => data?.ip ?? null),
       withCache({ swr: false }),
       withStatusesAtom()
     ),
@@ -20,7 +21,7 @@ export const serverIp = atom(null, "serverIp").pipe(
       if (!data) return;
 
       await navigator.clipboard.writeText(data)
-      toast.success("IP успешно скопирован!")
+      toast.success(translate["shared.copied-to-clipboard"]())
     })
   }))
 )

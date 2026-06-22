@@ -1,10 +1,10 @@
 import { action, atom, type Action } from "@reatom/framework";
 import { reatomRecord, withAssign, withReset } from "@reatom/framework";
 import { withSearchParamsPersist } from "@reatom/url";
-import { pof } from "@/shared/models/shared.model";
 import { maybeSpyOptionAtom } from "@/shared/models/app/utils";
 import { isError } from "@/shared/lib/utils";
 import { logger } from "@/shared/lib/logger";
+import { pof } from "@/shared/components/config/cap/models/cap.model";
 
 const AUTH_TYPE = ["register", "login"] as const;
 export type AuthType = typeof AUTH_TYPE[number];
@@ -80,15 +80,27 @@ export const auth = atom(null, "auth").pipe(
     }),
     defineCap: action((ctx) => {
       pof.isOpen(ctx, true);
-      pof.cb(ctx, {
-        onSolve: (token) => {
-          pof.isOpen(ctx, false);
-          authState.token(ctx, token);
-          authState.isProcessing(ctx, false);
+
+      pof.data(ctx, {
+        cb: {
+          onSolve: (token) => {
+            pof.isOpen(ctx, false);
+            authState.token(ctx, token);
+            authState.isProcessing(ctx, false);
+          },
+          onError: (e) => {
+            pof.isOpen(ctx, false);
+            authState.isProcessing(ctx, false);
+
+            if (typeof e === 'string') {
+              authState.globalError(ctx, e);
+            } else if (e instanceof Error) {
+              authState.globalError(ctx, e.message);
+            } else {
+              authState.globalError(ctx, "Captcha error");
+            }
+          }
         },
-        onError: () => {
-          authState.globalError(ctx, "Captcha error");
-        }
       })
     })
   })),

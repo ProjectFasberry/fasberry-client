@@ -11,6 +11,7 @@ export default {
     "/info/privacy": "https://api.fasberry.fun/misc/privacy",
     "/info/terms": "https://api.fasberry.fun/misc/terms",
     "/info/contacts": "https://api.fasberry.fun/misc/contacts",
+    "/discord": "https://api.fasberry.fun/misc/discord",
+    "/telegram": "https://api.fasberry.fun/misc/telegram"
   },
-  server: true
 } satisfies Config;

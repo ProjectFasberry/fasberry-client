@@ -1,23 +1,26 @@
 import { useConfig } from 'vike-solid/useConfig';
 import type { PageContextServer } from 'vike/types';
-import type { Wiki } from '@/pages/wiki/(components)/wiki.model';
-import { client } from '@/shared/api/client';
 import { getUrl, wrapTitle } from '@/shared/lib/helpers';
 import { renderToMarkdown } from '@tiptap/static-renderer/pm/markdown'
 import { editorExtensions as extensions } from '@/shared/components/editor.model';
-import { wrapClient } from '@/shared/lib/api';
+import { translate } from '@/shared/locales/helpers';
+import { mainClient } from '@/shared/api/client';
+import type { JSONContent } from '@tiptap/core'
 
 export type Data = Awaited<ReturnType<typeof data>>
 
 export async function data(pageCtx: PageContextServer) {
   const config = useConfig();
 
-  const categoryResult = await wrapClient<Wiki | null>(
-    () => client(`wiki/category/${pageCtx.routeParams.category}`, { headers: pageCtx.headers ?? undefined })
-  )
+  const categoryResult = await mainClient
+    .GET(`/wiki/category/{name}`, {
+      params: { path: { name: pageCtx.routeParams.category } },
+      headers: pageCtx.headers ?? undefined
+    })
+    .then(r => r.data?.data ?? null)
 
   if (!categoryResult) {
-    const title = "Статья не найдена";
+    const title = translate["pages.wiki.not-found"]()
 
     config({
       title,
@@ -38,7 +41,9 @@ export async function data(pageCtx: PageContextServer) {
   }
 
   const title = wrapTitle(`${categoryResult.title}`);
-  const markdown = renderToMarkdown({ extensions, content: categoryResult.content })
+  const markdown = renderToMarkdown({
+    extensions, content: categoryResult.content as JSONContent
+  })
   const description = markdown.slice(0, 128) + '...'
 
   config({

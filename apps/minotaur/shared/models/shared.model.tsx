@@ -1,6 +1,6 @@
 import { client } from "../lib/client-wrapper"
 import { action, atom, reatomAsync, withErrorAtom, withStatusesAtom, type Ctx } from "@reatom/framework";
-import { withAssign, withReset } from "@reatom/framework";
+import { withAssign } from "@reatom/framework";
 import { playerSeemsLikePlayersIsShowKey, playerSLPState } from "../components/app/player/models/player-seems-like.model";
 import { parseBoolean } from "../lib/utils";
 import { parseCookie } from "../lib/cookie-utils";
@@ -17,23 +17,6 @@ type ExistNicknamePayload = ExtractApiData<"getValidateNicknameByNickname">["dat
 export async function getExistNickname(nickname: string) {
   return client<ExistNicknamePayload>(`validate/nickname/${nickname}`).exec()
 }
-
-type PofCallback = Partial<{
-  onSolve: (token: string) => void,
-  onError: (e: unknown) => void,
-  onReady: () => void
-}>
-
-export const pof = atom(null, "pof").pipe(
-  withAssign((_, name) => ({
-    isOpen: atom(false, `${name}.isOpen`),
-    cb: atom<PofCallback | null>(null, `${name}.cb`).pipe(withReset()),
-    resetAll: action((ctx) => {
-      pof.isOpen(ctx, false)
-      pof.cb.reset(ctx)
-    }),
-  })),
-);
 
 type Target<T = unknown> = Record<string, {
   atom: (ctx: Ctx, atom: any) => void, validator?: (value: string | T) => T;
