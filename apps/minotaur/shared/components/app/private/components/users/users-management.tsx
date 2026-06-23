@@ -127,7 +127,7 @@ const CreateUser = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "w-1/4" })}>
+          <Dialog.Content className={dialogVariant.content("w-1/4")}>
             <DialogTitle className={dialogVariant.title()}>Создание юзера</DialogTitle>
             <CreateUserForm />
             <DialogClose />
@@ -189,7 +189,7 @@ const DeleteUser = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "w-1/4" })}>
+          <Dialog.Content className={dialogVariant.content("w-1/4")}>
             <DialogTitle className={dialogVariant.title()}>Удаление юзера</DialogTitle>
             <DeleteUserForm />
             <DialogClose />

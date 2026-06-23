@@ -75,7 +75,7 @@ const PlayerServer = reatomComponent(({ ctx }) => {
         <Portal>
           <Dialog.Backdrop className={dialogVariant.backdrop()} />
           <Dialog.Positioner className={dialogVariant.positioner()}>
-            <Dialog.Content className={dialogVariant.content({ className: "overflow-hidden h-2/3" })}>
+            <Dialog.Content className={dialogVariant.content("overflow-hidden h-2/3")}>
               <DialogTitle>Локация игрока</DialogTitle>
               <PlayerLocation nickname={nickname} />
               <Dialog.CloseTrigger />

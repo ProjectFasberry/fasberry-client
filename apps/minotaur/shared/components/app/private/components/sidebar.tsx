@@ -73,7 +73,7 @@ const UserInfo = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "items-start! justify-start! h-2/3" })}>
+          <Dialog.Content className={dialogVariant.content("items-start! justify-start! h-2/3")}>
             <Dialog.Title className={dialogVariant.title()}>Разрешения</Dialog.Title>
             <div className="flex flex-col gap-2 h-full overflow-y-auto rounded-xl scrollbar scrollbar-thumb-neutral-800 w-full">
               {groups.map((group) => (

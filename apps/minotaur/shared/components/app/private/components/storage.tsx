@@ -149,7 +149,7 @@ export const storageModel = ({
           </Menu.Trigger>
           <Portal>
             <Menu.Positioner>
-              <Menu.Content className={menuVariant.content({ className: "min-w-[340px]" })}>
+              <Menu.Content className={menuVariant.content("min-w-[340px]")}>
                 <StorageContent />
               </Menu.Content>
             </Menu.Positioner>

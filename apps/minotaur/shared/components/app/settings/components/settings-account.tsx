@@ -60,7 +60,7 @@ const SettingsMainChangePassword = reatomComponent(({ ctx }) => {
         <Portal>
           <Dialog.Backdrop className={dialogVariant.backdrop()} />
           <DialogPositioner className={dialogVariant.positioner()}>
-            <Dialog.Content className={dialogVariant.content({ className: "w-1/4!" })}>
+            <Dialog.Content className={dialogVariant.content("w-1/4!")}>
               <Dialog.Title className={dialogVariant.title()}>Изменение пароля</Dialog.Title>
               <form
                 className="flex flex-col gap-6 w-full inert:opacity-60 inert:pointer-events-none"

@@ -43,7 +43,7 @@ const ConnectionsAddDialog = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "max-w-[600px]" })}>
+          <Dialog.Content className={dialogVariant.content("max-w-[600px]")}>
             <div className="flex flex-col w-full">
               {isLoading ? (
                 <IconLoader />

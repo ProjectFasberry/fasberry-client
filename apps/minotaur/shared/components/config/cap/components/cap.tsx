@@ -70,7 +70,7 @@ export const Cap = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "bg-transparent!" })}>
+          <Dialog.Content className={dialogVariant.content("bg-transparent!")}>
             <CapWidgetWrapper />
           </Dialog.Content>
         </Dialog.Positioner>

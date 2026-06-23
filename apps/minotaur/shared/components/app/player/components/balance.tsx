@@ -14,7 +14,7 @@ import NumberFlow from '@number-flow/react'
 import { translate } from "@/shared/locales/helpers";
 import { Menu } from '@ark-ui/react/menu'
 import { menuVariant } from "@/shared/ui/menu";
-import clsx from "clsx";
+import { clsx } from "cnfast";
 
 const cardImage = getStaticImage("arts/steve_night.jpg")
 
@@ -48,7 +48,7 @@ const BalanceServerSelect = reatomComponent(({ ctx }) => {
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className={menuVariant.content({ className: "min-w-[140px]" })}>
+        <Menu.Content className={menuVariant.content("min-w-[140px]")}>
           <Menu.Arrow className={menuVariant.arrow()}>
             <Menu.ArrowTip className={menuVariant.arrowTip()} />
           </Menu.Arrow>

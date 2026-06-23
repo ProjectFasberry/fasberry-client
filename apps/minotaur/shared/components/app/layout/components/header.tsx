@@ -95,16 +95,16 @@ const LangSwitcher = reatomComponent(({ ctx }) => {
       <Select.Trigger
         aria-label={translate["shared.change-lang.title"]()}
         title={translate["shared.change-lang.title"]()}
-        className={selectVariant.trigger({ className: "bg-neutral-900 h-full px-3" })}
+        className={selectVariant.trigger("bg-neutral-900 h-full px-3")}
       >
         <Icon name="sprite:language" className="size-5 text-neutral-400" />
       </Select.Trigger>
       <Portal>
         <Select.Positioner>
-          <Select.Content className={selectVariant.content({ className: "min-w-[200px]" })}>
+          <Select.Content className={selectVariant.content("min-w-[200px]" )}>
             <Select.ItemGroup className={selectVariant.itemGroup()}>
               {LOCALES.map((locale) => (
-                <Select.Item key={locale} item={locale} className={selectVariant.item({ className: "text-base" })}>
+                <Select.Item key={locale} item={locale} className={selectVariant.item("text-base")}>
                   <Select.ItemText className={selectVariant.itemText()}>
                     {LOCALES_MAP[locale]}
                   </Select.ItemText>

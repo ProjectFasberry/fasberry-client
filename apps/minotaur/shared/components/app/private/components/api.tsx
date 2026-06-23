@@ -106,7 +106,7 @@ const AfterCreateApiKeyDialog = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "sm:max-w-[480px]" })}>
+          <Dialog.Content className={dialogVariant.content("sm:max-w-[480px]")}>
             <AfterCreateApiKeyDialogContent />
             <DialogClose />
           </Dialog.Content>

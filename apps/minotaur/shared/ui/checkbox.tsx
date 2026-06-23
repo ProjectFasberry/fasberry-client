@@ -1,7 +1,7 @@
 import { Icon } from "@/shared/ui/icon"
 import { tv, type VariantProps } from "tailwind-variants"
 import { Checkbox as CheckboxDefault } from '@ark-ui/react/checkbox'
-import clsx from "clsx"
+import { clsx } from "cnfast"
 
 const checkboxVariant = tv({
   base: `

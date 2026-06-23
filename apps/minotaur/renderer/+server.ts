@@ -8,7 +8,9 @@ import { sentry } from "@/shared/sentry";
 import { paraglideMiddleware } from "@/paraglide/server";
 import { DEFAULT_LOCALE, type Locale } from "@/shared/locales";
 
-await sentry.init({ variant: "server" })
+await sentry.init({ variant: "server" }).catch(e => {
+  consola.error("Failed to initialize Sentry", e)
+})
 
 const port = Number(env["VITE_APP_PORT"])
 process.env.PORT = String(port)

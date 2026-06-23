@@ -215,7 +215,7 @@ export const ChatMessage = reatomComponent<ChatItem>(({
                 <Menu.Item
                   key={item.value}
                   value={item.value}
-                  className={menuVariant.item({ className: item.style?.variant === 'danger' ? "text-red" : "" })}
+                  className={menuVariant.item(item.style?.variant === 'danger' ? "text-red" : "")}
                 >
                   <Icon name={item.icon} className="size-4" />
                   {typeof item.label === 'function' ? label : <span>{label}</span>}

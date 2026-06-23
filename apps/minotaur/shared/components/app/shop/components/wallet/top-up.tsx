@@ -220,7 +220,7 @@ const TopupValue = reatomComponent(({ ctx }) => {
         onValueChange={({ value }) => topupState.wallet(ctx, value[0])}
         className="min-w-36"
       >
-        <Select.Control className={selectVariant.control({ className: "w-full" })}>
+        <Select.Control className={selectVariant.control("w-full")}>
           <Select.Trigger className={selectVariant.trigger()}>
             <Select.ValueText className="w-fit">
               <TopUpTarget img={WALLETS_IMGS[ctx.spy(topupState.wallet)]} />

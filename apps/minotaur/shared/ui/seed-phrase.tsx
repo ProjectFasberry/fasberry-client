@@ -2,7 +2,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { type ComponentPropsWithoutRef, createContext, type PropsWithChildren, type ReactNode, useContext, useRef } from 'react';
 import { Icon } from "@/shared/ui/icon"
-import clsx from 'clsx';
+import { clsx } from 'cnfast';
 
 type SeedPhraseContextType = {
   words: string[];

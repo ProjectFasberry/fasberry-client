@@ -67,7 +67,7 @@ export const UsersItemMenu = reatomComponent(({ ctx }) => {
               zIndex: 9999,
             }}
           >
-            <Menu.Content className={menuVariant.content({ className: "min-w-40" })}>
+            <Menu.Content className={menuVariant.content("min-w-40")}>
               <Menu.Arrow className={menuVariant.arrow()}>
                 <Menu.ArrowTip className={menuVariant.arrowTip()} />
               </Menu.Arrow>

@@ -17,7 +17,7 @@ export const LandAccess = reatomComponent<{ ulid: string }>(({ ctx, ulid }) => {
         }}
       >
         <Menu.Trigger
-          className={menuVariant.trigger({ className: "h-8 w-8 hover:bg-neutral-700 border-neutral-700 border p-1" })}
+          className={menuVariant.trigger("h-8 w-8 hover:bg-neutral-700 border-neutral-700 border p-1")}
         >
           <Icon name="sprite:dots-vertical" className="size-4 text-neutral-400" />
         </Menu.Trigger>

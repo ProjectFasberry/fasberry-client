@@ -376,7 +376,7 @@ const SkinControlChangeSkin = reatomComponent(({ ctx }) => {
       <Portal>
         <Dialog.Backdrop className={dialogVariant.backdrop()} />
         <Dialog.Positioner className={dialogVariant.positioner()}>
-          <Dialog.Content className={dialogVariant.content({ className: "sm:max-w-1/3 sm:max:h-2/3" })}>
+          <Dialog.Content className={dialogVariant.content("sm:max-w-1/3 sm:max:h-2/3")}>
             <DialogTitle className={dialogVariant.title()}>
               Загрузка скина
             </DialogTitle>

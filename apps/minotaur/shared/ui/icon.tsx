@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { clsx } from 'cnfast';
 import { type ComponentProps, forwardRef, useMemo } from 'react';
 import { type SpritePrepareConfig, sprites, type SpritesMeta } from '../types/gen/icon/sprite.gen';
 

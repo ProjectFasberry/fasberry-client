@@ -1,5 +1,5 @@
 import { type ComponentPropsWithRef } from "react"
-import clsx from "clsx"
+import { clsx } from "cnfast"
 
 const ALIGN = {
   "top": "object-top",
