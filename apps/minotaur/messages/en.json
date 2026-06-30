@@ -1,5 +1,14 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "verification": {
+    "initial": "I'm not a robot",
+    "verifying": "Verifying...",
+    "verified": "Verification passed",
+    "verify": "Verify",
+    "error": "Verification error",
+    "wasm-required": "WASM is not supported",
+    "solved": "Verification passed"
+  },
   "shared": {
     "error-page": {
       "404": {
@@ -19,6 +28,8 @@
     },
     "empty": "empty",
     "back": "back",
+    "error": "Error",
+    "retry": "Retry",
     "next": "continue",
     "nickname": "Nickname",
     "lands": {
@@ -156,6 +167,7 @@
       "acceptRulesProcessing": "terms of service",
       "acceptRulesProject": "project rules",
       "seed-phrase": {
+        "title": "Seed phrase",
         "startTitle": "Enter the missing words to confirm that you saved the phrase",
         "saveTitle": "Store the phrase in a secure place. You will need it if you want to recover access to your account",
         "download": "Download",
@@ -166,6 +178,15 @@
       "placeholders": {
         "nickname": "Nickname",
         "password": "Password"
+      },
+      "errors": {
+        "authorization-disabled": "Authorization is disabled",
+        "ip-restricted": "IP restrictions apply",
+        "not-exists": "Such a player is not registered",
+        "password-or-login-incorrect": "Incorrect nickname or login",
+        "password-is-unsafe": "Password is too simple",
+        "user-exists": "Such a player is already registered",
+        "token-not-found": "Verification is required"
       }
     }
   },

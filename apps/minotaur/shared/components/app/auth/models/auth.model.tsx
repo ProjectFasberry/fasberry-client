@@ -5,6 +5,7 @@ import { maybeSpyOptionAtom } from "@/shared/models/app/utils";
 import { isError } from "@/shared/lib/utils";
 import { logger } from "@/shared/lib/logger";
 import { pof } from "@/shared/components/config/cap/models/cap.model";
+import { translate } from "@/shared/locales/helpers";
 
 const AUTH_TYPE = ["register", "login"] as const;
 export type AuthType = typeof AUTH_TYPE[number];
@@ -118,21 +119,23 @@ type AuthErrorsUnionEnum =
   | ExtractApiErr<"postAuthRegister", 400>
   | "TOKEN_NOT_FOUND";
 
-const AUTH_ERRORS: Record<ScopeName, Partial<Record<AuthErrorsUnionEnum, string>>> = {
+const createAuthErrors = (): Record<ScopeName, Partial<Record<AuthErrorsUnionEnum, string>>> => ({
   auth: {
-    "AUTHORIZATION_DISABLED": "Авторизация недоступна",
-    "IP_RESTRICTIONS": "Превышен лимит регистраций",
-    "NOT_EXISTS": "Такой игрок не зарегистрирован",
-    "PASSWORD_OR_LOGIN_INCORRECT": "Неверный никнейм или пароль",
-    "PASSWORD_IS_UNSAFE": "Пароль ненадежный",
+    "AUTHORIZATION_DISABLED": translate["auth.shared.errors.authorization-disabled"](),
+    "IP_RESTRICTIONS": translate["auth.shared.errors.ip-restricted"](),
+    "NOT_EXISTS": translate["auth.shared.errors.not-exists"](),
+    "PASSWORD_OR_LOGIN_INCORRECT": translate["auth.shared.errors.password-or-login-incorrect"](),
+    "PASSWORD_IS_UNSAFE": translate["auth.shared.errors.password-is-unsafe"](),
   },
   global: {
-    "USER_EXISTS": "Такой игрок уже зарегистрирован",
+    "USER_EXISTS": translate["auth.shared.errors.user-exists"](),
   },
   captcha: {
-    "TOKEN_NOT_FOUND": "Нужна проверка",
+    "TOKEN_NOT_FOUND": translate["auth.shared.errors.token-not-found"](),
   },
-}
+});
+
+const AUTH_ERRORS = createAuthErrors();
 
 const SCOPE_ACTIONS: Record<ScopeName, Action<[], void>> = {
   auth: action((ctx) => {

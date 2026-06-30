@@ -152,7 +152,7 @@ const TasksFilterType = reatomComponent(({ ctx }) => {
           </Button>
         </Menu.Trigger>
         <Menu.Positioner>
-          <Menu.Content className={menuVariant.content({ className: "w-full min-w-56" })}>
+          <Menu.Content className={menuVariant.content("w-full min-w-56")}>
             {TASKS_FILTERS.map((filter) => (
               <Button
                 key={filter.value}

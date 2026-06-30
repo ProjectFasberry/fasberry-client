@@ -7,9 +7,10 @@ import { Icon } from "@/shared/ui/icon"
 import { Input } from "@/shared/ui/input";
 import { Menu } from '@ark-ui/react/menu'
 import { UserActionsWrapper } from "./users.restrict";
-import { Checkbox } from "@/shared/ui/checkbox";
 import { menuVariant } from "@/shared/ui/menu";
 import { createViewerModel } from "@/shared/models/shared.model";
+import { Checkbox } from "@ark-ui/react/checkbox";
+import { checkboxVariant } from "@/shared/ui/checkbox";
 
 const UsersGlobalActions = reatomComponent(({ ctx }) => {
   const isSelectedOver = ctx.spy(usersSelectedOverAtom);
@@ -77,11 +78,15 @@ const UsersFiltersSelect = reatomComponent(({ ctx }) => {
   return (
     <div className="flex justify-between min-h-10 h-10 duration-100 ease-in px-3 w-full items-center">
       <div className="flex items-center gap-2">
-        <Checkbox
+        <Checkbox.Root
           id="users-filter-selectAll"
           checked={ctx.spy(usersRestrictState.isCheckedAll)}
-          onCheckedChange={(v) => typeof v === 'boolean' && usersRestrict.select.all(ctx, v)}
-        />
+          onCheckedChange={(details) => typeof details.checked === 'boolean' && usersRestrict.select.all(ctx, details.checked)}
+          className={checkboxVariant.root()}
+        >
+          <Checkbox.Control className={checkboxVariant.control()} />
+          <Checkbox.HiddenInput />
+        </Checkbox.Root>
         <label htmlFor="checkbox:users-filter-selectAll:input">Выбрать все</label>
       </div>
       <UsersGlobalActions />

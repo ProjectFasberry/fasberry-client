@@ -198,7 +198,7 @@ export const devtools = atom(null, "_devtools").pipe(
 
       if (!instance) {
         console.warn('Skipping wrap devtools callback')
-        return;
+        throw new Error('Pane not found')
       }
 
       return cb(instance)

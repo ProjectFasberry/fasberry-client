@@ -96,7 +96,7 @@ export const Auth = reatomComponent(({ ctx }) => {
       onValueChange={(details) => {
         authState.type(ctx, details.value as AuthType)
       }}
-      className="flex flex-col gap-4 w-full p-3 sm:p-4 lg:p-6 max-w-lg rounded-lg bg-neutral-900 inert:opacity-70 inert:pointer-events-none"
+      className="flex flex-col gap-4 w-full p-3 sm:p-4 lg:p-6 max-w-lg rounded-lg bg-neutral-900 withInert"
     >
       <Tabs.List
         className="flex flex-col sm:flex-row min-h-24 h-24 sm:min-h-fit sm:h-fit w-full gap-2 *:h-10 *:w-full"

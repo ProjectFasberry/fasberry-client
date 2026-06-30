@@ -4,7 +4,8 @@ import { getLocale } from "@/paraglide/runtime"
 import { reatomComponent } from "@reatom/npm-react"
 import { locale } from "@/shared/models/shared.model"
 import { settings } from "../models/settings.model"
-import { Checkbox } from "@/shared/ui/checkbox"
+import { checkboxVariant } from "@/shared/ui/checkbox"
+import { Checkbox } from "@ark-ui/react/checkbox"
 
 const SettingsLanguageListItem = reatomComponent<{ value: Locale }>(({ ctx, value }) => {
   const isActive = getLocale() === value;
@@ -20,7 +21,16 @@ const SettingsLanguageListItem = reatomComponent<{ value: Locale }>(({ ctx, valu
       className="flex cursor-pointer bg-neutral-800 gap-2 hover:bg-neutral-700 duration-150 ease-in w-full rounded-lg px-4 py-2 items-center"
       onClick={handle}
     >
-      <Checkbox variant="filled" checked={isActive} label={LOCALES_MAP[value]} />
+      <Checkbox.Root
+        checked={isActive}
+        className={checkboxVariant.root()}
+      >
+        <Checkbox.Control className={checkboxVariant.control({ variant: "filled" })}/>
+        <Checkbox.Label className={checkboxVariant.label()}>
+          {LOCALES_MAP[value]}
+        </Checkbox.Label>
+        <Checkbox.HiddenInput />
+      </Checkbox.Root>
     </button>
   )
 }, "SettingsLanguageListItem")

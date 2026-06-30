@@ -144,7 +144,7 @@ export const RestoreForm = reatomComponent(({ ctx }) => {
 
   return (
     <form
-      className="flex flex-col gap-4 w-full p-3 sm:p-4 lg:p-6 max-w-xl rounded-lg bg-neutral-900 inert:opacity-70 inert:pointer-events-none"
+      className="flex flex-col gap-4 w-full p-3 sm:p-4 lg:p-6 max-w-xl rounded-lg bg-neutral-900 withInert"
       inert={false}
       onSubmit={handleSubmit}
     >

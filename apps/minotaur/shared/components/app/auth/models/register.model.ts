@@ -17,11 +17,13 @@ import { translate } from "@/shared/locales/helpers";
 import * as z from "zod";
 import { downloadFile } from "@/shared/lib/helpers";
 
-export type AuthRegisterType = |
-  "start-input" |
-  "seed-phrase-save" |
-  "seed-phrase-confirm" |
-  "confirm"
+export const AUTH_REGISTER_TYPE = [
+  "start-input",
+  "seed-phrase-save",
+  "seed-phrase-confirm",
+  "confirm",
+] as const;
+export type AuthRegisterType = typeof AUTH_REGISTER_TYPE[number];
 
 const fieldsOnlyRegisterSchema = z.intersection(
   registerSchema.omit({ hash: true }),

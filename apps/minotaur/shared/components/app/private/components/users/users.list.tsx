@@ -10,13 +10,14 @@ import { Avatar } from "../../../../../ui/avatar";
 import { Typography } from "@/shared/ui/typography"
 import { UserActionsChangeRoleLocal } from "./users.change-role";
 import { UserActionsWrapper } from "./users.restrict";
-import { Checkbox } from "@/shared/ui/checkbox";
+import { checkboxVariant } from "@/shared/ui/checkbox";
 import { Menu } from '@ark-ui/react/menu'
 import { menuVariant } from "@/shared/ui/menu";
 import { Portal } from "@ark-ui/react/portal";
 import { atom } from "@reatom/framework";
 import { isEmptyArray } from "@/shared/lib/utils";
 import { Noop } from "@/shared/ui/noop";
+import { Checkbox } from "@ark-ui/react/checkbox";
 
 const userItemVariant = tv({
   base: `flex flex-col rounded-lg w-full px-4 border`,
@@ -82,10 +83,14 @@ export const UsersItemMenu = reatomComponent(({ ctx }) => {
 
 const UsersItemCheckbox = reatomComponent<{ nickname: string }>(({ ctx, nickname }) => {
   return (
-    <Checkbox
+    <Checkbox.Root
       checked={ctx.spy(isCheckedAtom(nickname))}
-      onCheckedChange={v => usersRestrict.select.single(ctx, v, nickname)}
-    />
+      onCheckedChange={(details) => usersRestrict.select.single(ctx, details.checked, nickname)}
+      className={checkboxVariant.root()}
+    >
+      <Checkbox.Control className={checkboxVariant.control()} />
+      <Checkbox.HiddenInput />
+    </Checkbox.Root>
   )
 }, 'UsersItemCheckbox')
 

@@ -6,29 +6,32 @@ import { Portal } from "@ark-ui/react/portal";
 import { CapWidget } from "@better-captcha/react/provider/cap-widget";
 import { reatomComponent } from "@reatom/npm-react";
 import { getCapUrl, pof } from "../models/cap.model";
+import { translate } from "@/shared/locales/helpers";
 
-const CAP_OPTIONS = {
-  i18nInitialState: "Я человек",
-  i18nVerifyingLabel: "Проверка...",
-  i18nVerifyingAriaLabel: "Проверка...",
-  i18nVerifiedAriaLabel: "Пройдено",
-  i18nVerifyAriaLabel: "Пройти",
-  i18nErrorAriaLabel: "Ошибка",
-  i18nErrorLabel: "Ошибка",
-  i18nWasmDisabled: "У вас отключен WASM",
-  i18nSolvedLabel: "Пройдено",
-}
+const createCapMessages = () => ({
+  i18nInitialState: translate["verification.initial"](),
+  i18nVerifyingLabel: translate["verification.verifying"](),
+  i18nVerifyingAriaLabel: translate["verification.verifying"](),
+  i18nVerifiedAriaLabel: translate["verification.verified"](),
+  i18nVerifyAriaLabel: translate["verification.verify"](),
+  i18nErrorAriaLabel: translate["verification.error"](),
+  i18nErrorLabel: translate["verification.error"](),
+  i18nWasmDisabled: translate["verification.wasm-required"](),
+  i18nSolvedLabel: translate["verification.solved"](),
+})
+
+const CAP_OPTIONS = createCapMessages()
 
 const CapWidgetError = ({ callback }: { callback: () => void }) => {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <Noop title="ничего нет" />
       <Typography color="gray" className="text-sm font-semibold">
-        Возможно это ошибка
+        {translate["shared.error"]()}
       </Typography>
       {import.meta.env.DEV && (
         <button onClick={callback}>
-          Повторить
+          {translate["shared.retry"]()}
         </button>
       )}
     </div>
@@ -52,7 +55,7 @@ const CapWidgetWrapper = reatomComponent(({ ctx }) => {
       options={{
         ...CAP_OPTIONS,
         onprogress: (e) => {
-          if (withProgress) {
+          if (withProgress && import.meta.env.DEV) {
             console.log(e.detail.progress)
           }
         },

@@ -1,5 +1,14 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "verification": {
+    "initial": "Я не робот",
+    "verifying": "Проверка...",
+    "verified": "Проверка пройдена",
+    "verify": "Пройти проверку",
+    "error": "Ошибка проверки",
+    "wasm-required": "У вас отсутствует поддержка WASM",
+    "solved": "Проверка пройдена"
+  },
   "shared": {
     "error-page": {
       "404": {
@@ -19,6 +28,8 @@
     },
     "empty": "пусто",
     "back": "назад",
+    "error": "Произошла ошибка",
+    "retry": "Повторить",
     "next": "продолжить",
     "nickname": "Никнейм",
     "lands": {
@@ -156,6 +167,7 @@
       "acceptRulesProcessing": "пользовательского соглашения",
       "acceptRulesProject": "правилами проекта",
       "seed-phrase": {
+        "title": "Секретная фраза",
         "startTitle": "Введите отсутствующие слова, чтобы подтвердить, что вы сохранили фразу",
         "saveTitle": "Сохраните фразу в секретном месте. Она вам понадобится, если вы захотите восстановить доступ к аккаунту",
         "download": "Скачать",
@@ -166,6 +178,15 @@
       "placeholders": {
         "nickname": "Никнейм",
         "password": "Пароль"
+      },
+      "errors": {
+        "authorization-disabled": "Авторизация недоступна",
+        "ip-restricted": "Превышен лимит регистраций",
+        "not-exists": "Такой игрок не зарегистрирован",
+        "password-or-login-incorrect": "Неверный никнейм или логин",
+        "password-is-unsafe": "Пароль слишком простой",
+        "user-exists": "Такой игрок уже зарегистрирован",
+        "token-not-found": "Нужна проверка"
       }
     }
   },

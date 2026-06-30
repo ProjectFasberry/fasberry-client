@@ -90,6 +90,10 @@
   pre {
     @apply bg-neutral-700/60 rounded-lg px-4 py-2 overflow-x-auto text-sm leading-relaxed;
   }
+
+  .withInert {
+    @apply inert:opacity-70 inert:pointer-events-none;
+  }
 }
 
 @layer components {
